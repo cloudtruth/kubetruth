@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'gem_logger'
   spec.add_dependency 'logging'
+  spec.add_dependency 'activesupport'
   spec.add_dependency 'clamp'
   spec.add_dependency 'graphql-client'
   spec.add_dependency 'kubeclient'

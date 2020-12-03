@@ -1,7 +1,6 @@
-require 'clamp'
 require_relative 'logging'
-require_relative 'ctapi'
-require_relative 'kubeapi'
+require_relative 'etl'
+require 'clamp'
 
 module Kubetruth
   class CLI < Clamp::Command
@@ -14,59 +13,77 @@ module Kubetruth
       values to
     EOF
 
-    option ["-e", "--environment"],
-           'ENV', "The environment\n",
+    option "--environment",
+           'ENV', "The cloudtruth environment",
            environment_variable: 'CT_ENV',
-           required: true
+           default: "default"
 
-    option ["-a", "--api-key"],
-           'APIKEY', "The cloudtruth api key\n",
+    option "--organization",
+           'ORG', "The cloudtruth organization"
+
+    option "--api-key",
+           'APIKEY', "The cloudtruth api key",
            environment_variable: 'CT_API_KEY',
            required: true
 
-    option "--name-pattern", "PATTERN", "the pattern for generating the\nconfigmap name from key pattern matches\n",
-           default: "{{name}}"
+    option "--name-template", "TMPL", "the template for generating the configmap name from key pattern matches",
+           default: "%{name}"
+
+    option "--key-template", "TMPL", "the template for generating the configmap keys from key pattern matches",
+           default: "%{key}"
 
     option "--key-prefix", "PREFIX", "the key prefix to restrict the keys fetched from cloudtruth",
            default: [''],
-           multivalued: true
+             multivalued: true
 
-    option "--key-pattern", "REGEX", "the key pattern for mapping cloudtruth\nparams to configmap keys.  The `name` is used for the config map naming, and the keys in that map come from the matching `key` portion.  A pattern like `^(?<key>[^\\.]+.(?<name>[^\\.]+)\\..*)` would make the key be the entire parameter key\n",
-           default: ['^(?<prefix>[^\.]+)\.(?<name>[^\.]+)\.(?<key>.*)'],
-           multivalued: true
+    option "--key-pattern", "REGEX", "the key pattern for mapping cloudtruth params to configmap keys.  The `name` is used for the config map naming, and the keys in that map come from the matching `key` portion.  A pattern like `^(?<key>[^\\.]+.(?<name>[^\\.]+)\\..*)`  would make the key be the entire  parameter key",
+           default: [/^(?<prefix>[^\.]+)\.(?<name>[^\.]+)\.(?<key>.*)/],
+           multivalued: true do |a|
+      Regexp.new(a)
+    rescue RegexpError => e
+      raise ArgumentError.new(e.message)
+    end
 
-    option "--[no-]skip-secrets",
-           :flag, "Skip (or include secrets) in creating\nkubernetes resources\n",
-           default: true
+    option "--skip-secrets",
+           :flag, "Do not transfer secrets to kubernetes resources",
+           default: false
 
-    option "--[no-]use-secret-store",
-           :flag, "Secrets to secret store\n",
+    option "--secrets-as-config",
+           :flag, "Secrets are placed in config maps instead of kube secrets",
            default: false
 
     option "--kube-namespace",
-           'NAMESPACE', "The kubernetes namespace\nDefaults to runtime namespace when run in kube"
+           'NAMESPACE', "The kubernetes namespace Defaults to runtime namespace when run  in kube"
 
     option "--kube-token",
-           'TOKEN', "The kubernetes token to use for api\nDefaults to mounted when run in kube"
+           'TOKEN', "The kubernetes token to use for api Defaults to mounted when run  in kube"
 
     option "--kube-url",
-           'ENDPOINT', "The kubernetes api url\nDefaults to internal api endpoint when run in kube"
+           'ENDPOINT', "The kubernetes api url Defaults to internal api endpoint when  run in kube"
 
-    option ["-i", "--polling-interval"], "INTERVAL", "the polling interval\n", default: 300 do |a|
+    option "--polling-interval", "INTERVAL", "the polling interval", default: 300 do |a|
       Integer(a)
     end
 
-    option ["-d", "--debug"],
-           :flag, "debug output\n",
+    option ["-n", "--dry-run"],
+           :flag, "perform a dry run",
            default: false
 
     option ["-q", "--quiet"],
-           :flag, "suppress output\n",
+           :flag, "suppress output",
+           default: false
+
+    option ["-d", "--debug"],
+           :flag, "debug output",
            default: false
 
     option ["-c", "--[no-]color"],
-           :flag, "colorize output (or not)\n (default: $stdout.tty?)"
+           :flag, "colorize output (or not)  (default: $stdout.tty?)",
+            default: true
 
+    option ["-v", "--version"],
+           :flag, "show version",
+           default: false
 
     # TODO: option to map template to configmap?
 
@@ -82,88 +99,77 @@ module Kubetruth
     end
 
     def execute
+      if version?
+        logger.info "Kubetruth Version #{VERSION}"
+        exit(0)
+      end
+
+      ct_context = {
+          organization: organization,
+          environment: environment,
+          api_key: api_key
+      }
+      kube_context = {
+          namespace: kube_namespace,
+          token: kube_token,
+          api_url: kube_url
+      }
+
+      etl = ETL.new(key_prefixes: key_prefix_list, key_patterns: key_pattern_list,
+                    name_template: name_template, key_template: key_template,
+                    ct_context: ct_context, kube_context: kube_context)
 
       while true
 
-        param_groups = get_param_groups
-        logger.debug { "Parameter groupings: #{param_groups.keys}" }
-
-        # TODO: handle secrets
-        apply_config_maps(param_groups)
+        begin
+          etl.apply(dry_run: dry_run?, skip_secrets: skip_secrets?, secrets_as_config: secrets_as_config?)
+        rescue => e
+          logger.log_exception(e, "Failure while applying config transforms")
+        end
 
         logger.debug("Poller sleeping for #{polling_interval}")
-        sleep polling_interval
-
-      end
-
-    end
-
-    private
-
-    def get_param_groups
-      ctapi = CtApi.new(environment)
-      # First search for all the selected parameters
-      #
-      filtered_params = {}
-      key_prefix_list.each do |key_prefix|
-        params = ctapi.parameters(searchTerm: key_prefix)
-        # ct api currently only has a search, not a prefix filter
-        params = params.select { |k, v| k =~ /^#{key_prefix}/ }
-        filtered_params = filtered_params.merge(params)
-      end
-      logger.debug { "Filtered params: #{filtered_params.inspect}"}
-
-      # Group those parameters by the name selected by the key_pattern
-      #
-      param_groups = {}
-      key_pattern_list.each do |key_pattern|
-        logger.debug {"Looking for key pattern matches to '#{key_pattern}'"}
-
-        filtered_params.each do |k, v|
-          if matches = k.match(key_pattern)
-            logger.debug {"Pattern matches '#{k}' with: #{matches.inspect}"}
-            name = matches[:name]
-            key = matches[:key]
-            param_groups[name] ||= {}
-            param_groups[name][key] = v
-          else
-            logger.debug {"Pattern does not match '#{k}'"}
-          end
+        if dry_run?
+          break
+        else
+          sleep polling_interval
         end
 
       end
 
-      # Returns a hash of the group name to a param hash (param_key -> param_value)
-      param_groups
-    end
-
-    def apply_config_maps(param_groups)
-      # For each set of parameters grouped by name, add those parameters
-      # to the config map with that name
-      #
-      kubeapi = KubeApi.new(namespace: kube_namespace,
-                            token: kube_token,
-                            api_url: kube_url)
-
-      logger.debug { "Existing config maps: #{kubeapi.get_config_map_names}" }
-
-      param_groups.each do |k, v|
-        begin
-          cm = kubeapi.get_config_map(k)
-          logger.debug("Config map for #{k}: #{cm.inspect}")
-          if v != cm.data.to_h.transform_keys! {|k| k.to_s }
-            logger.info "Updating config map #{k} with params: #{v.inspect}}"
-            cm.data = v
-            kubeapi.update_config_map(cm)
-          else
-            logger.info "No changes needed for config map #{k} with params: #{v.inspect}}"
-          end
-        rescue Kubeclient::ResourceNotFoundError
-          logger.info "Creating config map #{k} with params: #{v.inspect}}"
-          kubeapi.create_config_map(k, v)
-        end
-      end
     end
 
   end
+end
+
+# Hack to make clamp usage less of a pain to get long lines to fit within a
+# standard terminal width
+class Clamp::Help::Builder
+
+  def word_wrap(text, line_width: 80)
+    text.split("\n").collect do |line|
+      line.length > line_width ? line.gsub(/(.{1,#{line_width}})(\s+|$)/, "\\1\n").strip.split("\n") : line
+    end.flatten
+  end
+
+  def string
+    indent_size = 4
+    indent = " " * indent_size
+    StringIO.new.tap do |out|
+      lines.each do |line|
+        case line
+        when Array
+          out << indent
+          out.puts(line[0])
+          formatted_line = line[1].gsub(/\((default|required)/, "\n\\0")
+          word_wrap(formatted_line, line_width: (80 - indent_size * 2)).each do |l|
+            out << (indent * 2)
+            out.puts(l)
+          end
+        else
+          out.puts(line)
+        end
+      end
+    end.string
+  end
+
 end
