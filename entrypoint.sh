@@ -35,7 +35,7 @@ case $action in
 
   bash)
     if [ "$#" -eq 0 ]; then
-      bash_args=( -il )
+      bash_args=( -i )
     else
       bash_args=( "$@" )
     fi
