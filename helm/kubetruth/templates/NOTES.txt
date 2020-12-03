@@ -1,0 +1,2 @@
+Supply the cloudtruth api key in appSettings.apiKey
+

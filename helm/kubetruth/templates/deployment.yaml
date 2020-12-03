@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kubetruth.fullname" . }}
+  labels:
+    {{- include "kubetruth.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "kubetruth.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "kubetruth.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "kubetruth.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: CT_API_KEY
+              value: {{ required "The cloudtruth api key needs to be set in .Values.appSettings.apiKey!" .Values.appSettings.apiKey }}
+          args:
+            - app
+            {{- if .Values.appSettings.environment }}
+            - --environment
+            - {{ .Values.appSettings.environment }}
+            {{- end }}
+            {{- with .Values.appSettings.keyPrefix }}
+            - --key-prefix
+            - {{ toYaml . }}
+            {{- end }}
+            {{- with .Values.appSettings.keyPattern }}
+            - --key-pattern
+            - {{ toYaml . }}
+            {{- end }}
+            {{- if .Values.appSettings.nameTemplate }}
+            - --name-template
+            - {{ .Values.appSettings.nameTemplate }}
+            {{- end }}
+            {{- if .Values.appSettings.keyTemplate }}
+            - --key-template
+            - {{ .Values.appSettings.keyTemplate }}
+            {{- end }}
+            {{- if .Values.appSettings.pollingInterval }}
+            - --polling-interval
+            - "{{ .Values.appSettings.pollingInterval }}"
+            {{- end }}
+            {{- if .Values.appSettings.debug }}
+            - --debug
+            {{- end }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
