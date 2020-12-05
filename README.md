@@ -1,3 +1,6 @@
+[![Build Status](https://github.com/cloudtruth/kubetruth/workflows/CD/badge.svg)](https://github.com/cloudtruth/kubetruth/actions)
+[![Coverage Status](https://coveralls.io/repos/github/cloudtruth/kubetruth/badge.svg?branch=master)](https://coveralls.io/github/cloudtruth/kubetruth?branch=master)
+
 # Kubetruth
 
 The CloudTruth integration for kubernetes that pushes parameter updates into kubernetes config maps and secrets
