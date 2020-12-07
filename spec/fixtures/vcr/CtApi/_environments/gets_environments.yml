@@ -36,7 +36,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 02 Dec 2020 14:56:38 GMT
+      - Mon, 07 Dec 2020 16:47:42 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -60,9 +60,9 @@ http_interactions:
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - ffc0a887-4685-422b-9dee-f3e5fb5ba7b5
+      - cc100a8b-db17-443e-bc52-de283a901129
       X-Runtime:
-      - '0.360491'
+      - '0.439500'
       Vary:
       - Origin
     body:
@@ -338,15 +338,15 @@ http_interactions:
         why this element was deprecated, usually also including a suggestion for how
         to access supported similar data. Formatted in [Markdown](https://daringfireball.net/projects/markdown/).","type":{"kind":"SCALAR","name":"String","ofType":null},"defaultValue":"\"No
         longer supported\""}]}]}}}'
-  recorded_at: Wed, 02 Dec 2020 14:56:38 GMT
+  recorded_at: Mon, 07 Dec 2020 16:47:42 GMT
 - request:
     method: post
     uri: https://api.cloudtruth.com/graphql
     body:
       encoding: UTF-8
-      string: '{"query":"query GraphQL__Client__OperationDefinition_31600($organizationId:
+      string: '{"query":"query GraphQL__Client__OperationDefinition_31840($organizationId:
         ID) {\n  viewer {\n    organization(id: $organizationId) {\n      environments
-        {\n        nodes {\n          id\n          name\n        }\n      }\n    }\n  }\n}","operationName":"GraphQL__Client__OperationDefinition_31600"}'
+        {\n        nodes {\n          id\n          name\n        }\n      }\n    }\n  }\n}","operationName":"GraphQL__Client__OperationDefinition_31840"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -364,7 +364,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 02 Dec 2020 14:56:39 GMT
+      - Mon, 07 Dec 2020 16:47:42 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -388,13 +388,13 @@ http_interactions:
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - c4346cbf-46f9-40e5-80fb-53f6a57dce21
+      - da83b555-f3c2-482a-bdee-d5bf60c55ff6
       X-Runtime:
-      - '0.023462'
+      - '0.028620'
       Vary:
       - Origin
     body:
       encoding: UTF-8
       string: '{"data":{"viewer":{"organization":{"environments":{"nodes":[{"id":"RW52aXJvbm1lbnQtZjk3MDI1NGEtNGQ0NS00YTA1LWJiYjctOTRjZTdhOGRmODky","name":"default"},{"id":"RW52aXJvbm1lbnQtOGRmMTVjMjYtN2FhZi00ODE5LWJlNzYtMTVmMzU2YzQ5YTg1","name":"production"},{"id":"RW52aXJvbm1lbnQtNmI5M2NlMWEtMTVkMS00MzRiLTg1NTAtODhjZDZhY2ZjYzU4","name":"development"},{"id":"RW52aXJvbm1lbnQtY2EyMDA0YzctZjQ3Mi00MzFlLWIyODgtNzg0NmYzMTBmMGZj","name":"ops"},{"id":"RW52aXJvbm1lbnQtMzY4MWRkMjctZDY2YS00NjdlLWI1NzMtYmI2YzU0ZmFjZDM1","name":"staging"}]}}}}}'
-  recorded_at: Wed, 02 Dec 2020 14:56:39 GMT
+  recorded_at: Mon, 07 Dec 2020 16:47:42 GMT
 recorded_with: VCR 6.0.0

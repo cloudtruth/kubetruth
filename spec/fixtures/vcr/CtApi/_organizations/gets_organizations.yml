@@ -36,7 +36,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 02 Dec 2020 14:56:37 GMT
+      - Mon, 07 Dec 2020 16:47:41 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -60,9 +60,9 @@ http_interactions:
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - 5ae2c069-7497-45c4-9d88-2302dd9c1aed
+      - 707878f7-e088-48db-8f9a-ac5ca8e98a96
       X-Runtime:
-      - '0.381568'
+      - '0.420223'
       Vary:
       - Origin
     body:
@@ -338,14 +338,14 @@ http_interactions:
         why this element was deprecated, usually also including a suggestion for how
         to access supported similar data. Formatted in [Markdown](https://daringfireball.net/projects/markdown/).","type":{"kind":"SCALAR","name":"String","ofType":null},"defaultValue":"\"No
         longer supported\""}]}]}}}'
-  recorded_at: Wed, 02 Dec 2020 14:56:38 GMT
+  recorded_at: Mon, 07 Dec 2020 16:47:41 GMT
 - request:
     method: post
     uri: https://api.cloudtruth.com/graphql
     body:
       encoding: UTF-8
-      string: '{"query":"query GraphQL__Client__OperationDefinition_22520 {\n  viewer
-        {\n    memberships {\n      nodes {\n        organization {\n          id\n          name\n        }\n      }\n    }\n  }\n}","operationName":"GraphQL__Client__OperationDefinition_22520"}'
+      string: '{"query":"query GraphQL__Client__OperationDefinition_22760 {\n  viewer
+        {\n    memberships {\n      nodes {\n        organization {\n          id\n          name\n        }\n      }\n    }\n  }\n}","operationName":"GraphQL__Client__OperationDefinition_22760"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -363,7 +363,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 02 Dec 2020 14:56:38 GMT
+      - Mon, 07 Dec 2020 16:47:41 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -387,13 +387,13 @@ http_interactions:
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - aa93c0d3-5e88-4afc-84bb-39af8693aafb
+      - 6c0d96d7-97f6-4972-bc25-b67766709be6
       X-Runtime:
-      - '0.021203'
+      - '0.022692'
       Vary:
       - Origin
     body:
       encoding: UTF-8
       string: '{"data":{"viewer":{"memberships":{"nodes":[{"organization":{"id":"T3JnYW5pemF0aW9uLTE1YzgxYjViLWVlM2ItNDlmNS1iNGVkLTIyYTc0NDI3N2ZiMw==","name":"Personal"}}]}}}}'
-  recorded_at: Wed, 02 Dec 2020 14:56:38 GMT
+  recorded_at: Mon, 07 Dec 2020 16:47:41 GMT
 recorded_with: VCR 6.0.0
