@@ -71,6 +71,6 @@ appSettings:
   keyPrefix: []
   keyPattern: []
   nameTemplate:
-  keyTemnplate:
+  keyTemplate:
   pollingInterval:
   debug: false
