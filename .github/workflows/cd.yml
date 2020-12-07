@@ -63,8 +63,8 @@ jobs:
 
       - name: Push the Docker image
         run: |
-          tag=${GITHUB_REF##*/}
-          echo $tag
+          tag=${GITHUB_REF##*/v}
+          echo "Pushing version '$tag' to docker hub"
           source <(cloudtruth -e production template get deploy.docker_credentials_env)
           echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
