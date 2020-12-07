@@ -72,5 +72,7 @@ appSettings:
   keyPattern: []
   nameTemplate:
   keyTemplate:
+  skipSecrets: false
+  secretsAsConfig: false
   pollingInterval:
   debug: false

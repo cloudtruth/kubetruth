@@ -35,30 +35,36 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          env:
-            - name: CT_API_KEY
-              value: {{ required "The cloudtruth api key needs to be set in .Values.appSettings.apiKey!" .Values.appSettings.apiKey }}
+          envFrom:
+            - secretRef:
+                name: {{ include "kubetruth.fullname" . }}
           args:
             - app
             {{- if .Values.appSettings.environment }}
             - --environment
-            - {{ .Values.appSettings.environment }}
+            - {{ .Values.appSettings.environment | quote }}
             {{- end }}
             {{- with .Values.appSettings.keyPrefix }}
             - --key-prefix
-            - {{ toYaml . }}
+            - {{ toYaml . | quote }}
             {{- end }}
             {{- with .Values.appSettings.keyPattern }}
             - --key-pattern
-            - {{ toYaml . }}
+            - {{ toYaml . | quote }}
             {{- end }}
             {{- if .Values.appSettings.nameTemplate }}
             - --name-template
-            - {{ .Values.appSettings.nameTemplate }}
+            - {{ .Values.appSettings.nameTemplate | quote }}
             {{- end }}
             {{- if .Values.appSettings.keyTemplate }}
             - --key-template
-            - {{ .Values.appSettings.keyTemplate }}
+            - {{ .Values.appSettings.keyTemplate | quote }}
+            {{- end }}
+            {{- if .Values.appSettings.skipSecrets }}
+            - --skip-secrets
+            {{- end }}
+            {{- if .Values.appSettings.secretsAsConfig }}
+            - --secrets-as-config
             {{- end }}
             {{- if .Values.appSettings.pollingInterval }}
             - --polling-interval

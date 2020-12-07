@@ -87,7 +87,10 @@ jobs:
 
       - name: Deploy helm chart to S3
         run: |
+          pkg=$(ls packaged-chart/kubetruth*.tgz)
+          pkg=${pkg##*/}
           source <(cloudtruth -e production template get deploy.aws_credentials_env)
           source <(cloudtruth -e production template get deploy.helm_package_env)
           atmos -e production auth_exec aws s3 sync packaged-chart/ s3://${BUCKET_NAME}/${BUCKET_PATH}/
-          atmos -e production auth_exec aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths /index.yaml
+          atmos -e production auth_exec aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths "/${BUCKET_PATH}/index.yaml" "/${BUCKET_PATH}/${pkg}"
+
