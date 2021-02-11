@@ -37,8 +37,49 @@ http_interactions:
         '
   recorded_at: Wed, 10 Feb 2021 19:24:56 GMT
 - request:
+    method: post
+    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-newns/configmaps
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"name":"foo","namespace":"kubetruth-test-ns-newns"},"data":{},"kind":"ConfigMap","apiVersion":"v1"}'
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Content-Length:
+      - '112'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - kubernetes.docker.internal:6443
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 10 Feb 2021 19:24:56 GMT
+      Content-Length:
+      - '226'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"namespaces
+        \"kubetruth-test-ns-newns\" not found","reason":"NotFound","details":{"name":"kubetruth-test-ns-newns","kind":"namespaces"},"code":404}
+
+        '
+  recorded_at: Wed, 10 Feb 2021 19:24:56 GMT
+- request:
     method: get
-    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns/configmaps/foo
+    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-newns
     body:
       encoding: US-ASCII
       string: ''
@@ -65,20 +106,20 @@ http_interactions:
       Date:
       - Wed, 10 Feb 2021 19:24:56 GMT
       Content-Length:
-      - '186'
+      - '226'
     body:
       encoding: UTF-8
-      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"configmaps
-        \"foo\" not found","reason":"NotFound","details":{"name":"foo","kind":"configmaps"},"code":404}
+      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"namespaces
+        \"kubetruth-test-ns-newns\" not found","reason":"NotFound","details":{"name":"kubetruth-test-ns-newns","kind":"namespaces"},"code":404}
 
         '
   recorded_at: Wed, 10 Feb 2021 19:24:56 GMT
 - request:
     method: post
-    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns/configmaps
+    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces
     body:
       encoding: UTF-8
-      string: '{"metadata":{"name":"foo","namespace":"kubetruth-test-ns"},"data":{"bar":"baz"},"kind":"ConfigMap","apiVersion":"v1"}'
+      string: '{"metadata":{"name":"kubetruth-test-ns-newns"},"kind":"Namespace","apiVersion":"v1"}'
     headers:
       Accept:
       - "*/*"
@@ -89,7 +130,7 @@ http_interactions:
       Authorization:
       - Bearer <BEARER_TOKEN>
       Content-Length:
-      - '117'
+      - '84'
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
@@ -106,16 +147,56 @@ http_interactions:
       Date:
       - Wed, 10 Feb 2021 19:24:56 GMT
       Content-Length:
-      - '477'
+      - '497'
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns","selfLink":"/api/v1/namespaces/kubetruth-test-ns/configmaps/foo","uid":"8b3e3145-0625-4a64-831c-2e222aea99c9","resourceVersion":"818917","creationTimestamp":"2021-02-10T19:24:56Z","managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-10T19:24:56Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}}}}]},"data":{"bar":"baz"}}
+      string: '{"kind":"Namespace","apiVersion":"v1","metadata":{"name":"kubetruth-test-ns-newns","selfLink":"/api/v1/namespaces/kubetruth-test-ns-newns","uid":"65c34bc5-306d-4d44-9fd3-b930f9f32a8c","resourceVersion":"818910","creationTimestamp":"2021-02-10T19:24:56Z","managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-10T19:24:56Z","fieldsType":"FieldsV1","fieldsV1":{"f:status":{"f:phase":{}}}}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}}
+
+        '
+  recorded_at: Wed, 10 Feb 2021 19:24:56 GMT
+- request:
+    method: post
+    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-newns/configmaps
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"name":"foo","namespace":"kubetruth-test-ns-newns"},"data":{"bar":"baz"},"kind":"ConfigMap","apiVersion":"v1"}'
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Content-Length:
+      - '123'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - kubernetes.docker.internal:6443
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 10 Feb 2021 19:24:56 GMT
+      Content-Length:
+      - '489'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-newns","selfLink":"/api/v1/namespaces/kubetruth-test-ns-newns/configmaps/foo","uid":"2463f79e-a0f8-4a29-a16a-be244efcc12b","resourceVersion":"818912","creationTimestamp":"2021-02-10T19:24:56Z","managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-10T19:24:56Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}}}}]},"data":{"bar":"baz"}}
 
         '
   recorded_at: Wed, 10 Feb 2021 19:24:56 GMT
 - request:
     method: get
-    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns/configmaps
+    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-newns/configmaps/foo
     body:
       encoding: US-ASCII
       string: ''
@@ -142,233 +223,10 @@ http_interactions:
       Date:
       - Wed, 10 Feb 2021 19:24:56 GMT
       Content-Length:
-      - '594'
+      - '489'
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMapList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/namespaces/kubetruth-test-ns/configmaps","resourceVersion":"818917"},"items":[{"metadata":{"name":"foo","namespace":"kubetruth-test-ns","selfLink":"/api/v1/namespaces/kubetruth-test-ns/configmaps/foo","uid":"8b3e3145-0625-4a64-831c-2e222aea99c9","resourceVersion":"818917","creationTimestamp":"2021-02-10T19:24:56Z","managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-10T19:24:56Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}}}}]},"data":{"bar":"baz"}}]}
-
-        '
-  recorded_at: Wed, 10 Feb 2021 19:24:56 GMT
-- request:
-    method: get
-    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns/configmaps/foo
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept:
-      - "*/*"
-      User-Agent:
-      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
-      Authorization:
-      - Bearer <BEARER_TOKEN>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Host:
-      - kubernetes.docker.internal:6443
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Cache-Control:
-      - no-cache, private
-      Content-Type:
-      - application/json
-      Date:
-      - Wed, 10 Feb 2021 19:24:56 GMT
-      Content-Length:
-      - '477'
-    body:
-      encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns","selfLink":"/api/v1/namespaces/kubetruth-test-ns/configmaps/foo","uid":"8b3e3145-0625-4a64-831c-2e222aea99c9","resourceVersion":"818917","creationTimestamp":"2021-02-10T19:24:56Z","managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-10T19:24:56Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}}}}]},"data":{"bar":"baz"}}
-
-        '
-  recorded_at: Wed, 10 Feb 2021 19:24:56 GMT
-- request:
-    method: get
-    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns/configmaps/foo
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept:
-      - "*/*"
-      User-Agent:
-      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
-      Authorization:
-      - Bearer <BEARER_TOKEN>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Host:
-      - kubernetes.docker.internal:6443
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Cache-Control:
-      - no-cache, private
-      Content-Type:
-      - application/json
-      Date:
-      - Wed, 10 Feb 2021 19:24:56 GMT
-      Content-Length:
-      - '477'
-    body:
-      encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns","selfLink":"/api/v1/namespaces/kubetruth-test-ns/configmaps/foo","uid":"8b3e3145-0625-4a64-831c-2e222aea99c9","resourceVersion":"818917","creationTimestamp":"2021-02-10T19:24:56Z","managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-10T19:24:56Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}}}}]},"data":{"bar":"baz"}}
-
-        '
-  recorded_at: Wed, 10 Feb 2021 19:24:56 GMT
-- request:
-    method: put
-    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns/configmaps/foo
-    body:
-      encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns","selfLink":"/api/v1/namespaces/kubetruth-test-ns/configmaps/foo","uid":"8b3e3145-0625-4a64-831c-2e222aea99c9","resourceVersion":"818917","creationTimestamp":"2021-02-10T19:24:56Z","managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-10T19:24:56Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}}}}]},"data":{"bar":"bum"}}'
-    headers:
-      Accept:
-      - "*/*"
-      User-Agent:
-      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
-      Content-Type:
-      - application/json
-      Authorization:
-      - Bearer <BEARER_TOKEN>
-      Content-Length:
-      - '476'
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Host:
-      - kubernetes.docker.internal:6443
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Cache-Control:
-      - no-cache, private
-      Content-Type:
-      - application/json
-      Date:
-      - Wed, 10 Feb 2021 19:24:56 GMT
-      Content-Length:
-      - '477'
-    body:
-      encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns","selfLink":"/api/v1/namespaces/kubetruth-test-ns/configmaps/foo","uid":"8b3e3145-0625-4a64-831c-2e222aea99c9","resourceVersion":"818918","creationTimestamp":"2021-02-10T19:24:56Z","managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-10T19:24:56Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}}}}]},"data":{"bar":"bum"}}
-
-        '
-  recorded_at: Wed, 10 Feb 2021 19:24:56 GMT
-- request:
-    method: get
-    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns/configmaps/foo
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept:
-      - "*/*"
-      User-Agent:
-      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
-      Authorization:
-      - Bearer <BEARER_TOKEN>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Host:
-      - kubernetes.docker.internal:6443
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Cache-Control:
-      - no-cache, private
-      Content-Type:
-      - application/json
-      Date:
-      - Wed, 10 Feb 2021 19:24:56 GMT
-      Content-Length:
-      - '477'
-    body:
-      encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns","selfLink":"/api/v1/namespaces/kubetruth-test-ns/configmaps/foo","uid":"8b3e3145-0625-4a64-831c-2e222aea99c9","resourceVersion":"818918","creationTimestamp":"2021-02-10T19:24:56Z","managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-10T19:24:56Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}}}}]},"data":{"bar":"bum"}}
-
-        '
-  recorded_at: Wed, 10 Feb 2021 19:24:56 GMT
-- request:
-    method: delete
-    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns/configmaps/foo
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept:
-      - "*/*"
-      User-Agent:
-      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
-      Content-Type:
-      - application/json
-      Authorization:
-      - Bearer <BEARER_TOKEN>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Host:
-      - kubernetes.docker.internal:6443
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Cache-Control:
-      - no-cache, private
-      Content-Type:
-      - application/json
-      Date:
-      - Wed, 10 Feb 2021 19:24:56 GMT
-      Content-Length:
-      - '159'
-    body:
-      encoding: UTF-8
-      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Success","details":{"name":"foo","kind":"configmaps","uid":"8b3e3145-0625-4a64-831c-2e222aea99c9"}}
-
-        '
-  recorded_at: Wed, 10 Feb 2021 19:24:56 GMT
-- request:
-    method: get
-    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns/configmaps/foo
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept:
-      - "*/*"
-      User-Agent:
-      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
-      Authorization:
-      - Bearer <BEARER_TOKEN>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Host:
-      - kubernetes.docker.internal:6443
-  response:
-    status:
-      code: 404
-      message: Not Found
-    headers:
-      Cache-Control:
-      - no-cache, private
-      Content-Type:
-      - application/json
-      Date:
-      - Wed, 10 Feb 2021 19:24:56 GMT
-      Content-Length:
-      - '186'
-    body:
-      encoding: UTF-8
-      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"configmaps
-        \"foo\" not found","reason":"NotFound","details":{"name":"foo","kind":"configmaps"},"code":404}
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-newns","selfLink":"/api/v1/namespaces/kubetruth-test-ns-newns/configmaps/foo","uid":"2463f79e-a0f8-4a29-a16a-be244efcc12b","resourceVersion":"818912","creationTimestamp":"2021-02-10T19:24:56Z","managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-10T19:24:56Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}}}}]},"data":{"bar":"baz"}}
 
         '
   recorded_at: Wed, 10 Feb 2021 19:24:56 GMT

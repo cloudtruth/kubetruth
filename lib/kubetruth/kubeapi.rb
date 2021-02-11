@@ -40,6 +40,17 @@ module Kubetruth
       )
     end
 
+    def ensure_namespace
+      begin
+        client.get_namespace(namespace)
+      rescue Kubeclient::ResourceNotFoundError
+        ns = Kubeclient::Resource.new
+        ns.metadata = {}
+        ns.metadata.name = namespace
+        client.create_namespace(ns)
+      end
+    end
+
     def get_config_map_names
       client.get_config_maps(namespace: namespace).collect(&:metadata).collect(&:name)
     end

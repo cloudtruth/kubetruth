@@ -90,6 +90,7 @@ module Kubetruth
             --environment production
             --organization acme
             --api-key abc123
+            --namespace-template nstmpl
             --name-template ntmpl
             --key-template ktmpl
             --key-prefix prefix1
@@ -105,7 +106,7 @@ module Kubetruth
         ]
         etl = double(ETL)
         expect(ETL).to receive(:new).with(key_prefixes: %w[prefix1 prefix2], key_patterns: [/pat1/, /pat2/],
-                                          name_template: "ntmpl", key_template: "ktmpl",
+                                          namespace_template: "nstmpl", name_template: "ntmpl", key_template: "ktmpl",
                                           ct_context: {
                                               organization: "acme",
                                               environment: "production",

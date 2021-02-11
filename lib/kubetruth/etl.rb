@@ -8,15 +8,17 @@ module Kubetruth
     include GemLogger::LoggerSupport
 
     def initialize(key_prefixes:, key_patterns:,
-                   name_template:, key_template:,
+                   namespace_template:, name_template:, key_template:,
                    ct_context:, kube_context:)
 
       @key_prefixes = key_prefixes
       @key_patterns = key_patterns
       @name_template = name_template
+      @namespace_template = namespace_template
       @key_template = key_template
       @ct_context = ct_context
       @kube_context = kube_context
+      @kubeapis = {}
     end
 
     def ctapi
@@ -27,8 +29,8 @@ module Kubetruth
       end
     end
 
-    def kubeapi
-      @kubeapi ||= KubeApi.new(**@kube_context)
+    def kubeapi(namespace)
+      @kubeapis[namespace] ||= KubeApi.new(**@kube_context.merge(namespace: namespace))
     end
 
     def apply(dry_run: false, skip_secrets: false, secrets_as_config: false)
@@ -85,7 +87,7 @@ module Kubetruth
       end
       logger.debug { "Filtered params: #{filtered_params.inspect}"}
 
-      # Group those parameters by the name selected by the key_pattern
+      # Group those parameters by the name selected by the name_pattern
       #
       param_groups = {}
       @key_patterns.each do |key_pattern|
@@ -97,11 +99,15 @@ module Kubetruth
             matches_hash = Hash[*matches_hash.collect {|k, v| [k, v, "#{k}_upcase".to_sym, v.upcase]}.flatten]
 
             logger.debug {"Pattern matches '#{param.key}' with: #{matches_hash}"}
-            name = @name_template % matches_hash
+
+            namespace = dns_friendly(@namespace_template % matches_hash) if @namespace_template
+            name = dns_friendly(@name_template % matches_hash)
             key = @key_template % matches_hash
             param.original_key, param.key = param.key, key
-            param_groups[name] ||= []
-            param_groups[name] << param
+
+            group_key = {namespace: namespace, name: name}
+            param_groups[group_key] ||= []
+            param_groups[group_key] << param
           else
             logger.debug {"Pattern does not match '#{param.key}'"}
           end
@@ -126,26 +132,32 @@ module Kubetruth
       # to the config map with that name
       #
 
-      logger.debug { "Existing config maps: #{kubeapi.get_config_map_names}" }
+      param_groups.collect {|k, v| k[:namespace] }.sort.uniq.each do |ns|
+        kapi = kubeapi(ns)
+        # only create namespace when user chooses to use multiple namespaces determined from the pattern
+        kapi.ensure_namespace if @namespace_template
+        logger.debug { "Existing config maps (ns=#{ns}): #{kapi.get_config_map_names}" }
+      end
 
       param_groups.each do |k, v|
-
-        config_map_name = dns_friendly(k)
-
+        config_map_namespace = k[:namespace]
+        config_map_name = k[:name]
+        kapi = kubeapi(config_map_namespace)
         param_hash = Hash[v.collect {|param| [param.key, param.value]}]
 
         begin
-          data = kubeapi.get_config_map(config_map_name)
+          logger.debug { "Namespace '#{kapi.namespace}'" }
+          data = kapi.get_config_map(config_map_name)
           logger.debug("Config map for '#{config_map_name}': #{data.inspect}")
           if param_hash != data.transform_keys! {|k| k.to_s }
             logger.info "Updating config map '#{config_map_name}' with params: #{param_hash.inspect}"
-            kubeapi.update_config_map(config_map_name, param_hash)
+            kapi.update_config_map(config_map_name, param_hash)
           else
             logger.info "No changes needed for config map '#{config_map_name}' with params: #{param_hash.inspect}}"
           end
         rescue Kubeclient::ResourceNotFoundError
           logger.info "Creating config map '#{config_map_name}' with params: #{param_hash.inspect}}"
-          kubeapi.create_config_map(config_map_name, param_hash)
+          kapi.create_config_map(config_map_name, param_hash)
         end
       end
     end
@@ -156,26 +168,35 @@ module Kubetruth
       # For each set of parameters grouped by name, add those parameters
       # to the secret with that name
       #
-      logger.debug { "Existing secrets: #{kubeapi.get_secret_names}" }
+
+      param_groups.collect {|k, v| k[:namespace] }.uniq.each do |ns|
+        kapi = kubeapi(ns)
+        # only create namespace when user chooses to use multiple namespaces determined from the pattern
+        kapi.ensure_namespace if @namespace_template
+        logger.debug { "Existing secrets (ns=#{kapi.namespace}): #{kapi.get_secret_names}" }
+      end
 
       param_groups.each do |k, v|
 
-        secret_name = dns_friendly(k)
+        secret_namespace = k[:namespace]
+        secret_name = k[:name]
+        kapi = kubeapi(secret_namespace)
 
         param_hash = Hash[v.collect {|param| [param.key, param.value]}]
 
         begin
-          data = kubeapi.get_secret(secret_name)
+          logger.debug { "Namespace '#{kapi.namespace}'" }
+          data = kapi.get_secret(secret_name)
           logger.debug("Secret for '#{secret_name}': #{data}")
           if param_hash != data.transform_keys! {|k| k.to_s }
             logger.info "Updating secret '#{secret_name}' with params: #{param_hash.keys.inspect}"
-            kubeapi.update_secret(secret_name, param_hash)
+            kapi.update_secret(secret_name, param_hash)
           else
             logger.info "No changes needed for secret '#{secret_name}' with params: #{param_hash.keys.inspect}}"
           end
         rescue Kubeclient::ResourceNotFoundError
           logger.info "Creating secret '#{secret_name}' with params: #{param_hash.keys.inspect}}"
-          kubeapi.create_secret(secret_name, param_hash)
+          kapi.create_secret(secret_name, param_hash)
         end
       end
     end

@@ -2,6 +2,7 @@ require 'rspec'
 require 'kubetruth/kubeapi'
 
 module Kubetruth
+  #   describe KubeApi, :vcr => {:record => :all} do
   describe KubeApi, :vcr do
 
     def namespace; "kubetruth-test-ns"; end
@@ -10,7 +11,9 @@ module Kubetruth
     if ! ENV['CI']
       def teardown
         sysrun("helm delete --namespace #{namespace} #{helm_name}", output_on_fail: false, allow_fail: true)
-        sysrun("kubectl --context docker-desktop delete namespace #{namespace}", output_on_fail: false, allow_fail: true)
+        existing_namespaces.each do |ns|
+          sysrun("kubectl --context docker-desktop delete namespace #{ns}", output_on_fail: false, allow_fail: true)
+        end
       end
 
       def setup
@@ -30,6 +33,13 @@ module Kubetruth
         end
       end
 
+      def existing_namespaces
+        names = sysrun("kubectl --context docker-desktop get namespace").lines
+        names = names.grep(/#{namespace}/)
+        names = names.collect {|n| n.split.first }
+        names
+      end
+
       before(:all) do
         setup
       end
@@ -43,6 +53,26 @@ module Kubetruth
 
     let(:kubeapi) { described_class.new(namespace: namespace, token: token, api_url: "https://kubernetes.docker.internal:6443") }
 
+    describe "initialize" do
+
+      it "uses supplied namespace" do
+        expect(described_class.new(namespace: "foo").namespace).to eq("foo")
+      end
+
+    end
+
+    describe "ensure_namespace" do
+
+      it "creates namespace if not present" do
+        kapi = described_class.new(namespace: "#{namespace}-newns", token: token, api_url: "https://kubernetes.docker.internal:6443")
+        expect { kapi.create_config_map("foo", {}) }.to raise_error(Kubeclient::ResourceNotFoundError, /namespaces.*not found/)
+        kapi.ensure_namespace
+        kapi.create_config_map("foo", {bar: "baz"})
+        expect(kapi.get_config_map("foo")).to eq(bar: "baz")
+      end
+
+    end
+
     describe "configmaps" do
 
       it "can crud config maps" do
@@ -54,6 +84,32 @@ module Kubetruth
         expect(kubeapi.get_config_map("foo")).to eq({bar: "bum"})
         kubeapi.delete_config_map("foo")
         expect { kubeapi.get_config_map("foo") }.to raise_error(Kubeclient::ResourceNotFoundError)
+      end
+
+      it "can use multiple namespaces for config maps" do
+        ns1_kapi = described_class.new(namespace: "#{namespace}-cmns1", token: token, api_url: "https://kubernetes.docker.internal:6443")
+        ns1_kapi.ensure_namespace
+        ns1_kapi.ensure_namespace
+        ns2_kapi = described_class.new(namespace: "#{namespace}-cmns2", token: token, api_url: "https://kubernetes.docker.internal:6443")
+        ns2_kapi.ensure_namespace
+
+        expect { ns1_kapi.get_config_map("foo") }.to raise_error(Kubeclient::ResourceNotFoundError)
+        cm = ns1_kapi.create_config_map("foo", {bar: "baz"})
+        expect(ns1_kapi.get_config_map_names).to include("foo")
+        expect(ns1_kapi.get_config_map("foo")).to eq({bar: "baz"})
+        ns1_kapi.update_config_map("foo", {bar: "bum"})
+        expect(ns1_kapi.get_config_map("foo")).to eq({bar: "bum"})
+        ns1_kapi.delete_config_map("foo")
+        expect { ns1_kapi.get_config_map("foo") }.to raise_error(Kubeclient::ResourceNotFoundError)
+
+        expect { ns2_kapi.get_config_map("foo") }.to raise_error(Kubeclient::ResourceNotFoundError)
+        cm = ns2_kapi.create_config_map("foo", {bar: "baz"})
+        expect(ns2_kapi.get_config_map_names).to include("foo")
+        expect(ns2_kapi.get_config_map("foo")).to eq({bar: "baz"})
+        ns2_kapi.update_config_map("foo", {bar: "bum"})
+        expect(ns2_kapi.get_config_map("foo")).to eq({bar: "bum"})
+        ns2_kapi.delete_config_map("foo")
+        expect { ns2_kapi.get_config_map("foo") }.to raise_error(Kubeclient::ResourceNotFoundError)
       end
 
     end
@@ -69,6 +125,32 @@ module Kubetruth
         expect(kubeapi.get_secret("foo")).to eq({bar: "bum"})
         kubeapi.delete_secret("foo")
         expect { kubeapi.get_secret("foo") }.to raise_error(Kubeclient::ResourceNotFoundError)
+      end
+
+      it "can use multiple namespaces for secrets" do
+        ns1_kapi = described_class.new(namespace: "#{namespace}-secretns1", token: token, api_url: "https://kubernetes.docker.internal:6443")
+        ns1_kapi.ensure_namespace
+        ns1_kapi.ensure_namespace
+        ns2_kapi = described_class.new(namespace: "#{namespace}-secretns2", token: token, api_url: "https://kubernetes.docker.internal:6443")
+        ns2_kapi.ensure_namespace
+
+        expect { ns1_kapi.get_secret("foo") }.to raise_error(Kubeclient::ResourceNotFoundError)
+        cm = ns1_kapi.create_secret("foo", {bar: "baz"})
+        expect(ns1_kapi.get_secret_names).to include("foo")
+        expect(ns1_kapi.get_secret("foo")).to eq({bar: "baz"})
+        ns1_kapi.update_secret("foo", {bar: "bum"})
+        expect(ns1_kapi.get_secret("foo")).to eq({bar: "bum"})
+        ns1_kapi.delete_secret("foo")
+        expect { ns1_kapi.get_secret("foo") }.to raise_error(Kubeclient::ResourceNotFoundError)
+
+        expect { ns2_kapi.get_secret("foo") }.to raise_error(Kubeclient::ResourceNotFoundError)
+        cm = ns2_kapi.create_secret("foo", {bar: "baz"})
+        expect(ns2_kapi.get_secret_names).to include("foo")
+        expect(ns2_kapi.get_secret("foo")).to eq({bar: "baz"})
+        ns2_kapi.update_secret("foo", {bar: "bum"})
+        expect(ns2_kapi.get_secret("foo")).to eq({bar: "bum"})
+        ns2_kapi.delete_secret("foo")
+        expect { ns2_kapi.get_secret("foo") }.to raise_error(Kubeclient::ResourceNotFoundError)
       end
 
     end

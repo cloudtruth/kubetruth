@@ -52,6 +52,10 @@ spec:
             - --key-pattern
             - {{ toYaml . | quote }}
             {{- end }}
+            {{- if .Values.appSettings.namespaceTemplate }}
+            - --namespace-template
+            - {{ .Values.appSettings.namespaceTemplate | quote }}
+            {{- end }}
             {{- if .Values.appSettings.nameTemplate }}
             - --name-template
             - {{ .Values.appSettings.nameTemplate | quote }}

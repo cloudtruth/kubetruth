@@ -26,10 +26,12 @@ module Kubetruth
            environment_variable: 'CT_API_KEY',
            required: true
 
-    option "--name-template", "TMPL", "the template for generating the configmap name from key pattern matches",
+    option "--namespace-template", "TMPL", "the template for generating the namespace name where configmap/secrets are created from key pattern matches.  Defaults to the namespace kubetruth is running in"
+
+    option "--name-template", "TMPL", "the template for generating the configmap/secret name from key pattern matches",
            default: "%{name}"
 
-    option "--key-template", "TMPL", "the template for generating the configmap keys from key pattern matches",
+    option "--key-template", "TMPL", "the template for generating the configmap/secret keys from key pattern matches",
            default: "%{key}"
 
     option "--key-prefix", "PREFIX", "the key prefix to restrict the keys fetched from cloudtruth",
@@ -53,13 +55,13 @@ module Kubetruth
            default: false
 
     option "--kube-namespace",
-           'NAMESPACE', "The kubernetes namespace Defaults to runtime namespace when run  in kube"
+           'NAMESPACE', "The kubernetes namespace. Defaults to runtime namespace when run in kube"
 
     option "--kube-token",
-           'TOKEN', "The kubernetes token to use for api Defaults to mounted when run  in kube"
+           'TOKEN', "The kubernetes token to use for api. Defaults to mounted when run in kube"
 
     option "--kube-url",
-           'ENDPOINT', "The kubernetes api url Defaults to internal api endpoint when  run in kube"
+           'ENDPOINT', "The kubernetes api url. Defaults to internal api endpoint when run in kube"
 
     option "--polling-interval", "INTERVAL", "the polling interval", default: 300 do |a|
       Integer(a)
@@ -116,7 +118,7 @@ module Kubetruth
       }
 
       etl = ETL.new(key_prefixes: key_prefix_list, key_patterns: key_pattern_list,
-                    name_template: name_template, key_template: key_template,
+                    namespace_template: namespace_template, name_template: name_template, key_template: key_template,
                     ct_context: ct_context, kube_context: kube_context)
 
       while true

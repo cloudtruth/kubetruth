@@ -37,6 +37,7 @@ Parameterize the helm install with `--set appSettings.**` to control how kubetru
 | appSettings.environment | The cloudtruth environment to lookup parameter values for.  Use a separate helm install for each environment | string | `default` | yes |
 | appSettings.keyPrefix | Limit the parameters looked up to one of these prefixes | list(string) | n/a | no |
 | appSettings.keyPattern | The pattern to match against key names to select params and provide keywords for generating resource names via nameTemplate and keyTemplate | list(regex) | `^(?<prefix>[^\.]+)\.(?<name>[^\.]+)\.(?<key>.*)` | no |
+| appSettings.namespaceTemplate | The template for generating the namespace that resources get created in | string | n/a | no |
 | appSettings.nameTemplate | The template for generating resources (ConfigMaps and Secrets) | string | `%{name}` | no |
 | appSettings.keyTemplate | The template for generating key names within a resource | string | `%{key}` | no |
 | appSettings.skipSecrets | Do not transfer parameters that are marked as secret | flag | false | no |
@@ -100,7 +101,14 @@ updated automatically in a running pod
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `bundle exec rspec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
+To install and run via helm in a local cluster:
+``` 
+docker build -t kubetruth . && helm install \
+    --set image.repository=kubetruth --set image.pullPolicy=Never --set image.tag=latest \
+    --set appSettings.debug=true --set appSettings.apiKey=$CT_API_KEY --set appSettings.environment=development \
+    kubetruth ./helm/kubetruth/
+```
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/cloudtruth/kubetruth.
-
