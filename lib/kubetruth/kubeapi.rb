@@ -15,6 +15,7 @@ module Kubetruth
       token_path = '/var/run/secrets/kubernetes.io/serviceaccount/token'
 
       @namespace = namespace || File.read(namespace_path).chomp
+      @labels = {"app.kubernetes.io/managed-by" => "kubetruth"}
 
       @auth_options = {}
       if token
@@ -47,6 +48,7 @@ module Kubetruth
         ns = Kubeclient::Resource.new
         ns.metadata = {}
         ns.metadata.name = namespace
+        ns.metadata.labels = @labels
         client.create_namespace(ns)
       end
     end
@@ -56,6 +58,8 @@ module Kubetruth
     end
 
     def get_config_map(name)
+      # TODO: Make it so kubetruth skips over resources that it didn't create?
+      # e.g. client.get_config_map(name, namespace, label_selector:  "app.kubernetes.io/managed-by=kubetruth") ?
       resource = client.get_config_map(name, namespace)
       resource.data.to_h
     end
@@ -65,12 +69,14 @@ module Kubetruth
       resource.metadata = {}
       resource.metadata.name = name
       resource.metadata.namespace = @namespace
+      resource.metadata.labels = @labels
       resource.data = data
       client.create_config_map(resource)
     end
 
     def update_config_map(name, data)
       resource = client.get_config_map(name, namespace)
+      resource.metadata.labels = resource.metadata.labels.to_h.merge(@labels)
       resource.data = data
       client.update_config_map(resource)
     end
@@ -94,12 +100,14 @@ module Kubetruth
       resource.metadata = {}
       resource.metadata.name = name
       resource.metadata.namespace = @namespace
+      resource.metadata.labels = @labels
       resource.stringData = data
       client.create_secret(resource)
     end
 
     def update_secret(name, data)
       resource = client.get_secret(name, namespace)
+      resource.metadata.labels = resource.metadata.labels.to_h.merge(@labels)
       resource.stringData = data
       client.update_secret(resource)
     end
