@@ -147,9 +147,12 @@ module Kubetruth
 
         begin
           logger.debug { "Namespace '#{kapi.namespace}'" }
-          data = kapi.get_config_map(config_map_name)
+          resource = kapi.get_config_map(config_map_name)
+          data = resource.data.to_h
           logger.debug("Config map for '#{config_map_name}': #{data.inspect}")
-          if param_hash != data.transform_keys! {|k| k.to_s }
+          if ! kapi.under_management?(resource)
+            logger.info "Skipping config map '#{config_map_name}' as it doesn't have the kubetruth label"
+          elsif param_hash != data.transform_keys! {|k| k.to_s }
             logger.info "Updating config map '#{config_map_name}' with params: #{param_hash.inspect}"
             kapi.update_config_map(config_map_name, param_hash)
           else
@@ -186,9 +189,12 @@ module Kubetruth
 
         begin
           logger.debug { "Namespace '#{kapi.namespace}'" }
-          data = kapi.get_secret(secret_name)
-          logger.debug("Secret for '#{secret_name}': #{data}")
-          if param_hash != data.transform_keys! {|k| k.to_s }
+          resource = kapi.get_secret(secret_name)
+          data = kapi.secret_hash(resource)
+          logger.debug { "Secret keys for '#{secret_name}': #{data.transform_keys! {|k| k.to_s }}" }
+          if ! kapi.under_management?(resource)
+            logger.info "Skipping secret '#{secret_name}' as it doesn't have a label indicating it is under kubetruth management"
+          elsif param_hash != data.transform_keys! {|k| k.to_s }
             logger.info "Updating secret '#{secret_name}' with params: #{param_hash.keys.inspect}"
             kapi.update_secret(secret_name, param_hash)
           else

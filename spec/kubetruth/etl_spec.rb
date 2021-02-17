@@ -239,7 +239,10 @@ module Kubetruth
                 Parameter.new(key: "param2", value: "value2", secret: false)
             ]
         }
-        expect(@kubeapi).to receive(:get_config_map).with("group1").and_return({oldparam: "oldvalue"})
+        resource = Kubeclient::Resource.new
+        resource.data = {oldparam: "oldvalue"}
+        expect(@kubeapi).to receive(:get_config_map).with("group1").and_return(resource)
+        expect(@kubeapi).to receive(:under_management?).with(resource).and_return(true)
         expect(@kubeapi).to_not receive(:create_config_map)
         expect(@kubeapi).to receive(:update_config_map).with("group1", {"param1" => "value1", "param2" => "value2"})
         etl.apply_config_maps(param_groups)
@@ -253,10 +256,31 @@ module Kubetruth
                 Parameter.new(key: "param2", value: "value2", secret: false)
             ]
         }
-        expect(@kubeapi).to receive(:get_config_map).with("group1").and_return({param1: "value1", param2: "value2"})
+        resource = Kubeclient::Resource.new
+        resource.data = {param1: "value1", param2: "value2"}
+        expect(@kubeapi).to receive(:get_config_map).with("group1").and_return(resource)
+        expect(@kubeapi).to receive(:under_management?).with(resource).and_return(true)
         expect(@kubeapi).to_not receive(:create_config_map)
         expect(@kubeapi).to_not receive(:update_config_map)
         etl.apply_config_maps(param_groups)
+      end
+
+      it "doesn't update config map if not under management" do
+        etl = described_class.new(init_args)
+        param_groups = {
+            {namespace: nil, name: "group1"} => [
+                Parameter.new(key: "param1", value: "value1", secret: false),
+                Parameter.new(key: "param2", value: "value2", secret: false)
+            ]
+        }
+        resource = Kubeclient::Resource.new
+        resource.data = {oldparam: "oldvalue"}
+        expect(@kubeapi).to receive(:get_config_map).with("group1").and_return(resource)
+        expect(@kubeapi).to receive(:under_management?).with(resource).and_return(false)
+        expect(@kubeapi).to_not receive(:create_config_map)
+        expect(@kubeapi).to_not receive(:update_config_map)
+        etl.apply_config_maps(param_groups)
+        expect(Logging.contents).to match(/Skipping config map 'group1'/)
       end
 
       it "uses namespace for kube when supplied" do
@@ -309,7 +333,11 @@ module Kubetruth
                 Parameter.new(key: "param2", value: "value2", secret: true)
             ]
         }
-        expect(@kubeapi).to receive(:get_secret).with("group1").and_return({oldparam: "oldvalue"})
+        resource = Kubeclient::Resource.new
+        resource.stringData = {oldparam: "oldvalue"}
+        expect(@kubeapi).to receive(:get_secret).with("group1").and_return(resource)
+        expect(@kubeapi).to receive(:under_management?).with(resource).and_return(true)
+        expect(@kubeapi).to receive(:secret_hash).with(resource).and_return({oldparam: "oldvalue"})
         expect(@kubeapi).to_not receive(:create_secret)
         expect(@kubeapi).to receive(:update_secret).with("group1", {"param1" => "value1", "param2" => "value2"})
         etl.apply_secrets(param_groups)
@@ -323,10 +351,33 @@ module Kubetruth
                 Parameter.new(key: "param2", value: "value2", secret: true)
             ]
         }
-        expect(@kubeapi).to receive(:get_secret).with("group1").and_return({param1: "value1", param2: "value2"})
+        resource = Kubeclient::Resource.new
+        resource.stringData = {param1: "value1", param2: "value2"}
+        expect(@kubeapi).to receive(:get_secret).with("group1").and_return(resource)
+        expect(@kubeapi).to receive(:under_management?).with(resource).and_return(true)
+        expect(@kubeapi).to receive(:secret_hash).with(resource).and_return({param1: "value1", param2: "value2"})
         expect(@kubeapi).to_not receive(:create_secret)
         expect(@kubeapi).to_not receive(:update_secret)
         etl.apply_secrets(param_groups)
+      end
+
+      it "doesn't update secret if not under management=" do
+        etl = described_class.new(init_args)
+        param_groups = {
+            {namespace: nil, name: "group1"} => [
+                Parameter.new(key: "param1", value: "value1", secret: true),
+                Parameter.new(key: "param2", value: "value2", secret: true)
+            ]
+        }
+        resource = Kubeclient::Resource.new
+        resource.stringData = {oldparam: "oldvalue"}
+        expect(@kubeapi).to receive(:get_secret).with("group1").and_return(resource)
+        expect(@kubeapi).to receive(:under_management?).with(resource).and_return(false)
+        expect(@kubeapi).to receive(:secret_hash).with(resource).and_return({oldparam: "oldvalue"})
+        expect(@kubeapi).to_not receive(:create_secret)
+        expect(@kubeapi).to_not receive(:update_secret)
+        etl.apply_secrets(param_groups)
+        expect(Logging.contents).to match(/Skipping secret 'group1'/)
       end
 
       it "uses namespace for kube when supplied" do

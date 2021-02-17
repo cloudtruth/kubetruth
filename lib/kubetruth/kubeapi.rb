@@ -9,13 +9,15 @@ module Kubetruth
 
     attr_accessor :namespace
 
+    MANAGED_LABEL_KEY = "app.kubernetes.io/managed-by"
+    MANAGED_LABEL_VALUE = "kubetruth"
     def initialize(namespace: nil, token: nil, api_url: nil)
       namespace_path = '/var/run/secrets/kubernetes.io/serviceaccount/namespace'
       ca_path = '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt'
       token_path = '/var/run/secrets/kubernetes.io/serviceaccount/token'
 
       @namespace = namespace || File.read(namespace_path).chomp
-      @labels = {"app.kubernetes.io/managed-by" => "kubetruth"}
+      @labels = {MANAGED_LABEL_KEY => MANAGED_LABEL_VALUE}
 
       @auth_options = {}
       if token
@@ -53,15 +55,17 @@ module Kubetruth
       end
     end
 
+    def under_management?(resource)
+      resource.metadata.labels[MANAGED_LABEL_KEY] == MANAGED_LABEL_VALUE
+    end
+
     def get_config_map_names
       client.get_config_maps(namespace: namespace).collect(&:metadata).collect(&:name)
     end
 
     def get_config_map(name)
-      # TODO: Make it so kubetruth skips over resources that it didn't create?
-      # e.g. client.get_config_map(name, namespace, label_selector:  "app.kubernetes.io/managed-by=kubetruth") ?
       resource = client.get_config_map(name, namespace)
-      resource.data.to_h
+      resource
     end
 
     def create_config_map(name, data)
@@ -89,10 +93,13 @@ module Kubetruth
       client.get_secrets(namespace: namespace).collect(&:metadata).collect(&:name)
     end
 
+    def secret_hash(resource)
+      Hash[resource.data.to_h.collect {|k, v| [k, Base64.decode64(v)]}]
+    end
+
     def get_secret(name)
       resource = client.get_secret(name, namespace)
-      data = Hash[resource.data.to_h.collect {|k, v| [k, Base64.decode64(v)]}]
-      data
+      resource
     end
 
     def create_secret(name, data)
