@@ -50,8 +50,6 @@ class VCR::HTTPInteraction::HookAware
         begin
         object.gsub!(text, replacement_text) if object.include?(text)
         rescue
-          p [text.class, replacement_text.class]
-          p [text, replacement_text]
           raise
         end
 
@@ -80,6 +78,7 @@ VCR.configure do |c|
 
   string_with_escapes = '"((\\\\.|[^\"])*)"'
   c.filter_sensitive_data('"parameterValue":"<PARAM_VALUE>"') { /"parameterValue":#{string_with_escapes}/ }
+  c.filter_sensitive_data('"CT_API_KEY":"<API_KEY>"') { /"CT_API_KEY":#{string_with_escapes}/ }
 end
 
 

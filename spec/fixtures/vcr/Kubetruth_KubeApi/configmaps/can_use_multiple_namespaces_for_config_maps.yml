@@ -27,7 +27,7 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:25 GMT
       Transfer-Encoding:
       - chunked
     body:
@@ -35,7 +35,7 @@ http_interactions:
       string: '{"kind":"APIResourceList","groupVersion":"v1","resources":[{"name":"bindings","singularName":"","namespaced":true,"kind":"Binding","verbs":["create"]},{"name":"componentstatuses","singularName":"","namespaced":false,"kind":"ComponentStatus","verbs":["get","list"],"shortNames":["cs"]},{"name":"configmaps","singularName":"","namespaced":true,"kind":"ConfigMap","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["cm"],"storageVersionHash":"qFsyl6wFWjQ="},{"name":"endpoints","singularName":"","namespaced":true,"kind":"Endpoints","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["ep"],"storageVersionHash":"fWeeMqaN/OA="},{"name":"events","singularName":"","namespaced":true,"kind":"Event","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["ev"],"storageVersionHash":"r2yiGXH7wu8="},{"name":"limitranges","singularName":"","namespaced":true,"kind":"LimitRange","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["limits"],"storageVersionHash":"EBKMFVe6cwo="},{"name":"namespaces","singularName":"","namespaced":false,"kind":"Namespace","verbs":["create","delete","get","list","patch","update","watch"],"shortNames":["ns"],"storageVersionHash":"Q3oi5N2YM8M="},{"name":"namespaces/finalize","singularName":"","namespaced":false,"kind":"Namespace","verbs":["update"]},{"name":"namespaces/status","singularName":"","namespaced":false,"kind":"Namespace","verbs":["get","patch","update"]},{"name":"nodes","singularName":"","namespaced":false,"kind":"Node","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["no"],"storageVersionHash":"XwShjMxG9Fs="},{"name":"nodes/proxy","singularName":"","namespaced":false,"kind":"NodeProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"nodes/status","singularName":"","namespaced":false,"kind":"Node","verbs":["get","patch","update"]},{"name":"persistentvolumeclaims","singularName":"","namespaced":true,"kind":"PersistentVolumeClaim","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["pvc"],"storageVersionHash":"QWTyNDq0dC4="},{"name":"persistentvolumeclaims/status","singularName":"","namespaced":true,"kind":"PersistentVolumeClaim","verbs":["get","patch","update"]},{"name":"persistentvolumes","singularName":"","namespaced":false,"kind":"PersistentVolume","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["pv"],"storageVersionHash":"HN/zwEC+JgM="},{"name":"persistentvolumes/status","singularName":"","namespaced":false,"kind":"PersistentVolume","verbs":["get","patch","update"]},{"name":"pods","singularName":"","namespaced":true,"kind":"Pod","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["po"],"categories":["all"],"storageVersionHash":"xPOwRZ+Yhw8="},{"name":"pods/attach","singularName":"","namespaced":true,"kind":"PodAttachOptions","verbs":["create","get"]},{"name":"pods/binding","singularName":"","namespaced":true,"kind":"Binding","verbs":["create"]},{"name":"pods/eviction","singularName":"","namespaced":true,"group":"policy","version":"v1beta1","kind":"Eviction","verbs":["create"]},{"name":"pods/exec","singularName":"","namespaced":true,"kind":"PodExecOptions","verbs":["create","get"]},{"name":"pods/log","singularName":"","namespaced":true,"kind":"Pod","verbs":["get"]},{"name":"pods/portforward","singularName":"","namespaced":true,"kind":"PodPortForwardOptions","verbs":["create","get"]},{"name":"pods/proxy","singularName":"","namespaced":true,"kind":"PodProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"pods/status","singularName":"","namespaced":true,"kind":"Pod","verbs":["get","patch","update"]},{"name":"podtemplates","singularName":"","namespaced":true,"kind":"PodTemplate","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"storageVersionHash":"LIXB2x4IFpk="},{"name":"replicationcontrollers","singularName":"","namespaced":true,"kind":"ReplicationController","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["rc"],"categories":["all"],"storageVersionHash":"Jond2If31h0="},{"name":"replicationcontrollers/scale","singularName":"","namespaced":true,"group":"autoscaling","version":"v1","kind":"Scale","verbs":["get","patch","update"]},{"name":"replicationcontrollers/status","singularName":"","namespaced":true,"kind":"ReplicationController","verbs":["get","patch","update"]},{"name":"resourcequotas","singularName":"","namespaced":true,"kind":"ResourceQuota","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["quota"],"storageVersionHash":"8uhSgffRX6w="},{"name":"resourcequotas/status","singularName":"","namespaced":true,"kind":"ResourceQuota","verbs":["get","patch","update"]},{"name":"secrets","singularName":"","namespaced":true,"kind":"Secret","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"storageVersionHash":"S6u1pOWzb84="},{"name":"serviceaccounts","singularName":"","namespaced":true,"kind":"ServiceAccount","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["sa"],"storageVersionHash":"pbx9ZvyFpBE="},{"name":"services","singularName":"","namespaced":true,"kind":"Service","verbs":["create","delete","get","list","patch","update","watch"],"shortNames":["svc"],"categories":["all"],"storageVersionHash":"0/CO1lhkEBI="},{"name":"services/proxy","singularName":"","namespaced":true,"kind":"ServiceProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"services/status","singularName":"","namespaced":true,"kind":"Service","verbs":["get","patch","update"]}]}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:25 GMT
 - request:
     method: get
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns1
@@ -63,7 +63,7 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:25 GMT
       Content-Length:
       - '226'
     body:
@@ -72,7 +72,7 @@ http_interactions:
         \"kubetruth-test-ns-cmns1\" not found","reason":"NotFound","details":{"name":"kubetruth-test-ns-cmns1","kind":"namespaces"},"code":404}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:25 GMT
 - request:
     method: post
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces
@@ -104,15 +104,15 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:25 GMT
       Content-Length:
-      - '622'
+      - '623'
     body:
       encoding: UTF-8
-      string: '{"kind":"Namespace","apiVersion":"v1","metadata":{"name":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1","uid":"62b90045-dc50-480e-84ba-42fc3e28200c","resourceVersion":"976033","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}},"f:status":{"f:phase":{}}}}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}}
+      string: '{"kind":"Namespace","apiVersion":"v1","metadata":{"name":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1","uid":"90aabf87-2cb4-4094-a036-fafa94c7a92a","resourceVersion":"1207908","creationTimestamp":"2021-02-17T15:58:25Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:25Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}},"f:status":{"f:phase":{}}}}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:25 GMT
 - request:
     method: get
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns1
@@ -140,15 +140,15 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:25 GMT
       Content-Length:
-      - '622'
+      - '623'
     body:
       encoding: UTF-8
-      string: '{"kind":"Namespace","apiVersion":"v1","metadata":{"name":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1","uid":"62b90045-dc50-480e-84ba-42fc3e28200c","resourceVersion":"976033","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}},"f:status":{"f:phase":{}}}}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}}
+      string: '{"kind":"Namespace","apiVersion":"v1","metadata":{"name":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1","uid":"90aabf87-2cb4-4094-a036-fafa94c7a92a","resourceVersion":"1207908","creationTimestamp":"2021-02-17T15:58:25Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:25Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}},"f:status":{"f:phase":{}}}}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:25 GMT
 - request:
     method: get
     uri: https://kubernetes.docker.internal:6443/api/v1
@@ -176,7 +176,7 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:25 GMT
       Transfer-Encoding:
       - chunked
     body:
@@ -184,7 +184,7 @@ http_interactions:
       string: '{"kind":"APIResourceList","groupVersion":"v1","resources":[{"name":"bindings","singularName":"","namespaced":true,"kind":"Binding","verbs":["create"]},{"name":"componentstatuses","singularName":"","namespaced":false,"kind":"ComponentStatus","verbs":["get","list"],"shortNames":["cs"]},{"name":"configmaps","singularName":"","namespaced":true,"kind":"ConfigMap","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["cm"],"storageVersionHash":"qFsyl6wFWjQ="},{"name":"endpoints","singularName":"","namespaced":true,"kind":"Endpoints","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["ep"],"storageVersionHash":"fWeeMqaN/OA="},{"name":"events","singularName":"","namespaced":true,"kind":"Event","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["ev"],"storageVersionHash":"r2yiGXH7wu8="},{"name":"limitranges","singularName":"","namespaced":true,"kind":"LimitRange","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["limits"],"storageVersionHash":"EBKMFVe6cwo="},{"name":"namespaces","singularName":"","namespaced":false,"kind":"Namespace","verbs":["create","delete","get","list","patch","update","watch"],"shortNames":["ns"],"storageVersionHash":"Q3oi5N2YM8M="},{"name":"namespaces/finalize","singularName":"","namespaced":false,"kind":"Namespace","verbs":["update"]},{"name":"namespaces/status","singularName":"","namespaced":false,"kind":"Namespace","verbs":["get","patch","update"]},{"name":"nodes","singularName":"","namespaced":false,"kind":"Node","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["no"],"storageVersionHash":"XwShjMxG9Fs="},{"name":"nodes/proxy","singularName":"","namespaced":false,"kind":"NodeProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"nodes/status","singularName":"","namespaced":false,"kind":"Node","verbs":["get","patch","update"]},{"name":"persistentvolumeclaims","singularName":"","namespaced":true,"kind":"PersistentVolumeClaim","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["pvc"],"storageVersionHash":"QWTyNDq0dC4="},{"name":"persistentvolumeclaims/status","singularName":"","namespaced":true,"kind":"PersistentVolumeClaim","verbs":["get","patch","update"]},{"name":"persistentvolumes","singularName":"","namespaced":false,"kind":"PersistentVolume","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["pv"],"storageVersionHash":"HN/zwEC+JgM="},{"name":"persistentvolumes/status","singularName":"","namespaced":false,"kind":"PersistentVolume","verbs":["get","patch","update"]},{"name":"pods","singularName":"","namespaced":true,"kind":"Pod","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["po"],"categories":["all"],"storageVersionHash":"xPOwRZ+Yhw8="},{"name":"pods/attach","singularName":"","namespaced":true,"kind":"PodAttachOptions","verbs":["create","get"]},{"name":"pods/binding","singularName":"","namespaced":true,"kind":"Binding","verbs":["create"]},{"name":"pods/eviction","singularName":"","namespaced":true,"group":"policy","version":"v1beta1","kind":"Eviction","verbs":["create"]},{"name":"pods/exec","singularName":"","namespaced":true,"kind":"PodExecOptions","verbs":["create","get"]},{"name":"pods/log","singularName":"","namespaced":true,"kind":"Pod","verbs":["get"]},{"name":"pods/portforward","singularName":"","namespaced":true,"kind":"PodPortForwardOptions","verbs":["create","get"]},{"name":"pods/proxy","singularName":"","namespaced":true,"kind":"PodProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"pods/status","singularName":"","namespaced":true,"kind":"Pod","verbs":["get","patch","update"]},{"name":"podtemplates","singularName":"","namespaced":true,"kind":"PodTemplate","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"storageVersionHash":"LIXB2x4IFpk="},{"name":"replicationcontrollers","singularName":"","namespaced":true,"kind":"ReplicationController","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["rc"],"categories":["all"],"storageVersionHash":"Jond2If31h0="},{"name":"replicationcontrollers/scale","singularName":"","namespaced":true,"group":"autoscaling","version":"v1","kind":"Scale","verbs":["get","patch","update"]},{"name":"replicationcontrollers/status","singularName":"","namespaced":true,"kind":"ReplicationController","verbs":["get","patch","update"]},{"name":"resourcequotas","singularName":"","namespaced":true,"kind":"ResourceQuota","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["quota"],"storageVersionHash":"8uhSgffRX6w="},{"name":"resourcequotas/status","singularName":"","namespaced":true,"kind":"ResourceQuota","verbs":["get","patch","update"]},{"name":"secrets","singularName":"","namespaced":true,"kind":"Secret","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"storageVersionHash":"S6u1pOWzb84="},{"name":"serviceaccounts","singularName":"","namespaced":true,"kind":"ServiceAccount","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["sa"],"storageVersionHash":"pbx9ZvyFpBE="},{"name":"services","singularName":"","namespaced":true,"kind":"Service","verbs":["create","delete","get","list","patch","update","watch"],"shortNames":["svc"],"categories":["all"],"storageVersionHash":"0/CO1lhkEBI="},{"name":"services/proxy","singularName":"","namespaced":true,"kind":"ServiceProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"services/status","singularName":"","namespaced":true,"kind":"Service","verbs":["get","patch","update"]}]}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:25 GMT
 - request:
     method: get
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns2
@@ -212,7 +212,7 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:25 GMT
       Content-Length:
       - '226'
     body:
@@ -221,7 +221,7 @@ http_interactions:
         \"kubetruth-test-ns-cmns2\" not found","reason":"NotFound","details":{"name":"kubetruth-test-ns-cmns2","kind":"namespaces"},"code":404}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:25 GMT
 - request:
     method: post
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces
@@ -253,15 +253,15 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:25 GMT
       Content-Length:
-      - '622'
+      - '623'
     body:
       encoding: UTF-8
-      string: '{"kind":"Namespace","apiVersion":"v1","metadata":{"name":"kubetruth-test-ns-cmns2","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2","uid":"c77f2d6f-145e-451e-9f55-06bd0722ff62","resourceVersion":"976036","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}},"f:status":{"f:phase":{}}}}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}}
+      string: '{"kind":"Namespace","apiVersion":"v1","metadata":{"name":"kubetruth-test-ns-cmns2","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2","uid":"091e2f78-ea9d-417a-8b24-a8533dfee948","resourceVersion":"1207910","creationTimestamp":"2021-02-17T15:58:25Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:25Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}},"f:status":{"f:phase":{}}}}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:25 GMT
 - request:
     method: get
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo
@@ -289,7 +289,7 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:25 GMT
       Content-Length:
       - '186'
     body:
@@ -298,7 +298,7 @@ http_interactions:
         \"foo\" not found","reason":"NotFound","details":{"name":"foo","kind":"configmaps"},"code":404}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:25 GMT
 - request:
     method: post
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps
@@ -330,15 +330,15 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:25 GMT
       Content-Length:
-      - '614'
+      - '615'
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo","uid":"46113228-1c38-4308-97ee-7a273eb28ff6","resourceVersion":"976041","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo","uid":"151e94ac-0869-4275-b685-4efcdf2911e6","resourceVersion":"1207914","creationTimestamp":"2021-02-17T15:58:25Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:25Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:25 GMT
 - request:
     method: get
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps
@@ -366,15 +366,15 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:25 GMT
       Content-Length:
-      - '737'
+      - '739'
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMapList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps","resourceVersion":"976042"},"items":[{"metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo","uid":"46113228-1c38-4308-97ee-7a273eb28ff6","resourceVersion":"976041","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}]}
+      string: '{"kind":"ConfigMapList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps","resourceVersion":"1207915"},"items":[{"metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo","uid":"151e94ac-0869-4275-b685-4efcdf2911e6","resourceVersion":"1207914","creationTimestamp":"2021-02-17T15:58:25Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:25Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}]}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:25 GMT
 - request:
     method: get
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo
@@ -402,15 +402,15 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:26 GMT
       Content-Length:
-      - '614'
+      - '615'
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo","uid":"46113228-1c38-4308-97ee-7a273eb28ff6","resourceVersion":"976041","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo","uid":"151e94ac-0869-4275-b685-4efcdf2911e6","resourceVersion":"1207914","creationTimestamp":"2021-02-17T15:58:25Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:25Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
 - request:
     method: get
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo
@@ -438,21 +438,21 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:26 GMT
       Content-Length:
-      - '614'
+      - '615'
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo","uid":"46113228-1c38-4308-97ee-7a273eb28ff6","resourceVersion":"976041","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo","uid":"151e94ac-0869-4275-b685-4efcdf2911e6","resourceVersion":"1207914","creationTimestamp":"2021-02-17T15:58:25Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:25Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
 - request:
     method: put
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo","uid":"46113228-1c38-4308-97ee-7a273eb28ff6","resourceVersion":"976041","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}'
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo","uid":"151e94ac-0869-4275-b685-4efcdf2911e6","resourceVersion":"1207914","creationTimestamp":"2021-02-17T15:58:25Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:25Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}'
     headers:
       Accept:
       - "*/*"
@@ -463,7 +463,7 @@ http_interactions:
       Authorization:
       - Bearer <BEARER_TOKEN>
       Content-Length:
-      - '613'
+      - '614'
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
@@ -478,15 +478,15 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:26 GMT
       Content-Length:
-      - '614'
+      - '615'
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo","uid":"46113228-1c38-4308-97ee-7a273eb28ff6","resourceVersion":"976043","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo","uid":"151e94ac-0869-4275-b685-4efcdf2911e6","resourceVersion":"1207918","creationTimestamp":"2021-02-17T15:58:25Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:26Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
 - request:
     method: get
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo
@@ -514,15 +514,15 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:26 GMT
       Content-Length:
-      - '614'
+      - '615'
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo","uid":"46113228-1c38-4308-97ee-7a273eb28ff6","resourceVersion":"976043","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo","uid":"151e94ac-0869-4275-b685-4efcdf2911e6","resourceVersion":"1207918","creationTimestamp":"2021-02-17T15:58:25Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:26Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
 - request:
     method: delete
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo
@@ -552,15 +552,15 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:26 GMT
       Content-Length:
       - '159'
     body:
       encoding: UTF-8
-      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Success","details":{"name":"foo","kind":"configmaps","uid":"46113228-1c38-4308-97ee-7a273eb28ff6"}}
+      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Success","details":{"name":"foo","kind":"configmaps","uid":"151e94ac-0869-4275-b685-4efcdf2911e6"}}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
 - request:
     method: get
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo
@@ -588,7 +588,7 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:26 GMT
       Content-Length:
       - '186'
     body:
@@ -597,7 +597,7 @@ http_interactions:
         \"foo\" not found","reason":"NotFound","details":{"name":"foo","kind":"configmaps"},"code":404}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
 - request:
     method: get
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo
@@ -625,7 +625,7 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:26 GMT
       Content-Length:
       - '186'
     body:
@@ -634,7 +634,7 @@ http_interactions:
         \"foo\" not found","reason":"NotFound","details":{"name":"foo","kind":"configmaps"},"code":404}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
 - request:
     method: post
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps
@@ -666,15 +666,15 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:26 GMT
       Content-Length:
-      - '614'
+      - '615'
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo","uid":"cf9be74c-91a6-420c-95b7-32d3c5499d14","resourceVersion":"976045","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo","uid":"06918fae-f361-4fe2-8a58-b7e1f6743969","resourceVersion":"1207921","creationTimestamp":"2021-02-17T15:58:26Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:26Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
 - request:
     method: get
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps
@@ -702,15 +702,15 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:26 GMT
       Content-Length:
-      - '737'
+      - '739'
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMapList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps","resourceVersion":"976045"},"items":[{"metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo","uid":"cf9be74c-91a6-420c-95b7-32d3c5499d14","resourceVersion":"976045","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}]}
+      string: '{"kind":"ConfigMapList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps","resourceVersion":"1207921"},"items":[{"metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo","uid":"06918fae-f361-4fe2-8a58-b7e1f6743969","resourceVersion":"1207921","creationTimestamp":"2021-02-17T15:58:26Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:26Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}]}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
 - request:
     method: get
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo
@@ -738,15 +738,15 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:26 GMT
       Content-Length:
-      - '614'
+      - '615'
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo","uid":"cf9be74c-91a6-420c-95b7-32d3c5499d14","resourceVersion":"976045","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo","uid":"06918fae-f361-4fe2-8a58-b7e1f6743969","resourceVersion":"1207921","creationTimestamp":"2021-02-17T15:58:26Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:26Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
 - request:
     method: get
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo
@@ -774,21 +774,21 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:26 GMT
       Content-Length:
-      - '614'
+      - '615'
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo","uid":"cf9be74c-91a6-420c-95b7-32d3c5499d14","resourceVersion":"976045","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo","uid":"06918fae-f361-4fe2-8a58-b7e1f6743969","resourceVersion":"1207921","creationTimestamp":"2021-02-17T15:58:26Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:26Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
 - request:
     method: put
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo","uid":"cf9be74c-91a6-420c-95b7-32d3c5499d14","resourceVersion":"976045","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}'
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo","uid":"06918fae-f361-4fe2-8a58-b7e1f6743969","resourceVersion":"1207921","creationTimestamp":"2021-02-17T15:58:26Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:26Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}'
     headers:
       Accept:
       - "*/*"
@@ -799,7 +799,7 @@ http_interactions:
       Authorization:
       - Bearer <BEARER_TOKEN>
       Content-Length:
-      - '613'
+      - '614'
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
@@ -814,15 +814,15 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:26 GMT
       Content-Length:
-      - '614'
+      - '615'
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo","uid":"cf9be74c-91a6-420c-95b7-32d3c5499d14","resourceVersion":"976046","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo","uid":"06918fae-f361-4fe2-8a58-b7e1f6743969","resourceVersion":"1207922","creationTimestamp":"2021-02-17T15:58:26Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:26Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
 - request:
     method: get
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo
@@ -850,15 +850,15 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:26 GMT
       Content-Length:
-      - '614'
+      - '615'
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo","uid":"cf9be74c-91a6-420c-95b7-32d3c5499d14","resourceVersion":"976046","creationTimestamp":"2021-02-12T16:19:57Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-12T16:19:57Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","selfLink":"/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo","uid":"06918fae-f361-4fe2-8a58-b7e1f6743969","resourceVersion":"1207922","creationTimestamp":"2021-02-17T15:58:26Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:26Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
 - request:
     method: delete
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo
@@ -888,15 +888,15 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:26 GMT
       Content-Length:
       - '159'
     body:
       encoding: UTF-8
-      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Success","details":{"name":"foo","kind":"configmaps","uid":"cf9be74c-91a6-420c-95b7-32d3c5499d14"}}
+      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Success","details":{"name":"foo","kind":"configmaps","uid":"06918fae-f361-4fe2-8a58-b7e1f6743969"}}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
 - request:
     method: get
     uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo
@@ -924,7 +924,7 @@ http_interactions:
       Content-Type:
       - application/json
       Date:
-      - Fri, 12 Feb 2021 16:19:57 GMT
+      - Wed, 17 Feb 2021 15:58:26 GMT
       Content-Length:
       - '186'
     body:
@@ -933,5 +933,5 @@ http_interactions:
         \"foo\" not found","reason":"NotFound","details":{"name":"foo","kind":"configmaps"},"code":404}
 
         '
-  recorded_at: Fri, 12 Feb 2021 16:19:57 GMT
+  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
 recorded_with: VCR 6.0.0
