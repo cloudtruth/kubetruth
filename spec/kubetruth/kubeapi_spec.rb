@@ -80,6 +80,44 @@ module Kubetruth
 
     end
 
+    describe "under_management?" do
+
+      it "handles empty labels" do
+        resource = Kubeclient::Resource.new
+        expect(kubeapi.under_management?(resource)).to eq(false)
+      end
+
+      it "handles missing labels" do
+        resource = Kubeclient::Resource.new
+        resource.metadata = {}
+        resource.metadata.labels = {foo: "bar"}
+        expect(kubeapi.under_management?(resource)).to eq(false)
+      end
+
+      it "handles correct labels" do
+        resource = Kubeclient::Resource.new
+        resource.metadata = {}
+        resource.metadata.labels = {KubeApi::MANAGED_LABEL_KEY => KubeApi::MANAGED_LABEL_VALUE}
+        expect(kubeapi.under_management?(resource)).to eq(true)
+      end
+
+    end
+
+    describe "secret_hash" do
+
+      it "handles empty data" do
+        resource = Kubeclient::Resource.new
+        expect(kubeapi.secret_hash(resource)).to eq({})
+      end
+
+      it "decodes secret data" do
+        resource = Kubeclient::Resource.new
+        resource.data = {foo: Base64.encode64("bar")}
+        expect(kubeapi.secret_hash(resource)).to eq({foo: "bar"})
+      end
+
+    end
+
     describe "configmaps" do
 
       it "can crud config maps" do
@@ -95,7 +133,6 @@ module Kubetruth
 
       it "can use multiple namespaces for config maps" do
         ns1_kapi = described_class.new(namespace: "#{namespace}-cmns1", token: token, api_url: "https://kubernetes.docker.internal:6443")
-        ns1_kapi.ensure_namespace
         ns1_kapi.ensure_namespace
         ns2_kapi = described_class.new(namespace: "#{namespace}-cmns2", token: token, api_url: "https://kubernetes.docker.internal:6443")
         ns2_kapi.ensure_namespace

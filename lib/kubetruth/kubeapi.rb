@@ -56,7 +56,8 @@ module Kubetruth
     end
 
     def under_management?(resource)
-      resource.metadata.labels[MANAGED_LABEL_KEY] == MANAGED_LABEL_VALUE
+      labels = resource.try(:metadata).try(:labels)
+      labels.nil? ? false : resource.metadata.labels[MANAGED_LABEL_KEY] == MANAGED_LABEL_VALUE
     end
 
     def get_config_map_names
