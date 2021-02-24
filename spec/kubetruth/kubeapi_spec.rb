@@ -2,21 +2,37 @@ require 'rspec'
 require 'kubetruth/kubeapi'
 
 module Kubetruth
-  # describe KubeApi, :vcr => {:record => :all} do
-  describe KubeApi, :vcr do
+
+  describe KubeApi, :vcr => {
+      # uncomment to force record of new fixtures
+      # :record => :all,
+      # minikube has variable port for api server url, so use match_requests_on to not match against port
+      :match_requests_on => [:method, :host, :path]
+  } do
 
     def namespace; "kubetruth-test-ns"; end
     def helm_name; "kubetruth-test-app"; end
 
     if ! ENV['CI']
+
+      def check_deps
+        @deps_checked ||= begin
+          system("helm version >/dev/null 2>&1") || fail("test dependency not installed - helm ")
+          system("minikube version >/dev/null 2>&1") || fail("test dependency not installed - minikube")
+          system("minikube status >/dev/null 2>&1") || fail("test dependency nor running - minikube")
+          true
+        end
+      end
+
       def teardown
         sysrun("helm delete --namespace #{namespace} #{helm_name}", output_on_fail: false, allow_fail: true)
         existing_namespaces.each do |ns|
-          sysrun("kubectl --context docker-desktop delete namespace #{ns}", output_on_fail: false, allow_fail: true)
+          sysrun("minikube kubectl -- delete namespace #{ns}", output_on_fail: false, allow_fail: true)
         end
       end
 
       def setup
+        check_deps
         teardown
         root = File.expand_path('../..', __dir__)
         sysrun("helm install --create-namespace --namespace #{namespace} --set appSettings.apiKey=#{ENV['CT_API_KEY']} #{helm_name} #{root}/helm/kubetruth/")
@@ -24,17 +40,25 @@ module Kubetruth
 
       def token
         @token ||= begin
-          secret_names = sysrun("kubectl --context docker-desktop --namespace #{namespace} get secret").lines
+          secret_names = sysrun("minikube kubectl -- --namespace #{namespace} get secret").lines
           secret_names = secret_names.grep(/#{helm_name}-token/)
           secret_name = secret_names.first.split.first
-          token_lines = sysrun("kubectl --context docker-desktop --namespace #{namespace} describe secret #{secret_name}").lines
+          token_lines = sysrun("minikube kubectl -- --namespace #{namespace} describe secret #{secret_name}").lines
           token_lines = token_lines.grep(/token:/)
           token_lines.first.split[1]
         end
       end
 
+      def apiserver
+        @apiserver ||= begin
+          config = YAML.load(sysrun("minikube kubectl -- config view"))
+          cluster = config["clusters"].find {|c| c["name"] == "minikube" }
+          cluster["cluster"]["server"]
+        end
+      end
+
       def existing_namespaces
-        names = sysrun("kubectl --context docker-desktop get namespace").lines
+        names = sysrun("minikube kubectl -- get namespace").lines
         names = names.grep(/#{namespace}/)
         names = names.collect {|n| n.split.first }
         names
@@ -47,11 +71,15 @@ module Kubetruth
       after(:all) do
         teardown
       end
+
     else
+
       def token; ""; end
+      def apiserver; "https://127.0.0.1"; end
+
     end
 
-    let(:kubeapi) { described_class.new(namespace: namespace, token: token, api_url: "https://kubernetes.docker.internal:6443") }
+    let(:kubeapi) { described_class.new(namespace: namespace, token: token, api_url: apiserver) }
 
     describe "initialize" do
 
@@ -64,7 +92,7 @@ module Kubetruth
     describe "ensure_namespace" do
 
       it "creates namespace if not present" do
-        kapi = described_class.new(namespace: "#{namespace}-newns", token: token, api_url: "https://kubernetes.docker.internal:6443")
+        kapi = described_class.new(namespace: "#{namespace}-newns", token: token, api_url: apiserver)
         expect { kapi.create_config_map("foo", {}) }.to raise_error(Kubeclient::ResourceNotFoundError, /namespaces.*not found/)
         ns = kapi.ensure_namespace
         kapi.create_config_map("foo", {bar: "baz"})
@@ -72,7 +100,7 @@ module Kubetruth
       end
 
       it "sets labels when creating namespace" do
-        kapi = described_class.new(namespace: "#{namespace}-newns2", token: token, api_url: "https://kubernetes.docker.internal:6443")
+        kapi = described_class.new(namespace: "#{namespace}-newns2", token: token, api_url: apiserver)
         expect { kapi.create_config_map("foo", {}) }.to raise_error(Kubeclient::ResourceNotFoundError, /namespaces.*not found/)
         ns = kapi.ensure_namespace
         expect(ns.metadata.labels.to_h).to eq({:"app.kubernetes.io/managed-by" => "kubetruth"})
@@ -132,9 +160,9 @@ module Kubetruth
       end
 
       it "can use multiple namespaces for config maps" do
-        ns1_kapi = described_class.new(namespace: "#{namespace}-cmns1", token: token, api_url: "https://kubernetes.docker.internal:6443")
+        ns1_kapi = described_class.new(namespace: "#{namespace}-cmns1", token: token, api_url: apiserver)
         ns1_kapi.ensure_namespace
-        ns2_kapi = described_class.new(namespace: "#{namespace}-cmns2", token: token, api_url: "https://kubernetes.docker.internal:6443")
+        ns2_kapi = described_class.new(namespace: "#{namespace}-cmns2", token: token, api_url: apiserver)
         ns2_kapi.ensure_namespace
 
         expect { ns1_kapi.get_config_map("foo") }.to raise_error(Kubeclient::ResourceNotFoundError)
@@ -193,10 +221,10 @@ module Kubetruth
       end
 
       it "can use multiple namespaces for secrets" do
-        ns1_kapi = described_class.new(namespace: "#{namespace}-secretns1", token: token, api_url: "https://kubernetes.docker.internal:6443")
+        ns1_kapi = described_class.new(namespace: "#{namespace}-secretns1", token: token, api_url: apiserver)
         ns1_kapi.ensure_namespace
         ns1_kapi.ensure_namespace
-        ns2_kapi = described_class.new(namespace: "#{namespace}-secretns2", token: token, api_url: "https://kubernetes.docker.internal:6443")
+        ns2_kapi = described_class.new(namespace: "#{namespace}-secretns2", token: token, api_url: apiserver)
         ns2_kapi.ensure_namespace
 
         expect { ns1_kapi.get_secret("foo") }.to raise_error(Kubeclient::ResourceNotFoundError)

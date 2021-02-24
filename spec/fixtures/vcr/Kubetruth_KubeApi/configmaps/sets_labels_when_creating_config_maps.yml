@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://kubernetes.docker.internal:6443/api/v1
+    uri: https://127.0.0.1:55028/api/v1
     body:
       encoding: US-ASCII
       string: ''
@@ -16,7 +16,7 @@ http_interactions:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
-      - kubernetes.docker.internal:6443
+      - 127.0.0.1:55028
   response:
     status:
       code: 200
@@ -26,19 +26,23 @@ http_interactions:
       - no-cache, private
       Content-Type:
       - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
       Date:
-      - Wed, 17 Feb 2021 15:58:26 GMT
+      - Wed, 24 Feb 2021 19:27:47 GMT
       Transfer-Encoding:
       - chunked
     body:
       encoding: UTF-8
-      string: '{"kind":"APIResourceList","groupVersion":"v1","resources":[{"name":"bindings","singularName":"","namespaced":true,"kind":"Binding","verbs":["create"]},{"name":"componentstatuses","singularName":"","namespaced":false,"kind":"ComponentStatus","verbs":["get","list"],"shortNames":["cs"]},{"name":"configmaps","singularName":"","namespaced":true,"kind":"ConfigMap","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["cm"],"storageVersionHash":"qFsyl6wFWjQ="},{"name":"endpoints","singularName":"","namespaced":true,"kind":"Endpoints","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["ep"],"storageVersionHash":"fWeeMqaN/OA="},{"name":"events","singularName":"","namespaced":true,"kind":"Event","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["ev"],"storageVersionHash":"r2yiGXH7wu8="},{"name":"limitranges","singularName":"","namespaced":true,"kind":"LimitRange","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["limits"],"storageVersionHash":"EBKMFVe6cwo="},{"name":"namespaces","singularName":"","namespaced":false,"kind":"Namespace","verbs":["create","delete","get","list","patch","update","watch"],"shortNames":["ns"],"storageVersionHash":"Q3oi5N2YM8M="},{"name":"namespaces/finalize","singularName":"","namespaced":false,"kind":"Namespace","verbs":["update"]},{"name":"namespaces/status","singularName":"","namespaced":false,"kind":"Namespace","verbs":["get","patch","update"]},{"name":"nodes","singularName":"","namespaced":false,"kind":"Node","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["no"],"storageVersionHash":"XwShjMxG9Fs="},{"name":"nodes/proxy","singularName":"","namespaced":false,"kind":"NodeProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"nodes/status","singularName":"","namespaced":false,"kind":"Node","verbs":["get","patch","update"]},{"name":"persistentvolumeclaims","singularName":"","namespaced":true,"kind":"PersistentVolumeClaim","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["pvc"],"storageVersionHash":"QWTyNDq0dC4="},{"name":"persistentvolumeclaims/status","singularName":"","namespaced":true,"kind":"PersistentVolumeClaim","verbs":["get","patch","update"]},{"name":"persistentvolumes","singularName":"","namespaced":false,"kind":"PersistentVolume","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["pv"],"storageVersionHash":"HN/zwEC+JgM="},{"name":"persistentvolumes/status","singularName":"","namespaced":false,"kind":"PersistentVolume","verbs":["get","patch","update"]},{"name":"pods","singularName":"","namespaced":true,"kind":"Pod","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["po"],"categories":["all"],"storageVersionHash":"xPOwRZ+Yhw8="},{"name":"pods/attach","singularName":"","namespaced":true,"kind":"PodAttachOptions","verbs":["create","get"]},{"name":"pods/binding","singularName":"","namespaced":true,"kind":"Binding","verbs":["create"]},{"name":"pods/eviction","singularName":"","namespaced":true,"group":"policy","version":"v1beta1","kind":"Eviction","verbs":["create"]},{"name":"pods/exec","singularName":"","namespaced":true,"kind":"PodExecOptions","verbs":["create","get"]},{"name":"pods/log","singularName":"","namespaced":true,"kind":"Pod","verbs":["get"]},{"name":"pods/portforward","singularName":"","namespaced":true,"kind":"PodPortForwardOptions","verbs":["create","get"]},{"name":"pods/proxy","singularName":"","namespaced":true,"kind":"PodProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"pods/status","singularName":"","namespaced":true,"kind":"Pod","verbs":["get","patch","update"]},{"name":"podtemplates","singularName":"","namespaced":true,"kind":"PodTemplate","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"storageVersionHash":"LIXB2x4IFpk="},{"name":"replicationcontrollers","singularName":"","namespaced":true,"kind":"ReplicationController","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["rc"],"categories":["all"],"storageVersionHash":"Jond2If31h0="},{"name":"replicationcontrollers/scale","singularName":"","namespaced":true,"group":"autoscaling","version":"v1","kind":"Scale","verbs":["get","patch","update"]},{"name":"replicationcontrollers/status","singularName":"","namespaced":true,"kind":"ReplicationController","verbs":["get","patch","update"]},{"name":"resourcequotas","singularName":"","namespaced":true,"kind":"ResourceQuota","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["quota"],"storageVersionHash":"8uhSgffRX6w="},{"name":"resourcequotas/status","singularName":"","namespaced":true,"kind":"ResourceQuota","verbs":["get","patch","update"]},{"name":"secrets","singularName":"","namespaced":true,"kind":"Secret","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"storageVersionHash":"S6u1pOWzb84="},{"name":"serviceaccounts","singularName":"","namespaced":true,"kind":"ServiceAccount","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["sa"],"storageVersionHash":"pbx9ZvyFpBE="},{"name":"services","singularName":"","namespaced":true,"kind":"Service","verbs":["create","delete","get","list","patch","update","watch"],"shortNames":["svc"],"categories":["all"],"storageVersionHash":"0/CO1lhkEBI="},{"name":"services/proxy","singularName":"","namespaced":true,"kind":"ServiceProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"services/status","singularName":"","namespaced":true,"kind":"Service","verbs":["get","patch","update"]}]}
+      string: '{"kind":"APIResourceList","groupVersion":"v1","resources":[{"name":"bindings","singularName":"","namespaced":true,"kind":"Binding","verbs":["create"]},{"name":"componentstatuses","singularName":"","namespaced":false,"kind":"ComponentStatus","verbs":["get","list"],"shortNames":["cs"]},{"name":"configmaps","singularName":"","namespaced":true,"kind":"ConfigMap","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["cm"],"storageVersionHash":"qFsyl6wFWjQ="},{"name":"endpoints","singularName":"","namespaced":true,"kind":"Endpoints","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["ep"],"storageVersionHash":"fWeeMqaN/OA="},{"name":"events","singularName":"","namespaced":true,"kind":"Event","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["ev"],"storageVersionHash":"r2yiGXH7wu8="},{"name":"limitranges","singularName":"","namespaced":true,"kind":"LimitRange","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["limits"],"storageVersionHash":"EBKMFVe6cwo="},{"name":"namespaces","singularName":"","namespaced":false,"kind":"Namespace","verbs":["create","delete","get","list","patch","update","watch"],"shortNames":["ns"],"storageVersionHash":"Q3oi5N2YM8M="},{"name":"namespaces/finalize","singularName":"","namespaced":false,"kind":"Namespace","verbs":["update"]},{"name":"namespaces/status","singularName":"","namespaced":false,"kind":"Namespace","verbs":["get","patch","update"]},{"name":"nodes","singularName":"","namespaced":false,"kind":"Node","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["no"],"storageVersionHash":"XwShjMxG9Fs="},{"name":"nodes/proxy","singularName":"","namespaced":false,"kind":"NodeProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"nodes/status","singularName":"","namespaced":false,"kind":"Node","verbs":["get","patch","update"]},{"name":"persistentvolumeclaims","singularName":"","namespaced":true,"kind":"PersistentVolumeClaim","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["pvc"],"storageVersionHash":"QWTyNDq0dC4="},{"name":"persistentvolumeclaims/status","singularName":"","namespaced":true,"kind":"PersistentVolumeClaim","verbs":["get","patch","update"]},{"name":"persistentvolumes","singularName":"","namespaced":false,"kind":"PersistentVolume","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["pv"],"storageVersionHash":"HN/zwEC+JgM="},{"name":"persistentvolumes/status","singularName":"","namespaced":false,"kind":"PersistentVolume","verbs":["get","patch","update"]},{"name":"pods","singularName":"","namespaced":true,"kind":"Pod","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["po"],"categories":["all"],"storageVersionHash":"xPOwRZ+Yhw8="},{"name":"pods/attach","singularName":"","namespaced":true,"kind":"PodAttachOptions","verbs":["create","get"]},{"name":"pods/binding","singularName":"","namespaced":true,"kind":"Binding","verbs":["create"]},{"name":"pods/eviction","singularName":"","namespaced":true,"group":"policy","version":"v1beta1","kind":"Eviction","verbs":["create"]},{"name":"pods/exec","singularName":"","namespaced":true,"kind":"PodExecOptions","verbs":["create","get"]},{"name":"pods/log","singularName":"","namespaced":true,"kind":"Pod","verbs":["get"]},{"name":"pods/portforward","singularName":"","namespaced":true,"kind":"PodPortForwardOptions","verbs":["create","get"]},{"name":"pods/proxy","singularName":"","namespaced":true,"kind":"PodProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"pods/status","singularName":"","namespaced":true,"kind":"Pod","verbs":["get","patch","update"]},{"name":"podtemplates","singularName":"","namespaced":true,"kind":"PodTemplate","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"storageVersionHash":"LIXB2x4IFpk="},{"name":"replicationcontrollers","singularName":"","namespaced":true,"kind":"ReplicationController","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["rc"],"categories":["all"],"storageVersionHash":"Jond2If31h0="},{"name":"replicationcontrollers/scale","singularName":"","namespaced":true,"group":"autoscaling","version":"v1","kind":"Scale","verbs":["get","patch","update"]},{"name":"replicationcontrollers/status","singularName":"","namespaced":true,"kind":"ReplicationController","verbs":["get","patch","update"]},{"name":"resourcequotas","singularName":"","namespaced":true,"kind":"ResourceQuota","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["quota"],"storageVersionHash":"8uhSgffRX6w="},{"name":"resourcequotas/status","singularName":"","namespaced":true,"kind":"ResourceQuota","verbs":["get","patch","update"]},{"name":"secrets","singularName":"","namespaced":true,"kind":"Secret","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"storageVersionHash":"S6u1pOWzb84="},{"name":"serviceaccounts","singularName":"","namespaced":true,"kind":"ServiceAccount","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["sa"],"storageVersionHash":"pbx9ZvyFpBE="},{"name":"serviceaccounts/token","singularName":"","namespaced":true,"group":"authentication.k8s.io","version":"v1","kind":"TokenRequest","verbs":["create"]},{"name":"services","singularName":"","namespaced":true,"kind":"Service","verbs":["create","delete","get","list","patch","update","watch"],"shortNames":["svc"],"categories":["all"],"storageVersionHash":"0/CO1lhkEBI="},{"name":"services/proxy","singularName":"","namespaced":true,"kind":"ServiceProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"services/status","singularName":"","namespaced":true,"kind":"Service","verbs":["get","patch","update"]}]}
 
         '
-  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
+  recorded_at: Wed, 24 Feb 2021 19:27:47 GMT
 - request:
     method: get
-    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns/configmaps/bar
+    uri: https://127.0.0.1:55028/api/v1/namespaces/kubetruth-test-ns/configmaps/bar
     body:
       encoding: US-ASCII
       string: ''
@@ -52,7 +56,7 @@ http_interactions:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
-      - kubernetes.docker.internal:6443
+      - 127.0.0.1:55028
   response:
     status:
       code: 404
@@ -62,8 +66,12 @@ http_interactions:
       - no-cache, private
       Content-Type:
       - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
       Date:
-      - Wed, 17 Feb 2021 15:58:26 GMT
+      - Wed, 24 Feb 2021 19:27:47 GMT
       Content-Length:
       - '186'
     body:
@@ -72,10 +80,10 @@ http_interactions:
         \"bar\" not found","reason":"NotFound","details":{"name":"bar","kind":"configmaps"},"code":404}
 
         '
-  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
+  recorded_at: Wed, 24 Feb 2021 19:27:47 GMT
 - request:
     method: post
-    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns/configmaps
+    uri: https://127.0.0.1:55028/api/v1/namespaces/kubetruth-test-ns/configmaps
     body:
       encoding: UTF-8
       string: '{"metadata":{"name":"bar","namespace":"kubetruth-test-ns","labels":{"app.kubernetes.io/managed-by":"kubetruth"}},"data":{"bar":"baz"},"kind":"ConfigMap","apiVersion":"v1"}'
@@ -93,7 +101,7 @@ http_interactions:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
-      - kubernetes.docker.internal:6443
+      - 127.0.0.1:55028
   response:
     status:
       code: 201
@@ -103,19 +111,23 @@ http_interactions:
       - no-cache, private
       Content-Type:
       - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
       Date:
-      - Wed, 17 Feb 2021 15:58:26 GMT
+      - Wed, 24 Feb 2021 19:27:47 GMT
       Content-Length:
-      - '603'
+      - '535'
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"bar","namespace":"kubetruth-test-ns","selfLink":"/api/v1/namespaces/kubetruth-test-ns/configmaps/bar","uid":"2a14eb54-c4c7-4c4f-91d9-7b121e9e44fe","resourceVersion":"1207927","creationTimestamp":"2021-02-17T15:58:26Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:26Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"bar","namespace":"kubetruth-test-ns","uid":"12baff9b-ec52-48bc-afa3-93e4bd2fdfec","resourceVersion":"9172","creationTimestamp":"2021-02-24T19:27:47Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:27:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
 
         '
-  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
+  recorded_at: Wed, 24 Feb 2021 19:27:47 GMT
 - request:
     method: get
-    uri: https://kubernetes.docker.internal:6443/api/v1/namespaces/kubetruth-test-ns/configmaps
+    uri: https://127.0.0.1:55028/api/v1/namespaces/kubetruth-test-ns/configmaps
     body:
       encoding: US-ASCII
       string: ''
@@ -129,7 +141,7 @@ http_interactions:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
-      - kubernetes.docker.internal:6443
+      - 127.0.0.1:55028
   response:
     status:
       code: 200
@@ -139,14 +151,20 @@ http_interactions:
       - no-cache, private
       Content-Type:
       - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
       Date:
-      - Wed, 17 Feb 2021 15:58:26 GMT
-      Content-Length:
-      - '721'
+      - Wed, 24 Feb 2021 19:27:47 GMT
+      Transfer-Encoding:
+      - chunked
     body:
       encoding: UTF-8
-      string: '{"kind":"ConfigMapList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/namespaces/kubetruth-test-ns/configmaps","resourceVersion":"1207927"},"items":[{"metadata":{"name":"bar","namespace":"kubetruth-test-ns","selfLink":"/api/v1/namespaces/kubetruth-test-ns/configmaps/bar","uid":"2a14eb54-c4c7-4c4f-91d9-7b121e9e44fe","resourceVersion":"1207927","creationTimestamp":"2021-02-17T15:58:26Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-17T15:58:26Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}]}
+      string: '{"kind":"ConfigMapList","apiVersion":"v1","metadata":{"resourceVersion":"9172"},"items":[{"metadata":{"name":"app","namespace":"kubetruth-test-ns","uid":"f2f08311-2611-4ff1-aa01-6a7f052f37c7","resourceVersion":"9157","creationTimestamp":"2021-02-24T19:27:35Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:27:35Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:background_color":{},"f:live_config_tid":{},"f:polling_interval":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"background_color":"white","live_config_tid":"9e5e462a-5548-4230-b0ba-2e23684d590d","polling_interval":"15000"}},{"metadata":{"name":"bar","namespace":"kubetruth-test-ns","uid":"12baff9b-ec52-48bc-afa3-93e4bd2fdfec","resourceVersion":"9172","creationTimestamp":"2021-02-24T19:27:47Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:27:47Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}},{"metadata":{"name":"db-sizing","namespace":"kubetruth-test-ns","uid":"930a1d9f-fa76-43b2-a0fe-761bed791c96","resourceVersion":"9151","creationTimestamp":"2021-02-24T19:27:35Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:27:35Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:some-rds.count":{},"f:some-rds.type":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"some-rds.count":"0","some-rds.type":"db.t2.micro"}},{"metadata":{"name":"demo","namespace":"kubetruth-test-ns","uid":"eb87eb5f-18ab-4d5c-8afa-bee173589dda","resourceVersion":"9148","creationTimestamp":"2021-02-24T19:27:35Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:27:35Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:active":{},"f:color0":{},"f:color1":{},"f:color2":{},"f:delay":{},"f:enable_logging":{},"f:height":{},"f:label0":{},"f:label1":{},"f:label2":{},"f:max_cpu":{},"f:max_instances":{},"f:max_retries":{},"f:min_cpu":{},"f:num_frames":{},"f:num_retries":{},"f:region":{},"f:series0":{},"f:series1":{},"f:series2":{},"f:timeout":{},"f:width":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"active":"true","color0":"#111111","color1":"#CC9900","color2":"#CC7755","delay":"200","enable_logging":"true","height":"150","label0":"Hammers","label1":"Anvils","label2":"Rockets","max_cpu":"512","max_instances":"5","max_retries":"6","min_cpu":"4","num_frames":"80","num_retries":"3","region":"us_east","series0":"78","series1":"73","series2":"67","timeout":"5000","width":"762"}},{"metadata":{"name":"demo1","namespace":"kubetruth-test-ns","uid":"5ea4399f-f649-48d0-a802-ca71c3a89576","resourceVersion":"9154","creationTimestamp":"2021-02-24T19:27:35Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:27:35Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:live_config_tid":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"live_config_tid":"90ba456b-6251-4242-8242-c4b7e935ef02"}},{"metadata":{"name":"demo2","namespace":"kubetruth-test-ns","uid":"fc26eb33-7e00-40ba-8f34-c679aab20010","resourceVersion":"9155","creationTimestamp":"2021-02-24T19:27:35Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:27:35Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:limit":{},"f:min":{},"f:other":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"limit":"7","min":"2","other":"newdata"}},{"metadata":{"name":"demo3","namespace":"kubetruth-test-ns","uid":"c9dda293-4bc1-4cc1-a561-eec29a3241f6","resourceVersion":"9156","creationTimestamp":"2021-02-24T19:27:35Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:27:35Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:foo":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"foo":"bar"}},{"metadata":{"name":"kube-root-ca.crt","namespace":"kubetruth-test-ns","uid":"43920884-8c00-4a90-aacf-11c1fe630281","resourceVersion":"9112","creationTimestamp":"2021-02-24T19:27:28Z","managedFields":[{"manager":"kube-controller-manager","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:27:28Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:ca.crt":{}}}}]},"data":{"ca.crt":"-----BEGIN
+        CERTIFICATE-----\nMIIDBjCCAe6gAwIBAgIBATANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDEwptaW5p\na3ViZUNBMB4XDTIxMDIyMzE2MTcwMFoXDTMxMDIyMjE2MTcwMFowFTETMBEGA1UE\nAxMKbWluaWt1YmVDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKZM\n9pTWabY7FgKajk5MBitZSOu112pTHCtpeWafgQf150YAlpZJQieGy7YvX8aunJ2w\ncMVgLvfL7EVsV2wyOviYVCmBfKfFr207bkqhZZ5JuGW4X6F4HtlRLzuoxAp8E+jJ\nrsBmLFRMl+nDb2O+8BaUjaUCXO5ugU8TUn4our7hu2SXNXU6oj5YoTuea8I141L2\n5AhE7qTQjM6B7/lB79R5fmj9fH9iPSBc9rj4FXgwLkYnTVAye/nkvjh3zh0lmdIZ\n67IFhkMqt8ELTe0G80xH/3HFs90kJ6KplsXaswB0HW+YKy9WNQS9kfwJNvWeNDMC\neu65qxB5nBEUiwFB0WcCAwEAAaNhMF8wDgYDVR0PAQH/BAQDAgKkMB0GA1UdJQQW\nMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQW\nBBTfQwSvbsoNaxiXRrUyYPrMX+CqMTANBgkqhkiG9w0BAQsFAAOCAQEAUp0jYEv2\nYReLTupF9SXOVBsX+iZS4I0l7bcNlyUH01mCpnS5ez2okUVuXxZj6hMnsNB4uDKd\nP1RabfUn2CMfVIQGGV/Gdn53nie2FNGAIuNk6lEfjCoQaWzM0ukM/R/epRq6/WxS\n3uv2Wm/0kbBai2Y55VYJD17N30HMnIUQzREO0TZ+iASU98u6iTgPN1OR5aKZRIfZ\n0hfqT0JopxHUXLK/gNIBcY1rnKqWNsxrcYfJWulZZJSlVN9CEGkOqWCdX/wmsoWx\nD6M9bN/Wn40JsLcl/bWHsGj9glgXrKNppGVgTpYOV5seo2pjjXy5y8i+LA5w5Lh9\nKKblyjscCcgdeQ==\n-----END
+        CERTIFICATE-----\n"}},{"metadata":{"name":"service-sizing","namespace":"kubetruth-test-ns","uid":"87125fda-bbb6-4f7d-893b-d14ccbe447aa","resourceVersion":"9152","creationTimestamp":"2021-02-24T19:27:35Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:27:35Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bigboy.cpu":{},"f:bigboy.max_capacity":{},"f:bigboy.memory":{},"f:bigboy.min_capacity":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bigboy.cpu":"512","bigboy.max_capacity":"1","bigboy.memory":"1024","bigboy.min_capacity":"1"}},{"metadata":{"name":"service-sizing-default","namespace":"kubetruth-test-ns","uid":"631d0de6-6b62-4b3c-928d-165f4e0b7462","resourceVersion":"9153","creationTimestamp":"2021-02-24T19:27:35Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:27:35Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:cpu":{},"f:max_capacity":{},"f:memory":{},"f:min_capacity":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"cpu":"256","max_capacity":"1","memory":"512","min_capacity":"1"}},{"metadata":{"name":"services","namespace":"kubetruth-test-ns","uid":"de75337d-4cf4-4992-970a-53a7422a6e3f","resourceVersion":"9149","creationTimestamp":"2021-02-24T19:27:35Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:27:35Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:kubecfg":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"kubecfg":""}}]}
 
         '
-  recorded_at: Wed, 17 Feb 2021 15:58:26 GMT
+  recorded_at: Wed, 24 Feb 2021 19:27:47 GMT
 recorded_with: VCR 6.0.0
