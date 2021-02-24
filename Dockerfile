@@ -35,7 +35,9 @@ RUN apk --update upgrade && \
   rm -rf /var/cache/apk/*
 
 COPY . $APP_DIR/
-RUN bundle install --deployment --jobs=4 --without development test
+RUN bundle config set deployment 'true' && \
+    bundle config set without 'development test' && \
+    bundle install --jobs=4
 
 FROM base AS release
 
