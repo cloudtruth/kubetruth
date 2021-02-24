@@ -1,9 +1,7 @@
-{{- if .Values.rbac.create }}
-
+{{- if and .Values.rbac.create .Values.rbac.clusterInstall }}
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
-  namespace: {{ .Release.Namespace }}
   name: {{ template "kubetruth.fullname" . }}
 rules:
   - apiGroups: [""]
@@ -12,4 +10,7 @@ rules:
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["get", "list", "create", "update", "delete"]
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "list"]
 {{- end -}}
