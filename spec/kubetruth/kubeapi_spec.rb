@@ -4,7 +4,7 @@ require 'kubetruth/kubeapi'
 module Kubetruth
 
   describe KubeApi, :vcr => {
-      # uncomment to force record of new fixtures
+      # uncomment (or delete vcr yml file) to force record of new fixtures
       # :record => :all,
       # minikube has variable port for api server url, so use match_requests_on to not match against port
       :match_requests_on => [:method, :host, :path]

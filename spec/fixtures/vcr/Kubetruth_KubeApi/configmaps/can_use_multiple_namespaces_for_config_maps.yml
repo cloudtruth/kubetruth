@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://127.0.0.1:55028/api/v1
+    uri: https://127.0.0.1:55032/api/v1
     body:
       encoding: US-ASCII
       string: ''
@@ -16,7 +16,7 @@ http_interactions:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
-      - 127.0.0.1:55028
+      - 127.0.0.1:55032
   response:
     status:
       code: 200
@@ -31,7 +31,7 @@ http_interactions:
       X-Kubernetes-Pf-Prioritylevel-Uid:
       - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
       Date:
-      - Wed, 24 Feb 2021 19:27:45 GMT
+      - Wed, 24 Feb 2021 19:41:15 GMT
       Transfer-Encoding:
       - chunked
     body:
@@ -39,10 +39,10 @@ http_interactions:
       string: '{"kind":"APIResourceList","groupVersion":"v1","resources":[{"name":"bindings","singularName":"","namespaced":true,"kind":"Binding","verbs":["create"]},{"name":"componentstatuses","singularName":"","namespaced":false,"kind":"ComponentStatus","verbs":["get","list"],"shortNames":["cs"]},{"name":"configmaps","singularName":"","namespaced":true,"kind":"ConfigMap","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["cm"],"storageVersionHash":"qFsyl6wFWjQ="},{"name":"endpoints","singularName":"","namespaced":true,"kind":"Endpoints","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["ep"],"storageVersionHash":"fWeeMqaN/OA="},{"name":"events","singularName":"","namespaced":true,"kind":"Event","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["ev"],"storageVersionHash":"r2yiGXH7wu8="},{"name":"limitranges","singularName":"","namespaced":true,"kind":"LimitRange","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["limits"],"storageVersionHash":"EBKMFVe6cwo="},{"name":"namespaces","singularName":"","namespaced":false,"kind":"Namespace","verbs":["create","delete","get","list","patch","update","watch"],"shortNames":["ns"],"storageVersionHash":"Q3oi5N2YM8M="},{"name":"namespaces/finalize","singularName":"","namespaced":false,"kind":"Namespace","verbs":["update"]},{"name":"namespaces/status","singularName":"","namespaced":false,"kind":"Namespace","verbs":["get","patch","update"]},{"name":"nodes","singularName":"","namespaced":false,"kind":"Node","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["no"],"storageVersionHash":"XwShjMxG9Fs="},{"name":"nodes/proxy","singularName":"","namespaced":false,"kind":"NodeProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"nodes/status","singularName":"","namespaced":false,"kind":"Node","verbs":["get","patch","update"]},{"name":"persistentvolumeclaims","singularName":"","namespaced":true,"kind":"PersistentVolumeClaim","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["pvc"],"storageVersionHash":"QWTyNDq0dC4="},{"name":"persistentvolumeclaims/status","singularName":"","namespaced":true,"kind":"PersistentVolumeClaim","verbs":["get","patch","update"]},{"name":"persistentvolumes","singularName":"","namespaced":false,"kind":"PersistentVolume","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["pv"],"storageVersionHash":"HN/zwEC+JgM="},{"name":"persistentvolumes/status","singularName":"","namespaced":false,"kind":"PersistentVolume","verbs":["get","patch","update"]},{"name":"pods","singularName":"","namespaced":true,"kind":"Pod","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["po"],"categories":["all"],"storageVersionHash":"xPOwRZ+Yhw8="},{"name":"pods/attach","singularName":"","namespaced":true,"kind":"PodAttachOptions","verbs":["create","get"]},{"name":"pods/binding","singularName":"","namespaced":true,"kind":"Binding","verbs":["create"]},{"name":"pods/eviction","singularName":"","namespaced":true,"group":"policy","version":"v1beta1","kind":"Eviction","verbs":["create"]},{"name":"pods/exec","singularName":"","namespaced":true,"kind":"PodExecOptions","verbs":["create","get"]},{"name":"pods/log","singularName":"","namespaced":true,"kind":"Pod","verbs":["get"]},{"name":"pods/portforward","singularName":"","namespaced":true,"kind":"PodPortForwardOptions","verbs":["create","get"]},{"name":"pods/proxy","singularName":"","namespaced":true,"kind":"PodProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"pods/status","singularName":"","namespaced":true,"kind":"Pod","verbs":["get","patch","update"]},{"name":"podtemplates","singularName":"","namespaced":true,"kind":"PodTemplate","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"storageVersionHash":"LIXB2x4IFpk="},{"name":"replicationcontrollers","singularName":"","namespaced":true,"kind":"ReplicationController","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["rc"],"categories":["all"],"storageVersionHash":"Jond2If31h0="},{"name":"replicationcontrollers/scale","singularName":"","namespaced":true,"group":"autoscaling","version":"v1","kind":"Scale","verbs":["get","patch","update"]},{"name":"replicationcontrollers/status","singularName":"","namespaced":true,"kind":"ReplicationController","verbs":["get","patch","update"]},{"name":"resourcequotas","singularName":"","namespaced":true,"kind":"ResourceQuota","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["quota"],"storageVersionHash":"8uhSgffRX6w="},{"name":"resourcequotas/status","singularName":"","namespaced":true,"kind":"ResourceQuota","verbs":["get","patch","update"]},{"name":"secrets","singularName":"","namespaced":true,"kind":"Secret","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"storageVersionHash":"S6u1pOWzb84="},{"name":"serviceaccounts","singularName":"","namespaced":true,"kind":"ServiceAccount","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["sa"],"storageVersionHash":"pbx9ZvyFpBE="},{"name":"serviceaccounts/token","singularName":"","namespaced":true,"group":"authentication.k8s.io","version":"v1","kind":"TokenRequest","verbs":["create"]},{"name":"services","singularName":"","namespaced":true,"kind":"Service","verbs":["create","delete","get","list","patch","update","watch"],"shortNames":["svc"],"categories":["all"],"storageVersionHash":"0/CO1lhkEBI="},{"name":"services/proxy","singularName":"","namespaced":true,"kind":"ServiceProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"services/status","singularName":"","namespaced":true,"kind":"Service","verbs":["get","patch","update"]}]}
 
         '
-  recorded_at: Wed, 24 Feb 2021 19:27:45 GMT
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
 - request:
     method: get
-    uri: https://127.0.0.1:55028/api/v1/namespaces/kubetruth-test-ns-cmns1
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns1
     body:
       encoding: US-ASCII
       string: ''
@@ -56,32 +56,946 @@ http_interactions:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
-      - 127.0.0.1:55028
+      - 127.0.0.1:55032
   response:
     status:
-      code: 403
-      message: Forbidden
+      code: 404
+      message: Not Found
     headers:
       Cache-Control:
       - no-cache, private
       Content-Type:
       - application/json
-      X-Content-Type-Options:
-      - nosniff
       X-Kubernetes-Pf-Flowschema-Uid:
       - 79cb606d-7c9d-44be-83c0-aa28372c4240
       X-Kubernetes-Pf-Prioritylevel-Uid:
       - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
       Date:
-      - Wed, 24 Feb 2021 19:27:45 GMT
+      - Wed, 24 Feb 2021 19:41:15 GMT
       Content-Length:
-      - '397'
+      - '226'
     body:
       encoding: UTF-8
       string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"namespaces
-        \"kubetruth-test-ns-cmns1\" is forbidden: User \"system:serviceaccount:kubetruth-test-ns:kubetruth-test-app\"
-        cannot get resource \"namespaces\" in API group \"\" in the namespace \"kubetruth-test-ns-cmns1\"","reason":"Forbidden","details":{"name":"kubetruth-test-ns-cmns1","kind":"namespaces"},"code":403}
+        \"kubetruth-test-ns-cmns1\" not found","reason":"NotFound","details":{"name":"kubetruth-test-ns-cmns1","kind":"namespaces"},"code":404}
 
         '
-  recorded_at: Wed, 24 Feb 2021 19:27:45 GMT
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: post
+    uri: https://127.0.0.1:55032/api/v1/namespaces
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"name":"kubetruth-test-ns-cmns1","labels":{"app.kubernetes.io/managed-by":"kubetruth"}},"kind":"Namespace","apiVersion":"v1"}'
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Content-Length:
+      - '138'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '565'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"Namespace","apiVersion":"v1","metadata":{"name":"kubetruth-test-ns-cmns1","uid":"ae3912ca-067a-4136-b543-21eea20d9d22","resourceVersion":"10442","creationTimestamp":"2021-02-24T19:41:15Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}},"f:status":{"f:phase":{}}}}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:55032/api/v1
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: '{"kind":"APIResourceList","groupVersion":"v1","resources":[{"name":"bindings","singularName":"","namespaced":true,"kind":"Binding","verbs":["create"]},{"name":"componentstatuses","singularName":"","namespaced":false,"kind":"ComponentStatus","verbs":["get","list"],"shortNames":["cs"]},{"name":"configmaps","singularName":"","namespaced":true,"kind":"ConfigMap","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["cm"],"storageVersionHash":"qFsyl6wFWjQ="},{"name":"endpoints","singularName":"","namespaced":true,"kind":"Endpoints","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["ep"],"storageVersionHash":"fWeeMqaN/OA="},{"name":"events","singularName":"","namespaced":true,"kind":"Event","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["ev"],"storageVersionHash":"r2yiGXH7wu8="},{"name":"limitranges","singularName":"","namespaced":true,"kind":"LimitRange","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["limits"],"storageVersionHash":"EBKMFVe6cwo="},{"name":"namespaces","singularName":"","namespaced":false,"kind":"Namespace","verbs":["create","delete","get","list","patch","update","watch"],"shortNames":["ns"],"storageVersionHash":"Q3oi5N2YM8M="},{"name":"namespaces/finalize","singularName":"","namespaced":false,"kind":"Namespace","verbs":["update"]},{"name":"namespaces/status","singularName":"","namespaced":false,"kind":"Namespace","verbs":["get","patch","update"]},{"name":"nodes","singularName":"","namespaced":false,"kind":"Node","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["no"],"storageVersionHash":"XwShjMxG9Fs="},{"name":"nodes/proxy","singularName":"","namespaced":false,"kind":"NodeProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"nodes/status","singularName":"","namespaced":false,"kind":"Node","verbs":["get","patch","update"]},{"name":"persistentvolumeclaims","singularName":"","namespaced":true,"kind":"PersistentVolumeClaim","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["pvc"],"storageVersionHash":"QWTyNDq0dC4="},{"name":"persistentvolumeclaims/status","singularName":"","namespaced":true,"kind":"PersistentVolumeClaim","verbs":["get","patch","update"]},{"name":"persistentvolumes","singularName":"","namespaced":false,"kind":"PersistentVolume","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["pv"],"storageVersionHash":"HN/zwEC+JgM="},{"name":"persistentvolumes/status","singularName":"","namespaced":false,"kind":"PersistentVolume","verbs":["get","patch","update"]},{"name":"pods","singularName":"","namespaced":true,"kind":"Pod","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["po"],"categories":["all"],"storageVersionHash":"xPOwRZ+Yhw8="},{"name":"pods/attach","singularName":"","namespaced":true,"kind":"PodAttachOptions","verbs":["create","get"]},{"name":"pods/binding","singularName":"","namespaced":true,"kind":"Binding","verbs":["create"]},{"name":"pods/eviction","singularName":"","namespaced":true,"group":"policy","version":"v1beta1","kind":"Eviction","verbs":["create"]},{"name":"pods/exec","singularName":"","namespaced":true,"kind":"PodExecOptions","verbs":["create","get"]},{"name":"pods/log","singularName":"","namespaced":true,"kind":"Pod","verbs":["get"]},{"name":"pods/portforward","singularName":"","namespaced":true,"kind":"PodPortForwardOptions","verbs":["create","get"]},{"name":"pods/proxy","singularName":"","namespaced":true,"kind":"PodProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"pods/status","singularName":"","namespaced":true,"kind":"Pod","verbs":["get","patch","update"]},{"name":"podtemplates","singularName":"","namespaced":true,"kind":"PodTemplate","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"storageVersionHash":"LIXB2x4IFpk="},{"name":"replicationcontrollers","singularName":"","namespaced":true,"kind":"ReplicationController","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["rc"],"categories":["all"],"storageVersionHash":"Jond2If31h0="},{"name":"replicationcontrollers/scale","singularName":"","namespaced":true,"group":"autoscaling","version":"v1","kind":"Scale","verbs":["get","patch","update"]},{"name":"replicationcontrollers/status","singularName":"","namespaced":true,"kind":"ReplicationController","verbs":["get","patch","update"]},{"name":"resourcequotas","singularName":"","namespaced":true,"kind":"ResourceQuota","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["quota"],"storageVersionHash":"8uhSgffRX6w="},{"name":"resourcequotas/status","singularName":"","namespaced":true,"kind":"ResourceQuota","verbs":["get","patch","update"]},{"name":"secrets","singularName":"","namespaced":true,"kind":"Secret","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"storageVersionHash":"S6u1pOWzb84="},{"name":"serviceaccounts","singularName":"","namespaced":true,"kind":"ServiceAccount","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["sa"],"storageVersionHash":"pbx9ZvyFpBE="},{"name":"serviceaccounts/token","singularName":"","namespaced":true,"group":"authentication.k8s.io","version":"v1","kind":"TokenRequest","verbs":["create"]},{"name":"services","singularName":"","namespaced":true,"kind":"Service","verbs":["create","delete","get","list","patch","update","watch"],"shortNames":["svc"],"categories":["all"],"storageVersionHash":"0/CO1lhkEBI="},{"name":"services/proxy","singularName":"","namespaced":true,"kind":"ServiceProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"services/status","singularName":"","namespaced":true,"kind":"Service","verbs":["get","patch","update"]}]}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns2
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '226'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"namespaces
+        \"kubetruth-test-ns-cmns2\" not found","reason":"NotFound","details":{"name":"kubetruth-test-ns-cmns2","kind":"namespaces"},"code":404}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: post
+    uri: https://127.0.0.1:55032/api/v1/namespaces
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"name":"kubetruth-test-ns-cmns2","labels":{"app.kubernetes.io/managed-by":"kubetruth"}},"kind":"Namespace","apiVersion":"v1"}'
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Content-Length:
+      - '138'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '565'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"Namespace","apiVersion":"v1","metadata":{"name":"kubetruth-test-ns-cmns2","uid":"150e9f04-4f56-4a73-960f-80d9e22c53a5","resourceVersion":"10447","creationTimestamp":"2021-02-24T19:41:15Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}},"f:status":{"f:phase":{}}}}]},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '186'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"configmaps
+        \"foo\" not found","reason":"NotFound","details":{"name":"foo","kind":"configmaps"},"code":404}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: post
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","labels":{"app.kubernetes.io/managed-by":"kubetruth"}},"data":{"bar":"baz"},"kind":"ConfigMap","apiVersion":"v1"}'
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Content-Length:
+      - '177'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '542'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","uid":"35cfa75b-1451-4c68-ad41-c78efc2a56c0","resourceVersion":"10452","creationTimestamp":"2021-02-24T19:41:15Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMapList","apiVersion":"v1","metadata":{"resourceVersion":"10452"},"items":[{"metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","uid":"35cfa75b-1451-4c68-ad41-c78efc2a56c0","resourceVersion":"10452","creationTimestamp":"2021-02-24T19:41:15Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}},{"metadata":{"name":"kube-root-ca.crt","namespace":"kubetruth-test-ns-cmns1","uid":"666d86f9-a621-4d27-a015-91b765b86e4e","resourceVersion":"10444","creationTimestamp":"2021-02-24T19:41:15Z","managedFields":[{"manager":"kube-controller-manager","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:ca.crt":{}}}}]},"data":{"ca.crt":"-----BEGIN
+        CERTIFICATE-----\nMIIDBjCCAe6gAwIBAgIBATANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDEwptaW5p\na3ViZUNBMB4XDTIxMDIyMzE2MTcwMFoXDTMxMDIyMjE2MTcwMFowFTETMBEGA1UE\nAxMKbWluaWt1YmVDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKZM\n9pTWabY7FgKajk5MBitZSOu112pTHCtpeWafgQf150YAlpZJQieGy7YvX8aunJ2w\ncMVgLvfL7EVsV2wyOviYVCmBfKfFr207bkqhZZ5JuGW4X6F4HtlRLzuoxAp8E+jJ\nrsBmLFRMl+nDb2O+8BaUjaUCXO5ugU8TUn4our7hu2SXNXU6oj5YoTuea8I141L2\n5AhE7qTQjM6B7/lB79R5fmj9fH9iPSBc9rj4FXgwLkYnTVAye/nkvjh3zh0lmdIZ\n67IFhkMqt8ELTe0G80xH/3HFs90kJ6KplsXaswB0HW+YKy9WNQS9kfwJNvWeNDMC\neu65qxB5nBEUiwFB0WcCAwEAAaNhMF8wDgYDVR0PAQH/BAQDAgKkMB0GA1UdJQQW\nMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQW\nBBTfQwSvbsoNaxiXRrUyYPrMX+CqMTANBgkqhkiG9w0BAQsFAAOCAQEAUp0jYEv2\nYReLTupF9SXOVBsX+iZS4I0l7bcNlyUH01mCpnS5ez2okUVuXxZj6hMnsNB4uDKd\nP1RabfUn2CMfVIQGGV/Gdn53nie2FNGAIuNk6lEfjCoQaWzM0ukM/R/epRq6/WxS\n3uv2Wm/0kbBai2Y55VYJD17N30HMnIUQzREO0TZ+iASU98u6iTgPN1OR5aKZRIfZ\n0hfqT0JopxHUXLK/gNIBcY1rnKqWNsxrcYfJWulZZJSlVN9CEGkOqWCdX/wmsoWx\nD6M9bN/Wn40JsLcl/bWHsGj9glgXrKNppGVgTpYOV5seo2pjjXy5y8i+LA5w5Lh9\nKKblyjscCcgdeQ==\n-----END
+        CERTIFICATE-----\n"}}]}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '542'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","uid":"35cfa75b-1451-4c68-ad41-c78efc2a56c0","resourceVersion":"10452","creationTimestamp":"2021-02-24T19:41:15Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '542'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","uid":"35cfa75b-1451-4c68-ad41-c78efc2a56c0","resourceVersion":"10452","creationTimestamp":"2021-02-24T19:41:15Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: put
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","uid":"35cfa75b-1451-4c68-ad41-c78efc2a56c0","resourceVersion":"10452","creationTimestamp":"2021-02-24T19:41:15Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}'
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Content-Length:
+      - '541'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '542'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","uid":"35cfa75b-1451-4c68-ad41-c78efc2a56c0","resourceVersion":"10453","creationTimestamp":"2021-02-24T19:41:15Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '542'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns1","uid":"35cfa75b-1451-4c68-ad41-c78efc2a56c0","resourceVersion":"10453","creationTimestamp":"2021-02-24T19:41:15Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: delete
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '159'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Success","details":{"name":"foo","kind":"configmaps","uid":"35cfa75b-1451-4c68-ad41-c78efc2a56c0"}}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns1/configmaps/foo
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '186'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"configmaps
+        \"foo\" not found","reason":"NotFound","details":{"name":"foo","kind":"configmaps"},"code":404}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '186'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"configmaps
+        \"foo\" not found","reason":"NotFound","details":{"name":"foo","kind":"configmaps"},"code":404}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: post
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","labels":{"app.kubernetes.io/managed-by":"kubetruth"}},"data":{"bar":"baz"},"kind":"ConfigMap","apiVersion":"v1"}'
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Content-Length:
+      - '177'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '542'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","uid":"4d898fb4-6e12-484a-97d9-ab9e1c5a26fa","resourceVersion":"10455","creationTimestamp":"2021-02-24T19:41:15Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMapList","apiVersion":"v1","metadata":{"resourceVersion":"10455"},"items":[{"metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","uid":"4d898fb4-6e12-484a-97d9-ab9e1c5a26fa","resourceVersion":"10455","creationTimestamp":"2021-02-24T19:41:15Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}},{"metadata":{"name":"kube-root-ca.crt","namespace":"kubetruth-test-ns-cmns2","uid":"5a0da880-0430-4d64-88fc-fac635be5fee","resourceVersion":"10448","creationTimestamp":"2021-02-24T19:41:15Z","managedFields":[{"manager":"kube-controller-manager","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:ca.crt":{}}}}]},"data":{"ca.crt":"-----BEGIN
+        CERTIFICATE-----\nMIIDBjCCAe6gAwIBAgIBATANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDEwptaW5p\na3ViZUNBMB4XDTIxMDIyMzE2MTcwMFoXDTMxMDIyMjE2MTcwMFowFTETMBEGA1UE\nAxMKbWluaWt1YmVDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKZM\n9pTWabY7FgKajk5MBitZSOu112pTHCtpeWafgQf150YAlpZJQieGy7YvX8aunJ2w\ncMVgLvfL7EVsV2wyOviYVCmBfKfFr207bkqhZZ5JuGW4X6F4HtlRLzuoxAp8E+jJ\nrsBmLFRMl+nDb2O+8BaUjaUCXO5ugU8TUn4our7hu2SXNXU6oj5YoTuea8I141L2\n5AhE7qTQjM6B7/lB79R5fmj9fH9iPSBc9rj4FXgwLkYnTVAye/nkvjh3zh0lmdIZ\n67IFhkMqt8ELTe0G80xH/3HFs90kJ6KplsXaswB0HW+YKy9WNQS9kfwJNvWeNDMC\neu65qxB5nBEUiwFB0WcCAwEAAaNhMF8wDgYDVR0PAQH/BAQDAgKkMB0GA1UdJQQW\nMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQW\nBBTfQwSvbsoNaxiXRrUyYPrMX+CqMTANBgkqhkiG9w0BAQsFAAOCAQEAUp0jYEv2\nYReLTupF9SXOVBsX+iZS4I0l7bcNlyUH01mCpnS5ez2okUVuXxZj6hMnsNB4uDKd\nP1RabfUn2CMfVIQGGV/Gdn53nie2FNGAIuNk6lEfjCoQaWzM0ukM/R/epRq6/WxS\n3uv2Wm/0kbBai2Y55VYJD17N30HMnIUQzREO0TZ+iASU98u6iTgPN1OR5aKZRIfZ\n0hfqT0JopxHUXLK/gNIBcY1rnKqWNsxrcYfJWulZZJSlVN9CEGkOqWCdX/wmsoWx\nD6M9bN/Wn40JsLcl/bWHsGj9glgXrKNppGVgTpYOV5seo2pjjXy5y8i+LA5w5Lh9\nKKblyjscCcgdeQ==\n-----END
+        CERTIFICATE-----\n"}}]}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '542'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","uid":"4d898fb4-6e12-484a-97d9-ab9e1c5a26fa","resourceVersion":"10455","creationTimestamp":"2021-02-24T19:41:15Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '542'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","uid":"4d898fb4-6e12-484a-97d9-ab9e1c5a26fa","resourceVersion":"10455","creationTimestamp":"2021-02-24T19:41:15Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"baz"}}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: put
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","uid":"4d898fb4-6e12-484a-97d9-ab9e1c5a26fa","resourceVersion":"10455","creationTimestamp":"2021-02-24T19:41:15Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}'
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Content-Length:
+      - '541'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '542'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","uid":"4d898fb4-6e12-484a-97d9-ab9e1c5a26fa","resourceVersion":"10456","creationTimestamp":"2021-02-24T19:41:15Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '542'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"foo","namespace":"kubetruth-test-ns-cmns2","uid":"4d898fb4-6e12-484a-97d9-ab9e1c5a26fa","resourceVersion":"10456","creationTimestamp":"2021-02-24T19:41:15Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-02-24T19:41:15Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}},"f:metadata":{"f:labels":{".":{},"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"bum"}}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: delete
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '159'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Success","details":{"name":"foo","kind":"configmaps","uid":"4d898fb4-6e12-484a-97d9-ab9e1c5a26fa"}}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:55032/api/v1/namespaces/kubetruth-test-ns-cmns2/configmaps/foo
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:55032
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 79cb606d-7c9d-44be-83c0-aa28372c4240
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - f0c96815-d8bd-44ca-ba8b-6e8ac08b1d04
+      Date:
+      - Wed, 24 Feb 2021 19:41:15 GMT
+      Content-Length:
+      - '186'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"configmaps
+        \"foo\" not found","reason":"NotFound","details":{"name":"foo","kind":"configmaps"},"code":404}
+
+        '
+  recorded_at: Wed, 24 Feb 2021 19:41:15 GMT
 recorded_with: VCR 6.0.0
