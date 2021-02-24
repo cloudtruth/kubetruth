@@ -1,3 +1,9 @@
+0.2.1 (02/24/2021)
+------------------
+
+* use minikube for testing as its permissions are more standard (rigorous) by default compared to docker-desktop [ef16657](../../commit/ef16657)
+* add ClusterRole and ClusterRoleBinding to allow cross namespace access [561a06c](../../commit/561a06c)
+
 0.2.0 (02/17/2021)
 ------------------
 
