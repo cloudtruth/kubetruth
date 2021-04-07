@@ -57,8 +57,8 @@ and parameterization like:
 ```
     --set appSettings.keyPrefix=service \
     --set appSettings.keyPattern=^(?<prefix>[^\.]+)\.(?<name>[^\.]+)\.(?<key>.*) \
-    --set appSettings.namePattern=%{name} \
-    --set appSettings.keyPattern=ACME_%{key_upcase} \
+    --set appSettings.nameTemplate=%{name} \
+    --set appSettings.keyTemplate=ACME_%{key_upcase} \
 ```
 
 Kubetruth will generate the config maps:
