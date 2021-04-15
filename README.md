@@ -16,7 +16,6 @@ helm repo add cloudtruth https://packages.cloudtruth.com/charts/
 helm install \
     --set appSettings.apiKey=<api_key> \
     --set appSettings.environment=<environment> \
-    --set appSettings.keyPrefix=service \
     my-kubetruth-name cloudtruth/kubetruth
 ```
 

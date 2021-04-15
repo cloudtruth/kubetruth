@@ -44,13 +44,13 @@ spec:
             - --environment
             - {{ .Values.appSettings.environment | quote }}
             {{- end }}
-            {{- with .Values.appSettings.keyPrefix }}
+            {{- range .Values.appSettings.keyPrefix }}
             - --key-prefix
-            - {{ toYaml . | quote }}
+            - {{ . | quote }}
             {{- end }}
-            {{- with .Values.appSettings.keyPattern }}
+            {{- range .Values.appSettings.keyPattern }}
             - --key-pattern
-            - {{ toYaml . | quote }}
+            - {{ . | quote }}
             {{- end }}
             {{- if .Values.appSettings.namespaceTemplate }}
             - --namespace-template
