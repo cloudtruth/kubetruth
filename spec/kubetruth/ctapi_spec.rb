@@ -58,6 +58,14 @@ module Kubetruth
         expect(api.parameters).to match array_including(Parameter)
       end
 
+      it "doesn't expose secret in debug log" do
+        api = ctapi.new
+        params = api.parameters
+        secrets = params.find {|p| p.secret }
+        expect(secrets.size).to_not eq(0)
+        expect(Logging.contents).to include("<masked>")
+      end
+
       it "uses organization to get values" do
         api = ctapi.new(organization: "Personal")
         expect(api).to receive(:organizations).at_least(:once).and_call_original

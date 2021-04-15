@@ -85,7 +85,11 @@ module Kubetruth
         params = params.select { |param| param.key =~ /^#{key_prefix}/ }
         filtered_params = (filtered_params + params).uniq {|param| param.key }
       end
-      logger.debug { "Filtered params: #{filtered_params.inspect}"}
+      logger.debug do
+        cleaned = filtered_params.deep_dup
+        cleaned.each {|p| p.value = "<masked>" if p.secret}
+        "Filtered params: #{cleaned.inspect}"
+      end
 
       # Group those parameters by the name selected by the name_pattern
       #

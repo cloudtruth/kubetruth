@@ -213,6 +213,23 @@ module Kubetruth
         expect(param_groups[{namespace: nil, name: "svc.name1"}]).to eq([Parameter.new(original_key: "svc.name1.key1", key: "start.key1.name1.svc.middle.KEY1.NAME1.SVC.end", value: "value1", secret: false)])
       end
 
+      it "doesn't expose secret in debug log" do
+        Logging.setup_logging(level: :debug, color: false)
+
+        etl = described_class.new(init_args)
+        expect(@ctapi).to receive(:parameters).and_return([
+                                                              Parameter.new(key: "param1", value: "value1", secret: false),
+                                                              Parameter.new(key: "param2", value: "sekret", secret: true),
+                                                              Parameter.new(key: "param3", value: "alsosekret", secret: true),
+                                                              Parameter.new(key: "param4", value: "value4", secret: false),
+                                                          ])
+        param_groups = etl.get_param_groups
+        expect(Logging.contents).to include("param2")
+        expect(Logging.contents).to include("param3")
+        expect(Logging.contents).to include("<masked>")
+        expect(Logging.contents).to_not include("sekret")
+      end
+
     end
 
     describe "#apply_config_maps" do

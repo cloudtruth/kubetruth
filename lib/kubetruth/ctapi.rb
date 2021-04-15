@@ -119,7 +119,14 @@ module Kubetruth
         end
 
         result = client.query(self.queries[:ParametersQuery], variables: variables)
-        logger.debug{"Parameters query result: #{result.inspect}"}
+        logger.debug do
+          cleaned = result&.original_hash&.deep_dup
+          cleaned&.[]("data")&.[]("viewer")&.[]("organization")&.[]("parameters")&.[]("nodes")&.each do |e|
+            e["environmentValue"]["parameterValue"] = "<masked>" if e["isSecret"]
+          end
+          "Parameters query result: #{cleaned.inspect}, errors: #{result&.errors.inspect}"
+        end
+
         result&.data&.viewer&.organization&.parameters&.nodes&.collect do |e|
           Kubetruth::Parameter.new(key: e.key_name, value: e.environment_value.parameter_value, secret: e.is_secret)
         end
