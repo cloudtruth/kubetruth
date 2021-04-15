@@ -1,3 +1,10 @@
+0.2.2 (04/15/2021)
+------------------
+
+* mask secrets when debug logging [6a59a3f](../../commit/6a59a3f)
+* fix helm template handling of list params [25f7e70](../../commit/25f7e70)
+* fix typo [771eb3a](../../commit/771eb3a)
+
 0.2.1 (02/24/2021)
 ------------------
 
