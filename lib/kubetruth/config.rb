@@ -6,6 +6,7 @@ module Kubetruth
     include GemLogger::LoggerSupport
 
     ProjectSpec = Struct.new(
+      :scope,
       :project_selector,
       :key_selector,
       :key_filter,
@@ -20,6 +21,7 @@ module Kubetruth
     )
 
     DEFAULT_SPEC = {
+      scope: 'override',
       project_selector: '',
       key_selector: '',
       key_filter: '',
@@ -32,8 +34,8 @@ module Kubetruth
       included_projects: []
     }.freeze
 
-    def initialize(config_file:)
-      @config_file = config_file
+    def initialize(project_mapping_crds)
+      @project_mapping_crds = project_mapping_crds
     end
 
     def convert_types(hash)
@@ -43,21 +45,15 @@ module Kubetruth
       end
     end
 
-    def stale?
-      @last_read != File.mtime(@config_file)
-    end
-
     def load
       @config ||= begin
-        begin
-          config = YAML.load(File.read(@config_file)) || {}
-          @last_read = File.mtime(@config_file)
-        rescue => e
-          logger.warn("Unable to load config file: #{@config_file}, using defaults")
-          config = {}
-        end
-        overrides = config.delete(:project_overrides) || {}
-        config = DEFAULT_SPEC.merge(config)
+        parts = @project_mapping_crds.group_by {|c| c[:scope] }
+        raise ArgumentError.new("Multiple root ProjectMappings") if parts["root"] && parts["root"].size > 1
+
+        root_mapping = parts["root"]&.first || {}
+        overrides = parts["override"] || []
+
+        config = DEFAULT_SPEC.merge(root_mapping)
         @root_spec = ProjectSpec.new(**convert_types(config))
         @override_specs = overrides.collect { |o| ProjectSpec.new(convert_types(config.merge(o))) }
         config

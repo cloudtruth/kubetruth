@@ -1,5 +1,6 @@
 require 'rspec'
 require 'kubetruth/kubeapi'
+require 'kubetruth/config'
 
 module Kubetruth
 
@@ -269,6 +270,16 @@ module Kubetruth
 
         secret = kubeapi.update_secret("baz", {bum: "boo"})
         expect(secret.metadata.labels.to_h).to eq({:"app.kubernetes.io/managed-by" => "kubetruth", :"otherlabel" => "set"})
+      end
+
+    end
+
+    describe "custom resource" do
+
+      it "can get project mappings" do
+        crds = kubeapi.get_project_mappings
+        expect(crds.size).to eq(1) # from helm install
+        expect(crds.first.keys.sort).to eq(Kubetruth::Config::ProjectSpec.new.to_h.keys.sort)
       end
 
     end

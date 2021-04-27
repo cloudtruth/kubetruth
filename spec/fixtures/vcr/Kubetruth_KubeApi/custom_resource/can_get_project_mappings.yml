@@ -1,0 +1,83 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://127.0.0.1:50745/apis/kubetruth.cloudtruth.com/v1
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:50745
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 393a7267-7678-4250-bd3c-7c5460b233dd
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - fa6afa15-a7f4-49c1-a7e1-02caf94a7f02
+      Date:
+      - Tue, 27 Apr 2021 21:30:37 GMT
+      Content-Length:
+      - '346'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"APIResourceList","apiVersion":"v1","groupVersion":"kubetruth.cloudtruth.com/v1","resources":[{"name":"projectmappings","singularName":"projectmapping","namespaced":true,"kind":"ProjectMapping","verbs":["delete","deletecollection","get","list","patch","create","update","watch"],"shortNames":["pm"],"storageVersionHash":"UqtD9M7id/A="}]}
+
+        '
+  recorded_at: Tue, 27 Apr 2021 21:30:37 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:50745/apis/kubetruth.cloudtruth.com/v1/namespaces/kubetruth-test-ns/projectmappings
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:50745
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - 393a7267-7678-4250-bd3c-7c5460b233dd
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - fa6afa15-a7f4-49c1-a7e1-02caf94a7f02
+      Date:
+      - Tue, 27 Apr 2021 21:30:37 GMT
+      Content-Length:
+      - '1716'
+    body:
+      encoding: UTF-8
+      string: '{"apiVersion":"kubetruth.cloudtruth.com/v1","items":[{"apiVersion":"kubetruth.cloudtruth.com/v1","kind":"ProjectMapping","metadata":{"annotations":{"meta.helm.sh/release-name":"kubetruth-test-app","meta.helm.sh/release-namespace":"kubetruth-test-ns"},"creationTimestamp":"2021-04-27T21:30:34Z","generation":1,"labels":{"app.kubernetes.io/instance":"kubetruth-test-app","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"kubetruth","app.kubernetes.io/version":"0.3.0","helm.sh/chart":"kubetruth-0.3.0"},"managedFields":[{"apiVersion":"kubetruth.cloudtruth.com/v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/instance":{},"f:app.kubernetes.io/managed-by":{},"f:app.kubernetes.io/name":{},"f:app.kubernetes.io/version":{},"f:helm.sh/chart":{}}},"f:spec":{".":{},"f:configmap_name_template":{},"f:included_projects":{},"f:key_filter":{},"f:key_selector":{},"f:key_template":{},"f:namespace_template":{},"f:project_selector":{},"f:scope":{},"f:secret_name_template":{},"f:skip":{},"f:skip_secrets":{}}},"manager":"Go-http-client","operation":"Update","time":"2021-04-27T21:30:34Z"}],"name":"kubetruth-test-app-root","namespace":"kubetruth-test-ns","resourceVersion":"159203","uid":"24404f92-499c-42fb-bc0d-5a7bcce4c76e"},"spec":{"configmap_name_template":"%{project}","included_projects":[],"key_filter":"","key_selector":"","key_template":"%{key}","namespace_template":"","project_selector":"","scope":"root","secret_name_template":"%{project}","skip":false,"skip_secrets":false}}],"kind":"ProjectMappingList","metadata":{"continue":"","resourceVersion":"159220"}}
+
+        '
+  recorded_at: Tue, 27 Apr 2021 21:30:37 GMT
+recorded_with: VCR 6.0.0

@@ -5,7 +5,6 @@ gemspec
 
 gem "rake", "~> 12.0"
 gem "rspec", "~> 3.0"
-gem "test_construct"
 gem "vcr"
 gem "webmock"
 gem "coveralls", ">= 0.8.23"

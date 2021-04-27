@@ -90,15 +90,13 @@ module Kubetruth
             --environment production
             --organization acme
             --api-key abc123
-            --config-file file.yml
             --kube-namespace kn
             --kube-token kt
             --kube-url ku
             --dry-run
         ]
         etl = double(ETL)
-        expect(ETL).to receive(:new).with(config_file: "file.yml",
-                                          ct_context: {
+        expect(ETL).to receive(:new).with(ct_context: {
                                               organization: "acme",
                                               environment: "production",
                                               api_key: "abc123"

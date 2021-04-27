@@ -26,10 +26,6 @@ module Kubetruth
            environment_variable: 'CT_API_KEY',
            required: true
 
-    option ["-f", "--config-file"],
-           'FILE', "The kubetruth.yml file",
-           default: "/etc/kubetruth/kubetruth.yaml"
-
     option "--kube-namespace",
            'NAMESPACE', "The kubernetes namespace. Defaults to runtime namespace when run in kube"
 
@@ -93,7 +89,7 @@ module Kubetruth
           api_url: kube_url
       }
 
-      etl = ETL.new(config_file: config_file, ct_context: ct_context, kube_context: kube_context)
+      etl = ETL.new(ct_context: ct_context, kube_context: kube_context)
 
       while true
 

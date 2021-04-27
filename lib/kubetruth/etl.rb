@@ -8,8 +8,7 @@ module Kubetruth
   class ETL
     include GemLogger::LoggerSupport
 
-    def initialize(config_file:, ct_context:, kube_context:)
-      @config_file = config_file
+    def initialize(ct_context:, kube_context:)
       @ct_context = ct_context
       @kube_context = kube_context
       @kubeapis = {}
@@ -24,16 +23,13 @@ module Kubetruth
     end
 
     def kubeapi(namespace)
-      ns_key = namespace.present? ? namespace : "no_namespace"
-      @kubeapis[ns_key] ||= KubeApi.new(**@kube_context.merge(namespace: namespace))
+      namespace = namespace.present? ? namespace : nil
+      @kubeapis[namespace] ||= KubeApi.new(**@kube_context.merge(namespace: namespace))
     end
 
     def load_config
-      if @config.nil? || @config.stale?
-        @config = Kubetruth::Config.new(config_file: @config_file)
-        @config.load
-      end
-      @config
+      mappings = kubeapi(@kube_context[:namespace]).get_project_mappings
+      Kubetruth::Config.new(mappings)
     end
 
     def apply(dry_run: false)

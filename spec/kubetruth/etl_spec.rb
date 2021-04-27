@@ -5,24 +5,19 @@ module Kubetruth
   describe ETL do
 
     let(:init_args) {{
-      config_file: "kubetruth.yaml", ct_context: {}, kube_context: {}
+      ct_context: {}, kube_context: {}
     }}
 
     def kubeapi(ns)
       kapi = double(Kubetruth::KubeApi)
+      ns = ns.present? ? ns : nil
       allow(Kubetruth::KubeApi).to receive(:new).with(hash_including(namespace: ns)).and_return(kapi)
       allow(kapi).to receive(:get_config_map_names).and_return([])
       allow(kapi).to receive(:get_secret_names).and_return([])
-      allow(kapi).to receive(:ensure_namespace) unless ns.nil?
-      allow(kapi).to receive(:namespace).and_return(ns.nil? ? "default_ns" : ns)
+      allow(kapi).to receive(:ensure_namespace)
+      allow(kapi).to receive(:namespace).and_return(ns.nil? ? "default" : ns)
+      allow(kapi).to receive(:get_project_mappings).and_return([])
       kapi
-    end
-
-    around(:each) do |ex|
-      within_construct do |c|
-        c.file('kubetruth.yaml', "")
-        ex.run
-      end
     end
 
     before(:each) do
@@ -91,13 +86,10 @@ module Kubetruth
     describe "#load_config" do
 
       it "loads config" do
+        expect(@kubeapi).to receive(:get_project_mappings).and_return([])
         etl = described_class.new(init_args)
         config = etl.load_config
         expect(config).to be_an_instance_of(Kubetruth::Config)
-        expect(etl.load_config).to equal(config)
-        sleep(0.2) # fails on GithubActions without this
-        File.write(init_args[:config_file], "---")
-        expect(etl.load_config).to_not equal(config)
       end
 
     end
@@ -340,6 +332,10 @@ module Kubetruth
 
       let(:etl) { described_class.new(init_args) }
 
+      before(:each) do
+        allow(etl).to receive(:load_config).and_return(Kubetruth::Config.new([]))
+      end
+
       it "sets config and secrets" do
         params = [
           Parameter.new(key: "param1", value: "value1", secret: false),
@@ -406,46 +402,41 @@ module Kubetruth
       end
 
       it "skips projects if flag is set" do
-        within_construct do |c|
-          c.file('kubetruth.yaml', YAML.dump(
-            project_overrides: [
-              {project_selector: "foo", skip: true}
-            ]
-          ))
+        expect(etl).to receive(:load_config).and_return(Kubetruth::Config.new([
+          {scope: "override", project_selector: "foo", skip: true}
+        ]))
 
-          expect(etl.ctapi).to receive(:project_names).and_return(["default", "foo", "bar"])
-          expect(etl).to receive(:get_params).with("default", any_args).and_return([])
-          expect(etl).to_not receive(:get_params).with("foo", any_args)
-          expect(etl).to receive(:get_params).with("bar", any_args).and_return([])
-          allow(etl).to receive(:apply_config_map)
-          allow(etl).to receive(:apply_secret)
-          etl.apply()
-        end
+        expect(etl.ctapi).to receive(:project_names).and_return(["default", "foo", "bar"])
+        expect(etl).to receive(:get_params).with("default", any_args).and_return([])
+        expect(etl).to_not receive(:get_params).with("foo", any_args)
+        expect(etl).to receive(:get_params).with("bar", any_args).and_return([])
+        allow(etl).to receive(:apply_config_map)
+        allow(etl).to receive(:apply_secret)
+        etl.apply()
       end
 
       it "gets captures for template from both levels of project selectors" do
-        within_construct do |c|
-          c.file('kubetruth.yaml', YAML.dump(
-            project_selector: "^(?<root_match>[^.]+)",
+        expect(etl).to receive(:load_config).and_return(Kubetruth::Config.new([
+          {
+            scope: "root",
             namespace_template: "%{child_match}-%{root_match}",
-            key_template: "%{root_match}:%{child_match}:%{project}:%{key}",
-            project_overrides: [
-              {project_selector: "(?<child_match>[^.]+)$"}
-            ]
-          ))
+            project_selector: "^(?<root_match>[^.]+)",
+            key_template: "%{root_match}:%{child_match}:%{project}:%{key}"
+          },
+          {scope: "override", project_selector: "(?<child_match>[^.]+)$"}
+        ]))
 
-          params = [
-            Parameter.new(key: "param1", value: "value1", secret: false)
-          ]
-          expect(etl.ctapi).to receive(:project_names).and_return(["foo.bar"])
-          expect(etl.ctapi).to receive(:parameters).and_return(params)
-          expect(etl).to receive(:apply_config_map).
-            with(namespace: 'bar-foo',
-                 name: "foo.bar",
-                 params: [Parameter.new(key: "foo:bar:foo.bar:param1", original_key: "param1", value: "value1", secret: false),])
-          expect(etl).to receive(:apply_secret)
-          etl.apply
-        end
+        params = [
+          Parameter.new(key: "param1", value: "value1", secret: false)
+        ]
+        expect(etl.ctapi).to receive(:project_names).and_return(["foo.bar"])
+        expect(etl.ctapi).to receive(:parameters).and_return(params)
+        expect(etl).to receive(:apply_config_map).
+          with(namespace: 'bar-foo',
+               name: "foo.bar",
+               params: [Parameter.new(key: "foo:bar:foo.bar:param1", original_key: "param1", value: "value1", secret: false),])
+        expect(etl).to receive(:apply_secret)
+        etl.apply
       end
 
     end

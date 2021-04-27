@@ -32,6 +32,7 @@ module Kubetruth
       end
 
       @api_url = api_url || 'https://kubernetes.default.svc'
+      @crd_api_url = "#{@api_url}/apis/kubetruth.cloudtruth.com"
     end
 
     def client
@@ -40,6 +41,15 @@ module Kubetruth
           'v1',
           auth_options: @auth_options,
           ssl_options:  @ssl_options
+      )
+    end
+
+    def crdclient
+      @crdclient ||= Kubeclient::Client.new(
+        @crd_api_url,
+        'v1',
+        auth_options: @auth_options,
+        ssl_options:  @ssl_options
       )
     end
 
@@ -124,5 +134,8 @@ module Kubetruth
       client.delete_secret(name, namespace)
     end
 
+    def get_project_mappings
+      crdclient.get_project_mappings(namespace: namespace).collect(&:spec).collect(&:to_h)
+    end
   end
 end

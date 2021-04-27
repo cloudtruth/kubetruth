@@ -103,47 +103,115 @@ updated automatically in a running pod.
 
 ## Additional configuration
 
-The kubetruth ConfigMap contains a [yaml file for additional config](helm/kubetruth/templates/configmap.yaml)
+Kubetruth uses a CustomResourceDefinition called
+[ProjectMapping(.kubetruth.cloudtruth.com)](helm/kubetruth/crds/projectmapping.yaml)
+for additional configuration.  The ProjectMapping CRD has two types identified
+by the `scope` property, the `root` scope and the `override` scope.  The `root`
+scope is required, and there can be only one.  It sets up the global behavior
+for mapping the CloudTruth projects to kubernetes resources.  You can edit it in
+the standard ways, e.g. `kubectl edit projectmapping kubetruth-root`.  The
+`override` scope allows you to override the root scope's behavior by matching
+its `project_selector` pattern against the CloudTruth project names already
+selected by the root `project_selector`.
 
 ### Example Config
 
-To create the kubernetes Resources in namespaces named after each Project:
-```yaml
-namespace_template: %{project}
+The `projectmapping` resource has a shortname of `pm` for convenience when using kubectl.
+
+To create kubernetes Resources in namespaces named after each Project:
+```
+kubectl patch pm kubetruth-root --type json --patch '[{"op": "replace", "path": "/spec/namespace_template", "value": "%{project}"}]'
 ```
 
 To include the parameters from a Project named `Base` into all other projects, without creating Resources for `Base` itself:
-```yaml
-included_projects:
-  - Base
-project_overrides:
-  - project_selector: Base
+```
+kubectl patch pm kubetruth-root --type json --patch '[{"op": "replace", "path": "/spec/included_projects", "value": ["Base"]}]'
+
+kubectl apply -f - <<EOF
+apiVersion: kubetruth.cloudtruth.com/v1
+kind: ProjectMapping
+metadata:
+    name: exclude-base
+spec:
+    scope: override
+    project_selector: "^Base$"
     skip: true
+EOF
 ```
 
 To override the naming of kubernetes Resources on a per-Project basis:
-```yaml
-project_overrides:
-  - project_selector: funkyProject
+```
+kubectl apply -f - <<EOF
+apiVersion: kubetruth.cloudtruth.com/v1
+kind: ProjectMapping
+metadata:
+  name: funkyproject-special-naming
+spec:
+    scope: override
+    project_selector: funkyProject
     configmap_name_template: notSoFunkyConfigMap
     secret_name_template: notSoFunkySecret
     namespace_template: notSoFunkyNsmespace
+EOF
 ```
 
 To limit the Projects processed to those whose names start with `service`, except for `serviceOddball`:
-```yaml
-project_selector: ^service
-project_overrides:
-  - project_selector: serviceOddball
-    skip: true
+```
+kubectl patch pm kubetruth-root --type json --patch '[{"op": "replace", "path": "/spec/project_selector", "value": "^service"}]'
+
+kubectl apply -f - <<EOF
+apiVersion: kubetruth.cloudtruth.com/v1
+kind: ProjectMapping
+metadata:
+  name: funkyproject-special-naming
+spec:
+  scope: override
+  project_selector: serviceOddball
+  skip: true
+EOF
 ```
 
+To see the ProjectMappings that have been setup
+```
+$ kubectl get pm
+NAME                          SCOPE      PROJECT          AGE
+exclude-base                  override   ^Base$           7m6s
+funkyproject-special-naming   override   serviceOddball   13s
+kubetruth-root                root       ^service         27m
+
+$ kubectl describe pm kubetruth-root
+Name:         kubetruth-root
+Namespace:    default
+Labels:       ...
+Annotations:  ...
+API Version:  kubetruth.cloudtruth.com/v1
+Kind:         ProjectMapping
+Metadata:
+  ...
+Spec:
+  configmap_name_template:  %{project}
+  included_projects:
+  key_filter:            
+  key_selector:          
+  key_template:          %{key}
+  namespace_template:    
+  project_selector:      
+  Scope:                 root
+  secret_name_template:  %{project}
+  Skip:                  false
+  skip_secrets:          false
+Events:                  <none>
+```
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `bundle exec rspec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install and run via helm in a local cluster:
 ``` 
+# If using minikube, ensure that docker builds the image into the minikube container
+# with the command:
+# eval $(minikube docker-env)
+#
 docker build -t kubetruth . && helm install \
     --set image.repository=kubetruth --set image.pullPolicy=Never --set image.tag=latest \
     --set appSettings.debug=true --set appSettings.apiKey=$CT_API_KEY --set appSettings.environment=development \

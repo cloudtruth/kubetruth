@@ -6,6 +6,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
   name: {{ template "kubetruth.fullname" . }}
 rules:
+  - apiGroups: ["kubetruth.cloudtruth.com"]
+    resources: ["projectmappings"]
+    verbs: ["get", "list", "watch"]
   - apiGroups: [""]
     resources: ["configmaps"]
     verbs: ["get", "list", "create", "update", "delete"]
