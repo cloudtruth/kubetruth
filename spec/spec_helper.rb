@@ -110,6 +110,8 @@ RSpec.configure do |config|
 
 end
 
+require "test_construct/rspec_integration"
+
 RSpec::Matchers.define :be_line_width_for_cli do |name|
   match do |actual|
     @actual = []

@@ -55,17 +55,34 @@ module Kubetruth
         }
       GRAPHQL
 
-      self.queries[:ParametersQuery] = client.parse <<~GRAPHQL
-        query($organizationId: ID, $environmentId: ID, $searchTerm: String) {
+      self.queries[:ProjectsQuery] = client.parse <<~GRAPHQL
+        query($organizationId: ID) {
           viewer {
             organization(id: $organizationId) {
-              parameters(searchTerm: $searchTerm, orderBy: { keyName: ASC }) {
+              projects {
                 nodes {
                   id
-                  keyName
-                  isSecret
-                  environmentValue(environmentId: $environmentId) {
-                    parameterValue
+                  name
+                }
+              }
+            }
+          }
+        }
+      GRAPHQL
+
+      self.queries[:ParametersQuery] = client.parse <<~GRAPHQL
+        query($organizationId: ID, $environmentId: ID, $projectName: String, $searchTerm: String) {
+          viewer {
+            organization(id: $organizationId) {
+              project(name: $projectName) {
+                parameters(searchTerm: $searchTerm, orderBy: { keyName: ASC }) {
+                  nodes {
+                    id
+                    keyName
+                    isSecret
+                    environmentValue(environmentId: $environmentId) {
+                      parameterValue
+                    }
                   }
                 }
               }
@@ -101,6 +118,20 @@ module Kubetruth
                           end
       end
 
+      def projects
+        @projects ||= begin
+          variables = {}
+          if @organization
+            org_id = self.organizations[@organization] || raise("Unknown organization: #{@organization}")
+            variables[:organizationId] = org_id
+          end
+
+          result = client.query(self.queries[:ProjectsQuery], variables: variables)
+          logger.debug{"Projects query result: #{result.inspect}"}
+          Hash[result&.data&.viewer&.organization&.projects&.nodes&.collect {|e| [e.name, e.id] }]
+        end
+      end
+
       def organization_names
         organizations.keys
       end
@@ -109,7 +140,11 @@ module Kubetruth
         environments.keys
       end
 
-      def parameters(searchTerm: "")
+      def project_names
+        projects.keys
+      end
+
+      def parameters(searchTerm: "", project: nil)
         env_id = self.environments[@environment] || raise("Unknown environment: #{@environment}")
         variables = {searchTerm: searchTerm, environmentId: env_id.to_s}
 
@@ -118,16 +153,18 @@ module Kubetruth
           variables[:organizationId] = org_id
         end
 
+        variables[:projectName] = project if project.present?
+
         result = client.query(self.queries[:ParametersQuery], variables: variables)
         logger.debug do
           cleaned = result&.original_hash&.deep_dup
-          cleaned&.[]("data")&.[]("viewer")&.[]("organization")&.[]("parameters")&.[]("nodes")&.each do |e|
+          cleaned&.[]("data")&.[]("viewer")&.[]("organization")&.[]("project")&.[]("parameters")&.[]("nodes")&.each do |e|
             e["environmentValue"]["parameterValue"] = "<masked>" if e["isSecret"]
           end
           "Parameters query result: #{cleaned.inspect}, errors: #{result&.errors.inspect}"
         end
 
-        result&.data&.viewer&.organization&.parameters&.nodes&.collect do |e|
+        result&.data&.viewer&.organization&.project&.parameters&.nodes&.collect do |e|
           Kubetruth::Parameter.new(key: e.key_name, value: e.environment_value.parameter_value, secret: e.is_secret)
         end
       end

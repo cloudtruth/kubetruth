@@ -26,33 +26,9 @@ module Kubetruth
            environment_variable: 'CT_API_KEY',
            required: true
 
-    option "--namespace-template", "TMPL", "the template for generating the namespace name where configmap/secrets are created from key pattern matches.  Defaults to the namespace kubetruth is running in"
-
-    option "--name-template", "TMPL", "the template for generating the configmap/secret name from key pattern matches",
-           default: "%{name}"
-
-    option "--key-template", "TMPL", "the template for generating the configmap/secret keys from key pattern matches",
-           default: "%{key}"
-
-    option "--key-prefix", "PREFIX", "the key prefix to restrict the keys fetched from cloudtruth",
-           default: [''],
-             multivalued: true
-
-    option "--key-pattern", "REGEX", "the key pattern for mapping cloudtruth params to configmap keys.  The `name` is used for the config map naming, and the keys in that map come from the matching `key` portion.  A pattern like `^(?<key>[^\\.]+.(?<name>[^\\.]+)\\..*)`  would make the key be the entire  parameter key",
-           default: [/^(?<prefix>[^\.]+)\.(?<name>[^\.]+)\.(?<key>.*)/],
-           multivalued: true do |a|
-      Regexp.new(a)
-    rescue RegexpError => e
-      raise ArgumentError.new(e.message)
-    end
-
-    option "--skip-secrets",
-           :flag, "Do not transfer secrets to kubernetes resources",
-           default: false
-
-    option "--secrets-as-config",
-           :flag, "Secrets are placed in config maps instead of kube secrets",
-           default: false
+    option ["-f", "--config-file"],
+           'FILE', "The kubetruth.yml file",
+           default: "/etc/kubetruth/kubetruth.yaml"
 
     option "--kube-namespace",
            'NAMESPACE', "The kubernetes namespace. Defaults to runtime namespace when run in kube"
@@ -117,14 +93,12 @@ module Kubetruth
           api_url: kube_url
       }
 
-      etl = ETL.new(key_prefixes: key_prefix_list, key_patterns: key_pattern_list,
-                    namespace_template: namespace_template, name_template: name_template, key_template: key_template,
-                    ct_context: ct_context, kube_context: kube_context)
+      etl = ETL.new(config_file: config_file, ct_context: ct_context, kube_context: kube_context)
 
       while true
 
         begin
-          etl.apply(dry_run: dry_run?, skip_secrets: skip_secrets?, secrets_as_config: secrets_as_config?)
+          etl.apply(dry_run: dry_run?)
         rescue => e
           logger.log_exception(e, "Failure while applying config transforms")
         end

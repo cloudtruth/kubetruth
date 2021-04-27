@@ -69,12 +69,6 @@ affinity: {}
 appSettings:
   apiKey:
   environment:
-  keyPrefix: []
-  keyPattern: []
-  namespaceTemplate:
-  nameTemplate:
-  keyTemplate:
-  skipSecrets: false
-  secretsAsConfig: false
   pollingInterval:
   debug: false
+  config:

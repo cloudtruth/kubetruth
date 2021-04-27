@@ -38,37 +38,14 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ include "kubetruth.fullname" . }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/kubetruth
           args:
             - app
             {{- if .Values.appSettings.environment }}
             - --environment
             - {{ .Values.appSettings.environment | quote }}
-            {{- end }}
-            {{- range .Values.appSettings.keyPrefix }}
-            - --key-prefix
-            - {{ . | quote }}
-            {{- end }}
-            {{- range .Values.appSettings.keyPattern }}
-            - --key-pattern
-            - {{ . | quote }}
-            {{- end }}
-            {{- if .Values.appSettings.namespaceTemplate }}
-            - --namespace-template
-            - {{ .Values.appSettings.namespaceTemplate | quote }}
-            {{- end }}
-            {{- if .Values.appSettings.nameTemplate }}
-            - --name-template
-            - {{ .Values.appSettings.nameTemplate | quote }}
-            {{- end }}
-            {{- if .Values.appSettings.keyTemplate }}
-            - --key-template
-            - {{ .Values.appSettings.keyTemplate | quote }}
-            {{- end }}
-            {{- if .Values.appSettings.skipSecrets }}
-            - --skip-secrets
-            {{- end }}
-            {{- if .Values.appSettings.secretsAsConfig }}
-            - --secrets-as-config
             {{- end }}
             {{- if .Values.appSettings.pollingInterval }}
             - --polling-interval
@@ -77,7 +54,10 @@ spec:
             {{- if .Values.appSettings.debug }}
             - --debug
             {{- end }}
-
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ include "kubetruth.fullname" . }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

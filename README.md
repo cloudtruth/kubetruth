@@ -34,67 +34,109 @@ Parameterize the helm install with `--set appSettings.**` to control how kubetru
 |-----------|-------------|------|---------|:--------:|
 | appSettings.apiKey | The cloudtruth api key.  Read only access is sufficient | string | n/a | yes |
 | appSettings.environment | The cloudtruth environment to lookup parameter values for.  Use a separate helm install for each environment | string | `default` | yes |
-| appSettings.keyPrefix | Limit the parameters looked up to one of these prefixes | list(string) | n/a | no |
-| appSettings.keyPattern | The pattern to match against key names to select params and provide keywords for generating resource names via nameTemplate and keyTemplate | list(regex) | `^(?<prefix>[^\.]+)\.(?<name>[^\.]+)\.(?<key>.*)` | no |
-| appSettings.namespaceTemplate | The template for generating the namespace that resources get created in | string | n/a | no |
-| appSettings.nameTemplate | The template for generating resources (ConfigMaps and Secrets) | string | `%{name}` | no |
-| appSettings.keyTemplate | The template for generating key names within a resource | string | `%{key}` | no |
-| appSettings.skipSecrets | Do not transfer parameters that are marked as secret | flag | false | no |
-| appSettings.secretsAsConfig | Place secret parameters alongside plain parameters within a ConfigMap instead of in their own Secret resource | flag | false | no |
 | appSettings.pollingInterval | Interval to poll cloudtruth api for changes | integer | 300 | no |
 | appSettings.debug | Debug logging | flag | n/a | no |
 
-For example, for a keyspace that looks like:
+By default, Kubetruth maps the parameters from CloudTruth Projects into ConfigMaps and Secrets of the same names as the Projects. 
+
+For example, for a CloudTruth layout that looks like:
+
+`myProject`:
 ```
-service.someServiceName.oneParam=value1
-service.someServiceName.twoParam=value2
-service.otherServiceName.someParam=val1
-service.otherServiceName.mySecret=val2 (marked as a secret within CloudTruth)
+oneParam=value1
+twoParam=value2
 ```
 
-and parameterization like:
+`otherProject`:
 ```
-    --set appSettings.keyPrefix=service \
-    --set appSettings.keyPattern=^(?<prefix>[^\.]+)\.(?<name>[^\.]+)\.(?<key>.*) \
-    --set appSettings.nameTemplate=%{name} \
-    --set appSettings.keyTemplate=ACME_%{key_upcase} \
+someParam=value3
+mySecret=value4 (marked as a secret within CloudTruth)
 ```
 
-Kubetruth will generate the config maps:
+Kubetruth will generate the kubernetes resources:
 
-someServiceName:
+ConfigMap named `myProject`:
 ```yaml
-    ACME_ONEPARAM: value1
-    ACME_TWOPARAM: value2
+    oneParam: value1
+    twoParam: value2
 ```
 
-otherServiceName:
+ConfigMap named `otherProject`:
 ```yaml
-    ACME_SOMEPARAM: val1
+    someParam: value3
 ```
 
-and the Secrets:
-
-otherServiceName:
+Secret named `otherProject`:
 ```yaml
-    MYSECRET: val2
+    mySecret: val2
 ```
 
-These kubernetes resources can then be referenced in the standard ways, e.g.
+These kubernetes resources can then be referenced in the standard ways.
 
+To use them as environment variables in a pod:
 ```yaml
     envFrom:
       - configMapRef:
-          name: otherServiceName
+          name: otherProject
     envFrom:
       - secretRef:
-          name: otherServiceName
+          name: otherProject
+```
+
+To use them as files on disk in a pod:
+```yaml
+      containers:
+        - name: myProject
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/myConfig
+      volumes:
+        - name: config-volume
+          configMap:
+            name: myProject
 ```
 
 Note that config map updates don't get seen by a running pod.  You can use
 something like [Reloader](https://github.com/stakater/Reloader) to automate
 this, or read config from mounted volumes for configmaps/secrets, which do get
-updated automatically in a running pod
+updated automatically in a running pod.
+
+## Additional configuration
+
+The kubetruth ConfigMap contains a [yaml file for additional config](helm/kubetruth/templates/configmap.yaml)
+
+### Example Config
+
+To create the kubernetes Resources in namespaces named after each Project:
+```yaml
+namespace_template: %{project}
+```
+
+To include the parameters from a Project named `Base` into all other projects, without creating Resources for `Base` itself:
+```yaml
+included_projects:
+  - Base
+project_overrides:
+  - project_selector: Base
+    skip: true
+```
+
+To override the naming of kubernetes Resources on a per-Project basis:
+```yaml
+project_overrides:
+  - project_selector: funkyProject
+    configmap_name_template: notSoFunkyConfigMap
+    secret_name_template: notSoFunkySecret
+    namespace_template: notSoFunkyNsmespace
+```
+
+To limit the Projects processed to those whose names start with `service`, except for `serviceOddball`:
+```yaml
+project_selector: ^service
+project_overrides:
+  - project_selector: serviceOddball
+    skip: true
+```
 
 ## Development
 

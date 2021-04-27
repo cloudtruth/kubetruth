@@ -16,7 +16,7 @@ module Kubetruth
       ca_path = '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt'
       token_path = '/var/run/secrets/kubernetes.io/serviceaccount/token'
 
-      @namespace = namespace || File.read(namespace_path).chomp
+      @namespace = namespace.present? ? namespace : File.read(namespace_path).chomp
       @labels = {MANAGED_LABEL_KEY => MANAGED_LABEL_VALUE}
 
       @auth_options = {}

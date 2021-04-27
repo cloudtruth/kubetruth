@@ -90,23 +90,14 @@ module Kubetruth
             --environment production
             --organization acme
             --api-key abc123
-            --namespace-template nstmpl
-            --name-template ntmpl
-            --key-template ktmpl
-            --key-prefix prefix1
-            --key-prefix prefix2
-            --key-pattern pat1
-            --key-pattern pat2
-            --skip-secrets
-            --secrets-as-config
+            --config-file file.yml
             --kube-namespace kn
             --kube-token kt
             --kube-url ku
             --dry-run
         ]
         etl = double(ETL)
-        expect(ETL).to receive(:new).with(key_prefixes: %w[prefix1 prefix2], key_patterns: [/pat1/, /pat2/],
-                                          namespace_template: "nstmpl", name_template: "ntmpl", key_template: "ktmpl",
+        expect(ETL).to receive(:new).with(config_file: "file.yml",
                                           ct_context: {
                                               organization: "acme",
                                               environment: "production",
@@ -117,7 +108,7 @@ module Kubetruth
                                               token: "kt",
                                               api_url: "ku"
                                           }).and_return(etl)
-        expect(etl).to receive(:apply).with(dry_run: true, skip_secrets: true, secrets_as_config: true)
+        expect(etl).to receive(:apply).with(dry_run: true)
         cli.run(args)
       end
 
