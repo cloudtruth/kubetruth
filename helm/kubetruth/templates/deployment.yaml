@@ -38,9 +38,6 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ include "kubetruth.fullname" . }}
-          volumeMounts:
-            - name: config-volume
-              mountPath: /etc/kubetruth
           args:
             - app
             {{- if .Values.appSettings.environment }}
@@ -54,10 +51,6 @@ spec:
             {{- if .Values.appSettings.debug }}
             - --debug
             {{- end }}
-      volumes:
-        - name: config-volume
-          configMap:
-            name: {{ include "kubetruth.fullname" . }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
