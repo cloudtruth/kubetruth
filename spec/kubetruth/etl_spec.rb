@@ -71,6 +71,11 @@ module Kubetruth
         expect(etl.dns_friendly("foo_bar")).to eq("foo-bar")
       end
 
+      it "forces lower case" do
+        etl = described_class.new(init_args)
+        expect(etl.dns_friendly("Foo_Bar")).to eq("foo-bar")
+      end
+
       it "simplifies successive non-chars" do
         etl = described_class.new(init_args)
         expect(etl.dns_friendly("foo_&!bar")).to eq("foo-bar")

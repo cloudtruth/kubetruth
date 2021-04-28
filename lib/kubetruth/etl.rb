@@ -8,6 +8,9 @@ module Kubetruth
   class ETL
     include GemLogger::LoggerSupport
 
+    # From kubernetes error message
+    DNS_VALIDATION_RE = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/
+
     def initialize(ct_context:, kube_context:)
       @ct_context = ct_context
       @kube_context = kube_context
@@ -131,8 +134,9 @@ module Kubetruth
     end
 
     def dns_friendly(str)
-      dns_friendly = str.to_s.gsub(/[^-.a-zA-Z0-9)]+/, '-')
-      dns_friendly = dns_friendly.gsub(/(^[^a-zA-Z0-9]+)|([^a-zA-Z0-9]+$)/, '')
+      return str if str =~ DNS_VALIDATION_RE
+      dns_friendly = str.to_s.downcase.gsub(/[^-.a-z0-9)]+/, '-')
+      dns_friendly = dns_friendly.gsub(/(^[^a-z0-9]+)|([^a-z0-9]+$)/, '')
       dns_friendly
     end
 
