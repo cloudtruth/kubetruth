@@ -59,6 +59,12 @@ module Kubetruth
         expect(api.project_names).to match array_including("default")
       end
 
+      it "doesn't cache projects " do
+        api = ctapi.new
+        expect(api.projects).to_not equal(api.projects)
+        expect(api.project_names).to_not equal(api.project_names)
+      end
+
       it "uses organization to get projects" do
         api = ctapi.new(organization: "CloudTruth Demo")
         expect(api).to receive(:organizations).and_call_original
@@ -67,7 +73,6 @@ module Kubetruth
           with(ctapi.queries[:ProjectsQuery],
                variables: hash_including(:organizationId)).and_call_original
         expect(api.projects).to match hash_including("default")
-        expect(api.project_names).to match array_including("default")
       end
 
     end

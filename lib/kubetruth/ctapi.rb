@@ -119,17 +119,15 @@ module Kubetruth
       end
 
       def projects
-        @projects ||= begin
-          variables = {}
-          if @organization
-            org_id = self.organizations[@organization] || raise("Unknown organization: #{@organization}")
-            variables[:organizationId] = org_id
-          end
-
-          result = client.query(self.queries[:ProjectsQuery], variables: variables)
-          logger.debug{"Projects query result: #{result.inspect}"}
-          Hash[result&.data&.viewer&.organization&.projects&.nodes&.collect {|e| [e.name, e.id] }]
+        variables = {}
+        if @organization
+          org_id = self.organizations[@organization] || raise("Unknown organization: #{@organization}")
+          variables[:organizationId] = org_id
         end
+
+        result = client.query(self.queries[:ProjectsQuery], variables: variables)
+        logger.debug{"Projects query result: #{result.inspect}"}
+        Hash[result&.data&.viewer&.organization&.projects&.nodes&.collect {|e| [e.name, e.id] }]
       end
 
       def organization_names

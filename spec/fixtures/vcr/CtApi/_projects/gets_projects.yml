@@ -36,7 +36,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 27 Apr 2021 14:10:52 GMT
+      - Wed, 28 Apr 2021 21:33:19 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -62,9 +62,9 @@ http_interactions:
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - 9b02192a-3ad3-478e-b6eb-e708bc2f66cf
+      - 5b8d46b8-f68e-46d6-99bb-b90f2f4c08c2
       X-Runtime:
-      - '0.940968'
+      - '0.890733'
     body:
       encoding: UTF-8
       string: '{"data":{"__schema":{"queryType":{"name":"Query"},"mutationType":{"name":"Mutation"},"subscriptionType":null,"types":[{"kind":"OBJECT","name":"AuditLogSnapshot","description":null,"fields":[{"name":"createdAt","description":null,"args":[],"type":{"kind":"NON_NULL","name":null,"ofType":{"kind":"SCALAR","name":"ISO8601DateTime","ofType":null}},"isDeprecated":false,"deprecationReason":null},{"name":"fileUrl","description":null,"args":[],"type":{"kind":"SCALAR","name":"String","ofType":null},"isDeprecated":false,"deprecationReason":null},{"name":"id","description":null,"args":[],"type":{"kind":"NON_NULL","name":null,"ofType":{"kind":"SCALAR","name":"ID","ofType":null}},"isDeprecated":false,"deprecationReason":null},{"name":"policy","description":null,"args":[],"type":{"kind":"NON_NULL","name":null,"ofType":{"kind":"OBJECT","name":"NodePolicy","ofType":null}},"isDeprecated":false,"deprecationReason":null},{"name":"status","description":null,"args":[],"type":{"kind":"NON_NULL","name":null,"ofType":{"kind":"ENUM","name":"SnapshotStatusEnum","ofType":null}},"isDeprecated":false,"deprecationReason":null}],"inputFields":null,"interfaces":[{"kind":"INTERFACE","name":"Node","ofType":null},{"kind":"INTERFACE","name":"HasPolicy","ofType":null}],"enumValues":null,"possibleTypes":null},{"kind":"OBJECT","name":"AuditLogSnapshotConnection","description":"The
@@ -531,15 +531,15 @@ http_interactions:
         why this element was deprecated, usually also including a suggestion for how
         to access supported similar data. Formatted in [Markdown](https://daringfireball.net/projects/markdown/).","type":{"kind":"SCALAR","name":"String","ofType":null},"defaultValue":"\"No
         longer supported\""}]}]}}}'
-  recorded_at: Tue, 27 Apr 2021 14:10:46 GMT
+  recorded_at: Wed, 28 Apr 2021 21:33:19 GMT
 - request:
     method: post
     uri: https://api.cloudtruth.com/graphql
     body:
       encoding: UTF-8
-      string: '{"query":"query GraphQL__Client__OperationDefinition_122440($organizationId:
+      string: '{"query":"query GraphQL__Client__OperationDefinition_64220($organizationId:
         ID) {\n  viewer {\n    organization(id: $organizationId) {\n      projects
-        {\n        nodes {\n          id\n          name\n        }\n      }\n    }\n  }\n}","operationName":"GraphQL__Client__OperationDefinition_122440"}'
+        {\n        nodes {\n          id\n          name\n        }\n      }\n    }\n  }\n}","operationName":"GraphQL__Client__OperationDefinition_64220"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -557,7 +557,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 27 Apr 2021 14:10:53 GMT
+      - Wed, 28 Apr 2021 21:33:20 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -579,15 +579,73 @@ http_interactions:
       Vary:
       - Accept, Origin
       Etag:
-      - W/"9394974122ab13b12feb7bda1fc8fc59"
+      - W/"2df922dba2b6d26cb20a4e36cce960a0"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - 60dfa6c9-deaa-4ff4-b244-db64f1bbe22d
+      - caf84b90-5165-422d-a08d-64fcba26ec5f
       X-Runtime:
-      - '0.022229'
+      - '0.025213'
     body:
       encoding: UTF-8
-      string: '{"data":{"viewer":{"organization":{"projects":{"nodes":[{"id":"UHJvamVjdC1hMmUzMjgyYi0wMWE5LTRiMjEtOGJlMy04MDcyNzBiZWQ1MzQ=","name":"default"},{"id":"UHJvamVjdC1hMWRlNDZhMS0yNjA1LTQ5NjYtOTVjMC0wYWRmZDgxNDBhMzA=","name":"service"},{"id":"UHJvamVjdC04ZWRjNGI2NC0xZTdjLTRmZGMtOWU5Mi1iY2IyMWNlZWYyNmI=","name":"ops"},{"id":"UHJvamVjdC01ZDFmNjUwNC0wNTkzLTQ5ZGEtYjlkNi00ZTQ4YmUwMDExNmQ=","name":"web"}]}}}}}'
-  recorded_at: Tue, 27 Apr 2021 14:10:47 GMT
+      string: '{"data":{"viewer":{"organization":{"projects":{"nodes":[{"id":"UHJvamVjdC1hMmUzMjgyYi0wMWE5LTRiMjEtOGJlMy04MDcyNzBiZWQ1MzQ=","name":"default"},{"id":"UHJvamVjdC01ZDFmNjUwNC0wNTkzLTQ5ZGEtYjlkNi00ZTQ4YmUwMDExNmQ=","name":"web"},{"id":"UHJvamVjdC0yYmYyZTE1OC1kZTIyLTQyZjktYTkyMC1kYWM3MTAxMzYxYzM=","name":"service"},{"id":"UHJvamVjdC1hMWRlNDZhMS0yNjA1LTQ5NjYtOTVjMC0wYWRmZDgxNDBhMzA=","name":"service-demo1"},{"id":"UHJvamVjdC1mYjY3MjRlOC1jM2NkLTQwYjUtYTUxNi1hNzgxYmU1M2ZjZGQ=","name":"service-demo3"},{"id":"UHJvamVjdC04NWQ2ZGI4Yi03YjNjLTQzODAtYTE0Ny01YTk0NmEzNmNkY2E=","name":"service-demo2"},{"id":"UHJvamVjdC04ZWRjNGI2NC0xZTdjLTRmZGMtOWU5Mi1iY2IyMWNlZWYyNmI=","name":"ops"},{"id":"UHJvamVjdC01YjY3YTcyYy0xYjAxLTQ2ZTEtYWMwOC1iYzM5YWIyYWMzZDQ=","name":"common"}]}}}}}'
+  recorded_at: Wed, 28 Apr 2021 21:33:19 GMT
+- request:
+    method: post
+    uri: https://api.cloudtruth.com/graphql
+    body:
+      encoding: UTF-8
+      string: '{"query":"query GraphQL__Client__OperationDefinition_64220($organizationId:
+        ID) {\n  viewer {\n    organization(id: $organizationId) {\n      projects
+        {\n        nodes {\n          id\n          name\n        }\n      }\n    }\n  }\n}","operationName":"GraphQL__Client__OperationDefinition_64220"}'
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - application/json
+      User-Agent:
+      - kubetruth/0.3.0
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 28 Apr 2021 21:33:20 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Accept, Origin
+      Etag:
+      - W/"2df922dba2b6d26cb20a4e36cce960a0"
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      X-Request-Id:
+      - cb5e6607-74f3-45d5-95ed-597ca8012b35
+      X-Runtime:
+      - '0.070838'
+    body:
+      encoding: UTF-8
+      string: '{"data":{"viewer":{"organization":{"projects":{"nodes":[{"id":"UHJvamVjdC1hMmUzMjgyYi0wMWE5LTRiMjEtOGJlMy04MDcyNzBiZWQ1MzQ=","name":"default"},{"id":"UHJvamVjdC01ZDFmNjUwNC0wNTkzLTQ5ZGEtYjlkNi00ZTQ4YmUwMDExNmQ=","name":"web"},{"id":"UHJvamVjdC0yYmYyZTE1OC1kZTIyLTQyZjktYTkyMC1kYWM3MTAxMzYxYzM=","name":"service"},{"id":"UHJvamVjdC1hMWRlNDZhMS0yNjA1LTQ5NjYtOTVjMC0wYWRmZDgxNDBhMzA=","name":"service-demo1"},{"id":"UHJvamVjdC1mYjY3MjRlOC1jM2NkLTQwYjUtYTUxNi1hNzgxYmU1M2ZjZGQ=","name":"service-demo3"},{"id":"UHJvamVjdC04NWQ2ZGI4Yi03YjNjLTQzODAtYTE0Ny01YTk0NmEzNmNkY2E=","name":"service-demo2"},{"id":"UHJvamVjdC04ZWRjNGI2NC0xZTdjLTRmZGMtOWU5Mi1iY2IyMWNlZWYyNmI=","name":"ops"},{"id":"UHJvamVjdC01YjY3YTcyYy0xYjAxLTQ2ZTEtYWMwOC1iYzM5YWIyYWMzZDQ=","name":"common"}]}}}}}'
+  recorded_at: Wed, 28 Apr 2021 21:33:19 GMT
 recorded_with: VCR 6.0.0
