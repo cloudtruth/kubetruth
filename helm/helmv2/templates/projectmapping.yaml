@@ -1,0 +1,71 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: projectmappings.kubetruth.cloudtruth.com
+  annotations:
+    "helm.sh/hook": crd-install
+spec:
+  group: kubetruth.cloudtruth.com
+  versions:
+    - name: v1
+      served: true
+      storage: true
+  validation:
+    openAPIV3Schema:
+      type: object
+      properties:
+        scope:
+          type: string
+          description: Root or override scope, there can only be one root scope
+          enum: ["root", "override"]
+        project_selector:
+          type: string
+          description: A regexp to limit the projects acted against (client-side).  Supplies any named matches for template evaluation
+        key_selector:
+          type: string
+          description: A regexp to limit the keys acted against (client-side).  Supplies any named matches for template evaluation
+        key_filter:
+          type: string
+          description: Limits the keys fetched to contain the given substring (server-side, api search param)
+        configmap_name_template:
+          type: string
+          description: The template to use in generating ConfigMap names
+        secret_name_template:
+          type: string
+          description: The template to use in generating Secret names
+        namespace_template:
+          type: string
+          description: The template to use in generating namespace names
+        key_template:
+          type: string
+          description: The template to use in generating key names
+        skip:
+          type: boolean
+          description: Skips the generation of resources for the selected projects.  Useful for excluding projects that should only be included into others.
+        skip_secrets:
+          type: boolean
+          description: Prevent transfer of secrets to kubernetes Secrets
+        included_projects:
+          type: array
+          items:
+            type: string
+          description: Include the parameters from other projects into the selected ones
+  additionalPrinterColumns:
+    - name: Scope
+      type: string
+      description: The scope of the project mapping
+      JSONPath: .spec.scope
+    - name: Project
+      type: string
+      description: The selector used to target configuration by project
+      JSONPath: .spec.project_selector
+    - name: Age
+      type: date
+      JSONPath: .metadata.creationTimestamp
+  scope: Namespaced
+  names:
+    plural: projectmappings
+    singular: projectmapping
+    kind: ProjectMapping
+    shortNames:
+      - pm

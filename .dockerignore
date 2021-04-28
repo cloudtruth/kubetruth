@@ -2,3 +2,5 @@
 Dockerfile
 pkg
 tmp
+packaged-char
+old-index.yaml

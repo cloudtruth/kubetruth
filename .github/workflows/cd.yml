@@ -77,6 +77,8 @@ jobs:
         run: |
           source <(cloudtruth -e production template get deploy.helm_package_env)
           helm package helm/kubetruth
+          (cd helm && ./generate-helmv2.sh)
+          helm package helm/tmp/kubetruth
           mkdir packaged-chart/
           mv kubetruth*.tgz packaged-chart/
           maybe_merge=""
@@ -87,10 +89,14 @@ jobs:
 
       - name: Deploy helm chart to S3
         run: |
-          pkg=$(ls packaged-chart/kubetruth*.tgz)
-          pkg=${pkg##*/}
           source <(cloudtruth -e production template get deploy.aws_credentials_env)
           source <(cloudtruth -e production template get deploy.helm_package_env)
           atmos -e production auth_exec aws s3 sync packaged-chart/ s3://${BUCKET_NAME}/${BUCKET_PATH}/
-          atmos -e production auth_exec aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths "/${BUCKET_PATH}/index.yaml" "/${BUCKET_PATH}/${pkg}"
 
+          pkgs=""
+          for pkg in packaged-chart/kubetruth*.tgz; do
+            pkg=${pkg##*/}
+            pkg="/${BUCKET_PATH}/${pkg}"
+            pkgs="${pkgs} ${pkg}"
+          done
+          atmos -e production auth_exec aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths "/${BUCKET_PATH}/index.yaml" ${pkgs}
