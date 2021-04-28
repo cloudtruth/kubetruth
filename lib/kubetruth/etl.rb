@@ -39,8 +39,11 @@ module Kubetruth
       config = load_config
 
       projects = ctapi.project_names
+      project_data = {}
 
       projects.each do |project|
+
+        project_spec = config.spec_for_project(project)
 
         match = project.match(config.root_spec.project_selector)
         if match.nil?
@@ -51,12 +54,6 @@ module Kubetruth
         end
         matches_hash = match.named_captures.symbolize_keys
 
-        project_spec = config.spec_for_project(project)
-        if project_spec.skip
-          logger.info "Skipping project '#{project}'"
-          next
-        end
-
         # Add in matches from project specific selector, the match will always
         # succeed as the spec is either the root spec, or its project_selector
         # has already matched
@@ -65,15 +62,42 @@ module Kubetruth
         matches_hash[:project] = project unless matches_hash.has_key?(:project)
         matches_hash = Hash[*matches_hash.collect {|k, v| [k, v, "#{k}_upcase".to_sym, v.upcase]}.flatten]
 
-        namespace = dns_friendly(project_spec.namespace_template % matches_hash)
-        configmap_name = dns_friendly(project_spec.configmap_name_template % matches_hash)
-        secret_name = dns_friendly(project_spec.secret_name_template % matches_hash)
+        project_data[project] ||= {}
+        project_data[project][:namespace] = dns_friendly(project_spec.namespace_template % matches_hash)
+        project_data[project][:configmap_name] = dns_friendly(project_spec.configmap_name_template % matches_hash)
+        project_data[project][:secret_name] = dns_friendly(project_spec.secret_name_template % matches_hash)
 
         params = get_params(project, project_spec, template_matches: matches_hash)
+        project_data[project][:params] = params
         logger.debug { "Parameters selected for #{project}: #{params.collect {|p| "#{p.original_key} => #{p.key}"}.inspect}" }
+      end
 
+      project_data.each do |project, data|
+
+        project_spec = config.spec_for_project(project)
+        if project_spec.skip
+          logger.info "Skipping project '#{project}'"
+          next
+        end
+
+        # TODO: make project inclusion recursive?
+        included_params = []
+        project_spec.included_projects.each do |included_project|
+          included_data = project_data[included_project]
+          if included_data.nil?
+            logger.warn "Skipping the included project not selected by root selector: #{included_project}"
+            next
+          end
+          included_params.concat(included_data[:params])
+        end
+
+        # constructing the hash will cause any overrides to happen in the right
+        # order (includer wins over last included over first included)
+        params = included_params + data[:params]
         parts = params.group_by(&:secret)
         config_params, secret_params = (parts[false] || []), (parts[true] || [])
+        config_param_hash = params_to_hash(config_params)
+        secret_param_hash = params_to_hash(secret_params)
 
         if dry_run
           logger.info("Performing dry-run")
@@ -89,10 +113,10 @@ module Kubetruth
 
           next
         else
-          apply_config_map(namespace: namespace, name: configmap_name, params: config_params)
+          apply_config_map(namespace: data[:namespace], name: data[:configmap_name], param_hash: config_param_hash)
 
           if ! project_spec.skip_secrets
-            apply_secret(namespace: namespace, name: secret_name, params: secret_params)
+            apply_secret(namespace: data[:namespace], name: data[:secret_name], param_hash: secret_param_hash)
           end
         end
       end
@@ -140,14 +164,16 @@ module Kubetruth
       dns_friendly
     end
 
-    def apply_config_map(namespace:, name:, params:)
+    def params_to_hash(param_list)
+      Hash[param_list.collect {|param| [param.key, param.value]}]
+    end
+
+    def apply_config_map(namespace:, name:, param_hash:)
       logger.info("Applying config map #{namespace}:#{name}")
 
       kapi = kubeapi(namespace)
       kapi.ensure_namespace
       logger.debug { "Existing config maps (ns=#{kapi.namespace}): #{kapi.get_config_map_names}" }
-
-      param_hash = Hash[params.collect {|param| [param.key, param.value]}]
 
       begin
         resource = kapi.get_config_map(name)
@@ -167,14 +193,12 @@ module Kubetruth
       end
     end
 
-    def apply_secret(namespace:, name:, params:)
+    def apply_secret(namespace:, name:, param_hash:)
       logger.info("Applying secrets #{namespace}:#{name}")
 
       kapi = kubeapi(namespace)
       kapi.ensure_namespace
       logger.debug { "Existing secrets (ns=#{kapi.namespace}): #{kapi.get_secret_names}" }
-
-      param_hash = Hash[params.collect {|param| [param.key, param.value]}]
 
       begin
         logger.debug { "Namespace '#{kapi.namespace}'" }

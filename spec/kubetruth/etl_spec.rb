@@ -197,7 +197,7 @@ module Kubetruth
         expect(@kubeapi).to receive(:get_config_map).with("group1").and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
         expect(@kubeapi).to_not receive(:update_config_map)
         expect(@kubeapi).to receive(:create_config_map).with("group1", {"param1" => "value1", "param2" => "value2"})
-        etl.apply_config_map(namespace: '', name: "group1", params: params)
+        etl.apply_config_map(namespace: '', name: "group1", param_hash: etl.params_to_hash(params))
       end
 
       it "calls kube to update config map" do
@@ -211,7 +211,7 @@ module Kubetruth
         expect(@kubeapi).to receive(:under_management?).with(resource).and_return(true)
         expect(@kubeapi).to_not receive(:create_config_map)
         expect(@kubeapi).to receive(:update_config_map).with("group1", {"param1" => "value1", "param2" => "value2"})
-        etl.apply_config_map(namespace: '', name: "group1", params: params)
+        etl.apply_config_map(namespace: '', name: "group1", param_hash: etl.params_to_hash(params))
       end
 
       it "doesn't update config map if data same" do
@@ -225,7 +225,7 @@ module Kubetruth
         expect(@kubeapi).to receive(:under_management?).with(resource).and_return(true)
         expect(@kubeapi).to_not receive(:create_config_map)
         expect(@kubeapi).to_not receive(:update_config_map)
-        etl.apply_config_map(namespace: '', name: "group1", params: params)
+        etl.apply_config_map(namespace: '', name: "group1", param_hash: etl.params_to_hash(params))
       end
 
       it "doesn't update config map if not under management" do
@@ -239,7 +239,7 @@ module Kubetruth
         expect(@kubeapi).to receive(:under_management?).with(resource).and_return(false)
         expect(@kubeapi).to_not receive(:create_config_map)
         expect(@kubeapi).to_not receive(:update_config_map)
-        etl.apply_config_map(namespace: '', name: "group1", params: params)
+        etl.apply_config_map(namespace: '', name: "group1", param_hash: etl.params_to_hash(params))
         expect(Logging.contents).to match(/Skipping config map 'group1'/)
       end
 
@@ -253,7 +253,7 @@ module Kubetruth
         expect(foo_kapi).to receive(:get_config_map).with("group1").and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
         expect(foo_kapi).to_not receive(:update_config_map)
         expect(foo_kapi).to receive(:create_config_map).with("group1", {"param1" => "value1", "param2" => "value2"})
-        etl.apply_config_map(namespace: 'foo', name: "group1", params: params)
+        etl.apply_config_map(namespace: 'foo', name: "group1", param_hash: etl.params_to_hash(params))
       end
 
     end
@@ -270,7 +270,7 @@ module Kubetruth
         expect(@kubeapi).to receive(:get_secret).with("group1").and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
         expect(@kubeapi).to_not receive(:update_secret)
         expect(@kubeapi).to receive(:create_secret).with("group1", {"param1" => "value1", "param2" => "value2"})
-        etl.apply_secret(namespace: '', name: "group1", params: params)
+        etl.apply_secret(namespace: '', name: "group1", param_hash: etl.params_to_hash(params))
       end
 
       it "calls kube to update secret" do
@@ -285,7 +285,7 @@ module Kubetruth
         expect(@kubeapi).to receive(:secret_hash).with(resource).and_return({oldparam: "oldvalue"})
         expect(@kubeapi).to_not receive(:create_secret)
         expect(@kubeapi).to receive(:update_secret).with("group1", {"param1" => "value1", "param2" => "value2"})
-        etl.apply_secret(namespace: '', name: "group1", params: params)
+        etl.apply_secret(namespace: '', name: "group1", param_hash: etl.params_to_hash(params))
       end
 
       it "doesn't update secret if data same" do
@@ -300,7 +300,7 @@ module Kubetruth
         expect(@kubeapi).to receive(:secret_hash).with(resource).and_return({param1: "value1", param2: "value2"})
         expect(@kubeapi).to_not receive(:create_secret)
         expect(@kubeapi).to_not receive(:update_secret)
-        etl.apply_secret(namespace: '', name: "group1", params: params)
+        etl.apply_secret(namespace: '', name: "group1", param_hash: etl.params_to_hash(params))
       end
 
       it "doesn't update secret if not under management=" do
@@ -315,7 +315,7 @@ module Kubetruth
         expect(@kubeapi).to receive(:secret_hash).with(resource).and_return({oldparam: "oldvalue"})
         expect(@kubeapi).to_not receive(:create_secret)
         expect(@kubeapi).to_not receive(:update_secret)
-        etl.apply_secret(namespace: '', name: "group1", params: params)
+        etl.apply_secret(namespace: '', name: "group1", param_hash: etl.params_to_hash(params))
         expect(Logging.contents).to match(/Skipping secret 'group1'/)
       end
 
@@ -328,7 +328,7 @@ module Kubetruth
         expect(foo_kapi).to receive(:get_secret).with("group1").and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
         expect(foo_kapi).to_not receive(:update_secret)
         expect(foo_kapi).to receive(:create_secret).with("group1", {"param1" => "value1", "param2" => "value2"})
-        etl.apply_secret(namespace: 'foo', name: "group1", params: params)
+        etl.apply_secret(namespace: 'foo', name: "group1", param_hash: etl.params_to_hash(params))
       end
 
     end
@@ -348,8 +348,8 @@ module Kubetruth
         ]
         expect(etl.ctapi).to receive(:project_names).and_return(["default"])
         expect(etl).to receive(:get_params).and_return(params)
-        expect(etl).to receive(:apply_config_map).with(namespace: '', name: "default", params: [params[0]])
-        expect(etl).to receive(:apply_secret).with(namespace: '', name: "default", params: [params[1]])
+        expect(etl).to receive(:apply_config_map).with(namespace: '', name: "default", param_hash: etl.params_to_hash([params[0]]))
+        expect(etl).to receive(:apply_secret).with(namespace: '', name: "default", param_hash: etl.params_to_hash([params[1]]))
         etl.apply()
       end
 
@@ -361,7 +361,7 @@ module Kubetruth
         etl.load_config.root_spec.skip_secrets = true
         expect(etl.ctapi).to receive(:project_names).and_return(["default"])
         expect(etl).to receive(:get_params).and_return(params)
-        expect(etl).to receive(:apply_config_map).with(namespace: '', name: "default", params: [params[0]])
+        expect(etl).to receive(:apply_config_map).with(namespace: '', name: "default", param_hash: etl.params_to_hash([params[0]]))
         expect(etl).to_not receive(:apply_secret)
         etl.apply()
       end
@@ -390,8 +390,8 @@ module Kubetruth
         etl.load_config.root_spec.secret_name_template = "s_%{project}"
         expect(etl.ctapi).to receive(:project_names).and_return(["default"])
         expect(etl).to receive(:get_params).and_return(params)
-        expect(etl).to receive(:apply_config_map).with(namespace: 'ns-default', name: "cm-default", params: [params[0]])
-        expect(etl).to receive(:apply_secret).with(namespace: 'ns-default', name: "s-default", params: [params[1]])
+        expect(etl).to receive(:apply_config_map).with(namespace: 'ns-default', name: "cm-default", param_hash: etl.params_to_hash([params[0]]))
+        expect(etl).to receive(:apply_secret).with(namespace: 'ns-default', name: "s-default", param_hash: etl.params_to_hash([params[1]]))
         etl.apply()
       end
 
@@ -412,10 +412,10 @@ module Kubetruth
         ]))
 
         expect(etl.ctapi).to receive(:project_names).and_return(["default", "foo", "bar"])
-        expect(etl).to receive(:get_params).with("default", any_args).and_return([])
-        expect(etl).to_not receive(:get_params).with("foo", any_args)
-        expect(etl).to receive(:get_params).with("bar", any_args).and_return([])
-        allow(etl).to receive(:apply_config_map)
+        allow(etl).to receive(:get_params).and_return([])
+        expect(etl).to receive(:apply_config_map).with(hash_including(name: "default"))
+        expect(etl).to_not receive(:apply_config_map).with(hash_including(name: "foo"))
+        expect(etl).to receive(:apply_config_map).with(hash_including(name: "bar"))
         allow(etl).to receive(:apply_secret)
         etl.apply()
       end
@@ -439,9 +439,39 @@ module Kubetruth
         expect(etl).to receive(:apply_config_map).
           with(namespace: 'bar-foo',
                name: "foo.bar",
-               params: [Parameter.new(key: "foo:bar:foo.bar:param1", original_key: "param1", value: "value1", secret: false),])
+               param_hash: etl.params_to_hash([Parameter.new(key: "foo:bar:foo.bar:param1", original_key: "param1", value: "value1", secret: false),]))
         expect(etl).to receive(:apply_secret)
         etl.apply
+      end
+
+      it "includes projects" do
+        base_params = [
+          Parameter.new(key: "param0", value: "value0", secret: false),
+          Parameter.new(key: "param2", value: "basevalue2", secret: false)
+        ]
+        foo_params = [
+          Parameter.new(key: "param1", value: "value1", secret: false),
+          Parameter.new(key: "param2", value: "value2", secret: false)
+        ]
+
+        expect(etl).to receive(:load_config).and_return(Kubetruth::Config.new([
+          {
+            scope: "root",
+            included_projects: ["base"]
+          },
+          {scope: "override", project_selector: "^base$", skip: true}
+        ]))
+
+        expect(etl.ctapi).to receive(:project_names).and_return(["base", "foo"])
+        expect(etl).to receive(:get_params).with("base", any_args).and_return(base_params)
+        expect(etl).to receive(:get_params).with("foo", any_args).and_return(foo_params)
+        expect(etl).to receive(:apply_config_map).with(namespace: '', name: "foo", param_hash: {
+          "param0" => "value0",
+          "param1" => "value1",
+          "param2" => "value2"
+        })
+        allow(etl).to receive(:apply_secret)
+        etl.apply()
       end
 
     end
