@@ -1,13 +1,16 @@
 #!/usr/bin/env ruby
 
-require 'bundler'
-
 changelog_file = Dir['CHANGELOG*'].first
 entries = ""
 sha_url_format = "../../commit/%h"
 
-helper = Bundler::GemHelper.new(Dir.pwd)
-current_version = "v#{helper.gemspec.version}"
+current_version=ARGV[1]
+if current_version.nil?
+  require 'bundler'
+  helper = Bundler::GemHelper.new(Dir.pwd)
+  current_version = "v#{helper.gemspec.version}"
+end
+
 starting_version = nil
 ending_version = nil, ending_version_name = nil
 

@@ -76,27 +76,26 @@ jobs:
       - name: Package helm chart
         run: |
           source <(cloudtruth -e production template get deploy.helm_package_env)
-          helm package helm/kubetruth
-          (cd helm && ./generate-helmv2.sh)
-          helm package helm/tmp/kubetruth
-          mkdir packaged-chart/
-          mv kubetruth*.tgz packaged-chart/
+          mkdir -p tmp/packaged-chart/
+          (cd tmp/packaged-chart && helm package ../../helm/kubetruth)
+          ./bin/generate-helmv2.sh
+          (cd tmp/packaged-chart && helm package ../../tmp/helmv2/kubetruth)
           maybe_merge=""
-          if curl -sfL ${HELM_REPO_URL}/index.yaml -o old-index.yaml; then
-            maybe_merge="--merge old-index.yaml"
+          if curl -sfL ${HELM_REPO_URL}/index.yaml -o tmp/old-index.yaml; then
+            maybe_merge="--merge tmp/old-index.yaml"
           fi
-          helm repo index ${maybe_merge} --url ${HELM_REPO_URL} packaged-chart/
+          helm repo index ${maybe_merge} --url ${HELM_REPO_URL} tmp/packaged-chart/
 
       - name: Deploy helm chart to S3
         run: |
           source <(cloudtruth -e production template get deploy.aws_credentials_env)
           source <(cloudtruth -e production template get deploy.helm_package_env)
-          atmos -e production auth_exec aws s3 sync packaged-chart/ s3://${BUCKET_NAME}/${BUCKET_PATH}/
+          atmos -e production auth_exec aws s3 sync tmp/packaged-chart/ s3://${BUCKET_NAME}/${BUCKET_PATH}/
 
-          pkgs=""
-          for pkg in packaged-chart/kubetruth*.tgz; do
-            pkg=${pkg##*/}
-            pkg="/${BUCKET_PATH}/${pkg}"
-            pkgs="${pkgs} ${pkg}"
+          assets=""
+          for asset in tmp/packaged-chart/*; do
+            asset=${asset##*/}
+            asset="/${BUCKET_PATH}/${asset}"
+            assets="${assets} ${asset}"
           done
-          atmos -e production auth_exec aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths "/${BUCKET_PATH}/index.yaml" ${pkgs}
+          atmos -e production auth_exec aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths ${assets}
