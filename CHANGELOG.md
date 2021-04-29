@@ -1,3 +1,29 @@
+0.3.0 (04/29/2021)
+------------------
+
+#### Notes on major changes
+
+* Added support for CloudTruth Projects, with the ability to include data from 
+* \[breaking change] Changed the generation of resource names to be based around the CloudTruth projects rather than a regex match against CloudTruth parameters.  You can still use named matches from regexes in templates used for generating resource names. 
+* \[breaking change] Now using a CRD to configure behavior instead of helm configuration properties.  Helm properties are still used to control startup parameters.
+* \[breaking change] Now using liquid for templates, `%{property}` => `{{property}}`
+
+#### Full changelog
+
+* cleanup release scripts [dab6015](../../commit/dab6015)
+* update cli version [d9bbe0a](../../commit/d9bbe0a)
+* mention overwrite protection [ba848c1](../../commit/ba848c1)
+* update to use CLOUDTRUTH_API_KEY everywhere like cli does [7600981](../../commit/7600981)
+* use liquid for template evaluation [9ef2fd1](../../commit/9ef2fd1)
+* interrupt polling sleep on CRD changes [d3aaaa5](../../commit/d3aaaa5)
+* don't cache projects since they are likely to change [4f91947](../../commit/4f91947)
+* add project inclusion [7bfebf1](../../commit/7bfebf1)
+* fix kube entity name conversion [3183535](../../commit/3183535)
+* add a helmv2 specific chart [2ce7a47](../../commit/2ce7a47)
+* add a helmv2 specific chart [2c997f7](../../commit/2c997f7)
+* Configure via a CRD instead of a yaml file [50ffb44](../../commit/50ffb44)
+* Add support for cloudtruth projects with the ability to merge data across projects, removed the regex dispatching from keys to configmap/secret names, moved config to a yaml file within a kubetruth configmap [822d7e1](../../commit/822d7e1)
+
 0.2.2 (04/15/2021)
 ------------------
 

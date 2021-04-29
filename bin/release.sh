@@ -26,7 +26,7 @@ fi
 bundle
 ./bin/changelog $version
 
-echo git ci -m"Updated changelog" .
+echo git ci -m\"Updated changelog\" .
 echo git push
-echo git tag -f "v${version}"
+echo git tag -f \"v${version}\"
 echo git push -f --tags
