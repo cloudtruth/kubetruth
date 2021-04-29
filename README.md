@@ -37,7 +37,11 @@ Parameterize the helm install with `--set appSettings.**` to control how kubetru
 | appSettings.pollingInterval | Interval to poll cloudtruth api for changes | integer | 300 | no |
 | appSettings.debug | Debug logging | flag | n/a | no |
 
-By default, Kubetruth maps the parameters from CloudTruth Projects into ConfigMaps and Secrets of the same names as the Projects. 
+By default, Kubetruth maps the parameters from CloudTruth Projects into
+ConfigMaps and Secrets of the same names as the Projects. Kubetruth will not
+overwrite any existing ConfigMaps and Secrets that do not have the label
+`app.kubernetes.io/managed-by: kubetruth`.  If you have some that you want
+kubetruth to manage, then either add the label or delete them manually.
 
 For example, for a CloudTruth layout that looks like:
 
