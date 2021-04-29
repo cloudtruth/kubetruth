@@ -6,7 +6,7 @@ module Kubetruth
 
   describe "CtApi", :vcr do
 
-    let(:ctapi) { ::Kubetruth::CtApi(api_key: ENV['CT_API_KEY']) }
+    let(:ctapi) { ::Kubetruth::CtApi(api_key: ENV['CLOUDTRUTH_API_KEY']) }
 
     describe "class definition", :vcr do
 

@@ -4,7 +4,7 @@ on: push
 
 env:
   CI: true
-  CT_API_KEY: ${{ secrets.CT_API_KEY }}
+  CLOUDTRUTH_API_KEY: ${{ secrets.CLOUDTRUTH_API_KEY }}
 
 jobs:
 

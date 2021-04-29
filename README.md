@@ -230,7 +230,7 @@ To install and run via helm in a local cluster:
 #
 docker build -t kubetruth . && helm install \
     --set image.repository=kubetruth --set image.pullPolicy=Never --set image.tag=latest \
-    --set appSettings.debug=true --set appSettings.apiKey=$CT_API_KEY --set appSettings.environment=development \
+    --set appSettings.debug=true --set appSettings.apiKey=$CLOUDTRUTH_API_KEY --set appSettings.environment=development \
     kubetruth ./helm/kubetruth/
 ```
 

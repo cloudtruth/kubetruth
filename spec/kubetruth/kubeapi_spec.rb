@@ -36,7 +36,7 @@ module Kubetruth
         check_deps
         teardown
         root = File.expand_path('../..', __dir__)
-        sysrun("helm install --create-namespace --namespace #{namespace} --set appSettings.apiKey=#{ENV['CT_API_KEY']} #{helm_name} #{root}/helm/kubetruth/")
+        sysrun("helm install --create-namespace --namespace #{namespace} --set appSettings.apiKey=#{ENV['CLOUDTRUTH_API_KEY']} #{helm_name} #{root}/helm/kubetruth/")
       end
 
       def token

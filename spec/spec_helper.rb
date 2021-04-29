@@ -78,7 +78,7 @@ VCR.configure do |c|
 
   string_with_escapes = '"((\\\\.|[^\"])*)"'
   c.filter_sensitive_data('"parameterValue":"<PARAM_VALUE>"') { /"parameterValue":#{string_with_escapes}/ }
-  c.filter_sensitive_data('"CT_API_KEY":"<API_KEY>"') { /"CT_API_KEY":#{string_with_escapes}/ }
+  c.filter_sensitive_data('"CLOUDTRUTH_API_KEY":"<API_KEY>"') { /"CLOUDTRUTH_API_KEY":#{string_with_escapes}/ }
 end
 
 

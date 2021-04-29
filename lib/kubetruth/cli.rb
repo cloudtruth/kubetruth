@@ -23,7 +23,7 @@ module Kubetruth
 
     option "--api-key",
            'APIKEY', "The cloudtruth api key",
-           environment_variable: 'CT_API_KEY',
+           environment_variable: 'CLOUDTRUTH_API_KEY',
            required: true
 
     option "--kube-namespace",
