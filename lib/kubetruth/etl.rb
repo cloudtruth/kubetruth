@@ -3,13 +3,37 @@ require_relative 'config'
 require_relative 'ctapi'
 require_relative 'kubeapi'
 require 'active_support/core_ext/hash/keys'
+require 'liquid'
 
 module Kubetruth
   class ETL
     include GemLogger::LoggerSupport
 
-    # From kubernetes error message
-    DNS_VALIDATION_RE = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/
+    module CustomLiquidFilters
+
+      # From kubernetes error message
+      DNS_VALIDATION_RE = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/
+      ENV_VALIDATION_RE = /^[A-Z_][A-Z0-9_]*$/
+
+      def dns_safe(str)
+        return str if str =~ DNS_VALIDATION_RE
+        result = str.to_s.downcase.gsub(/[^-.a-z0-9)]+/, '-')
+        result = result.gsub(/(^[^a-z0-9]+)|([^a-z0-9]+$)/, '')
+        result
+      end
+
+      def env_safe(str)
+        return str if str =~ ENV_VALIDATION_RE
+        result = str.upcase
+        result = result.gsub(/(^\W+)|(\W+$)/, '')
+        result = result.gsub(/\W+/, '_')
+        result = result.sub(/^\d/, '_\&')
+        result
+      end
+
+    end
+
+    Liquid::Template.register_filter(CustomLiquidFilters)
 
     def initialize(ct_context:, kube_context:, dry_run: false)
       @ct_context = ct_context
@@ -77,6 +101,10 @@ module Kubetruth
       end
     end
 
+    def template_eval(tmpl, **kwargs)
+      Liquid::Template.parse(tmpl).render(**kwargs.stringify_keys)
+    end
+
     def load_config
       mappings = kubeapi(@kube_context[:namespace]).get_project_mappings
       Kubetruth::Config.new(mappings)
@@ -112,9 +140,9 @@ module Kubetruth
         matches_hash = Hash[*matches_hash.collect {|k, v| [k, v, "#{k}_upcase".to_sym, v.upcase]}.flatten]
 
         project_data[project] ||= {}
-        project_data[project][:namespace] = dns_friendly(project_spec.namespace_template % matches_hash)
-        project_data[project][:configmap_name] = dns_friendly(project_spec.configmap_name_template % matches_hash)
-        project_data[project][:secret_name] = dns_friendly(project_spec.secret_name_template % matches_hash)
+        project_data[project][:namespace] = template_eval(project_spec.namespace_template, **matches_hash)
+        project_data[project][:configmap_name] = template_eval(project_spec.configmap_name_template, **matches_hash)
+        project_data[project][:secret_name] = template_eval(project_spec.secret_name_template, **matches_hash)
 
         params = get_params(project, project_spec, template_matches: matches_hash)
         project_data[project][:params] = params
@@ -192,7 +220,7 @@ module Kubetruth
 
           logger.debug {"Pattern matches '#{param.key}' with: #{matches_hash}"}
 
-          key = project_spec.key_template % matches_hash
+          key = template_eval(project_spec.key_template, **matches_hash)
           param.original_key, param.key = param.key, key
 
           result << param
@@ -202,13 +230,6 @@ module Kubetruth
       end
 
       result
-    end
-
-    def dns_friendly(str)
-      return str if str =~ DNS_VALIDATION_RE
-      dns_friendly = str.to_s.downcase.gsub(/[^-.a-z0-9)]+/, '-')
-      dns_friendly = dns_friendly.gsub(/(^[^a-z0-9]+)|([^a-z0-9]+$)/, '')
-      dns_friendly
     end
 
     def params_to_hash(param_list)

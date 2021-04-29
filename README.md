@@ -118,13 +118,23 @@ Note that Kubetruth watches for changes to ProjectMappings, so touching any of
 them wakes it up from a polling sleep.  This makes it quick and easy to test out
 configuration changes without having a short polling interval.
 
+To customize how things are named, edit the `*_template` properties in the
+ProjectMappings.  These templates are processed using the [Liquid template
+language](https://shopify.github.io/liquid/), and can reference the `project`
+the `key` or any other named references from the `_selector` regexes.  In
+addition to the built in liquid filters, kubetruth also define a few custom
+ones:
+
+ * dns_safe - ensures the string is safe for use as a kubernetes resource name (i.e. Namespace/ConfigMap/Secret names)
+ * env_safe - ensures the string is safe for setting as a shell environment variable
+
 ### Example Config
 
 The `projectmapping` resource has a shortname of `pm` for convenience when using kubectl.
 
 To create kubernetes Resources in namespaces named after each Project:
 ```
-kubectl patch pm kubetruth-root --type json --patch '[{"op": "replace", "path": "/spec/namespace_template", "value": "%{project}"}]'
+kubectl patch pm kubetruth-root --type json --patch '[{"op": "replace", "path": "/spec/namespace_template", "value": "{{project | dns_safe}}"}]'
 ```
 
 To include the parameters from a Project named `Base` into all other projects, without creating Resources for `Base` itself:
@@ -195,15 +205,15 @@ Kind:         ProjectMapping
 Metadata:
   ...
 Spec:
-  configmap_name_template:  %{project}
+  configmap_name_template:  {{project}}
   included_projects:
   key_filter:            
   key_selector:          
-  key_template:          %{key}
+  key_template:          {{key}}
   namespace_template:    
   project_selector:      
   Scope:                 root
-  secret_name_template:  %{project}
+  secret_name_template:  {{project}}
   Skip:                  false
   skip_secrets:          false
 Events:                  <none>

@@ -30,5 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'clamp'
   spec.add_dependency 'graphql-client'
   spec.add_dependency 'kubeclient'
+  spec.add_dependency 'liquid'
 
 end

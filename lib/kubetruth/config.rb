@@ -25,10 +25,10 @@ module Kubetruth
       project_selector: '',
       key_selector: '',
       key_filter: '',
-      configmap_name_template: '%{project}',
-      secret_name_template: '%{project}',
+      configmap_name_template: '{{project | dns_safe}}',
+      secret_name_template: '{{project | dns_safe}}',
       namespace_template: '',
-      key_template: '%{key}',
+      key_template: '{{key}}',
       skip: false,
       skip_secrets: false,
       included_projects: []

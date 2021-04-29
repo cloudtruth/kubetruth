@@ -7,6 +7,7 @@ module Kubetruth
     let(:init_args) {{
       ct_context: {}, kube_context: {}
     }}
+    let(:etl) { described_class.new(init_args) }
 
     def kubeapi(ns)
       kapi = double(Kubetruth::KubeApi)
@@ -64,26 +65,66 @@ module Kubetruth
 
     end
 
-    describe "#dns_friendly" do
+    describe "CustomLiquidFilters" do
 
-      it "cleans up name" do
-        etl = described_class.new(init_args)
-        expect(etl.dns_friendly("foo_bar")).to eq("foo-bar")
+      include Kubetruth::ETL::CustomLiquidFilters
+
+      describe "#dns_safe" do
+
+        it "returns if already valid" do
+          str = "foo"
+          expect(dns_safe(str)).to equal(str)
+        end
+
+        it "cleans up name" do
+          expect(dns_safe("foo_bar")).to eq("foo-bar")
+        end
+
+        it "forces lower case" do
+          expect(dns_safe("Foo_Bar")).to eq("foo-bar")
+        end
+
+        it "simplifies successive non-chars" do
+          expect(dns_safe("foo_&!bar")).to eq("foo-bar")
+        end
+
+        it "strips leading/trailing non-chars" do
+          expect(dns_safe("_foo!bar_")).to eq("foo-bar")
+        end
+
       end
 
-      it "forces lower case" do
-        etl = described_class.new(init_args)
-        expect(etl.dns_friendly("Foo_Bar")).to eq("foo-bar")
-      end
+      describe "#env_safe" do
 
-      it "simplifies successive non-chars" do
-        etl = described_class.new(init_args)
-        expect(etl.dns_friendly("foo_&!bar")).to eq("foo-bar")
-      end
+        it "returns if already valid" do
+          str = "FOO"
+          expect(env_safe(str)).to equal(str)
+        end
 
-      it "strips leading/trailing non-chars" do
-        etl = described_class.new(init_args)
-        expect(etl.dns_friendly("_foo!bar_")).to eq("foo-bar")
+        it "cleans up name" do
+          expect(env_safe("foo-bar")).to eq("FOO_BAR")
+        end
+
+        it "forces upper case" do
+          expect(env_safe("Foo")).to eq("FOO")
+        end
+
+        it "precedes leading digit with underscore" do
+          expect(env_safe("9foo")).to eq("_9FOO")
+        end
+
+        it "simplifies successive non-chars" do
+          expect(env_safe("foo-&!bar")).to eq("FOO_BAR")
+        end
+
+        it "preserves successive underscores" do
+          expect(env_safe("__foo__bar__")).to eq("__FOO__BAR__")
+        end
+
+        it "strips leading/trailing non-chars" do
+          expect(env_safe("-foo!bar-")).to eq("FOO_BAR")
+        end
+
       end
 
     end
@@ -185,6 +226,27 @@ module Kubetruth
 
     end
 
+    describe "#template_eval" do
+
+      it "works with plain strings" do
+        expect(etl.template_eval(nil)).to eq("")
+        expect(etl.template_eval("")).to eq("")
+        expect(etl.template_eval("foo")).to eq("foo")
+      end
+
+      it "substitutes from kwargs" do
+        expect(etl.template_eval("hello {{foo}}", "foo" => "bar")).to eq("hello bar")
+        expect(etl.template_eval("hello {{foo}}", foo: "bar")).to eq("hello bar")
+      end
+
+
+      it "has custom filters" do
+        expect(etl.template_eval("hello {{foo | dns_safe}}", foo: "BAR")).to eq("hello bar")
+        expect(etl.template_eval("hello {{foo | env_safe}}", foo: "bar")).to eq("hello BAR")
+      end
+
+    end
+
     describe "#load_config" do
 
       it "loads config" do
@@ -198,7 +260,6 @@ module Kubetruth
 
     describe "#get_params" do
 
-      let(:etl) { described_class.new(init_args) }
       let(:project) { "foo" }
       let(:project_spec) { etl.load_config.spec_for_project(project) }
 
@@ -231,7 +292,7 @@ module Kubetruth
             Parameter.new(key: "bar.key2", value: "value2", secret: false)
         ])
         project_spec.key_selector = /^(?<prefix>.*)\.(?<key>.*)$/
-        project_spec.key_template = "%{key}_%{prefix}_%{project}"
+        project_spec.key_template = "{{key}}_{{prefix}}_{{project}}"
         params = etl.get_params(project, project_spec, template_matches: {project: "myproj"})
         expect(params.size).to eq(2)
         expect(params).to eq([
@@ -245,7 +306,7 @@ module Kubetruth
           Parameter.new(key: "key1", value: "value1", secret: false),
         ])
         project_spec.key_selector = //
-        project_spec.key_template = "my_%{key}"
+        project_spec.key_template = "my_{{key}}"
         params = etl.get_params(project, project_spec)
         expect(params).to eq([
                                Parameter.new(original_key: "key1", key: "my_key1", value: "value1", secret: false),
@@ -257,7 +318,7 @@ module Kubetruth
           Parameter.new(key: "svc.name1.key1", value: "value1", secret: false),
         ])
         project_spec.key_selector = /^(?<prefix>[^\.]+)\.(?<name>[^\.]+)\.(?<key>.*)/
-        project_spec.key_template = "start.%{key}.%{name}.%{prefix}.middle.%{key_upcase}.%{name_upcase}.%{prefix_upcase}.end"
+        project_spec.key_template = "start.{{key}}.{{name}}.{{prefix}}.middle.{{key_upcase}}.{{name_upcase}}.{{prefix_upcase}}.end"
         params = etl.get_params(project, project_spec)
         expect(params).to eq([
                                Parameter.new(original_key: "svc.name1.key1", key: "start.key1.name1.svc.middle.KEY1.NAME1.SVC.end", value: "value1", secret: false)
@@ -283,8 +344,6 @@ module Kubetruth
     end
 
     describe "#apply_config_map" do
-
-      let(:etl) { described_class.new(init_args) }
 
       it "calls kube to create new config map" do
         params = [
@@ -356,8 +415,6 @@ module Kubetruth
     end
 
     describe "#apply_secret" do
-
-      let(:etl) { described_class.new(init_args) }
 
       it "calls kube to create new secret" do
         params = [
@@ -432,8 +489,6 @@ module Kubetruth
 
     describe "#apply" do
 
-      let(:etl) { described_class.new(init_args) }
-
       before(:each) do
         allow(etl).to receive(:load_config).and_return(Kubetruth::Config.new([]))
       end
@@ -478,21 +533,6 @@ module Kubetruth
         expect(Logging.contents).to match("Performing dry-run")
       end
 
-      it "makes name and namespace dns safe" do
-        params = [
-          Parameter.new(key: "param1", value: "value1", secret: false),
-          Parameter.new(key: "param2", value: "value2", secret: true)
-        ]
-        etl.load_config.root_spec.namespace_template = "ns_%{project}"
-        etl.load_config.root_spec.configmap_name_template = "cm_%{project}"
-        etl.load_config.root_spec.secret_name_template = "s_%{project}"
-        expect(etl.ctapi).to receive(:project_names).and_return(["default"])
-        expect(etl).to receive(:get_params).and_return(params)
-        expect(etl).to receive(:apply_config_map).with(namespace: 'ns-default', name: "cm-default", param_hash: etl.params_to_hash([params[0]]))
-        expect(etl).to receive(:apply_secret).with(namespace: 'ns-default', name: "s-default", param_hash: etl.params_to_hash([params[1]]))
-        etl.apply()
-      end
-
       it "skips projects when selector fails" do
         etl.load_config.root_spec.project_selector = /oo/
         expect(etl.ctapi).to receive(:project_names).and_return(["default", "foo", "bar"])
@@ -522,9 +562,9 @@ module Kubetruth
         expect(etl).to receive(:load_config).and_return(Kubetruth::Config.new([
           {
             scope: "root",
-            namespace_template: "%{child_match}-%{root_match}",
+            namespace_template: "{{child_match}}-{{root_match}}",
             project_selector: "^(?<root_match>[^.]+)",
-            key_template: "%{root_match}:%{child_match}:%{project}:%{key}"
+            key_template: "{{root_match}}:{{child_match}}:{{project}}:{{key}}"
           },
           {scope: "override", project_selector: "(?<child_match>[^.]+)$"}
         ]))
