@@ -24,9 +24,9 @@ jobs:
         uses: eregon/use-ruby-action@master # this will use by default the .ruby-version file
 
       - name: Install cloudtruth cli
-        run: |
-          curl -Lsf https://github.com/cloudtruth/cloudtruth-cli/releases/download/0.1.0/cloudtruth_0.1.0_amd64.deb  -o /tmp/cloudtruth.deb
-          sudo dpkg -i /tmp/cloudtruth.deb
+        uses: cloudtruth/cli-action@v1
+        with:
+          version: 0.4.0
 
       - run: cloudtruth -e production template get deploy.coveralls_yml > .coveralls.yml
 
