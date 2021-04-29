@@ -282,6 +282,55 @@ module Kubetruth
         expect(crds.first.keys.sort).to eq(Kubetruth::Config::ProjectSpec.new.to_h.keys.sort)
       end
 
+      it "can watch project mappings" do
+        skip("only works when vcr/webmock disabled")
+
+        test_mapping_name = "test-mapping-watch"
+        mapping_data = <<~EOF
+          apiVersion: kubetruth.cloudtruth.com/v1
+          kind: ProjectMapping
+          metadata:
+              name: #{test_mapping_name}
+          spec:
+              scope: override
+              project_selector: "^notme$"
+        EOF
+
+        # p kubeapi.crdclient.get_project_mappings(namespace: namespace).resourceVersion
+        # p kubeapi.crdclient.get_project_mappings(namespace: namespace).collect {|r| r.metadata.name }
+        # p kubeapi.get_project_mappings
+
+        watcher = kubeapi.watch_project_mappings
+        begin
+          Thread.new do
+            watcher.each do |notice|
+              # p notice.type
+              # p notice.object.metadata.name
+              # p notice.object
+              expect(notice.object.metadata.name).to eq(test_mapping_name)
+              break
+            end
+          end
+
+          sleep(1)
+
+          # need an admin token for this to work or temporarily add to
+          # projectmappings permissions on installed role
+          resource = Kubeclient::Resource.new
+          resource.metadata = {}
+          resource.metadata.name = test_mapping_name
+          resource.metadata.namespace = namespace
+          resource.spec = {scope: "override", project_selector: "^notme$"}
+          kubeapi.crdclient.create_project_mapping(resource)
+
+          # sysrun(%Q[minikube kubectl -- --namespace #{namespace} patch pm kubetruth-test-app-root --type json --patch '[{"op": "replace", "path": "/spec/included_projects", "value": ["Base"]}]'])
+          # sysrun(%Q[minikube kubectl -- --namespace #{namespace} apply -f -], stdin_data: mapping_data)
+          sleep(1)
+        ensure
+          watcher.finish
+        end
+      end
+
     end
 
   end

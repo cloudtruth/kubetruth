@@ -137,5 +137,12 @@ module Kubetruth
     def get_project_mappings
       crdclient.get_project_mappings(namespace: namespace).collect(&:spec).collect(&:to_h)
     end
+
+    def watch_project_mappings(&block)
+      existing = crdclient.get_project_mappings(namespace: namespace)
+      collection_version = existing.resourceVersion
+      crdclient.watch_project_mappings(namespace: namespace, resource_version: collection_version, &block)
+    end
+
   end
 end

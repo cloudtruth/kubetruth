@@ -114,6 +114,10 @@ the standard ways, e.g. `kubectl edit projectmapping kubetruth-root`.  The
 its `project_selector` pattern against the CloudTruth project names already
 selected by the root `project_selector`.
 
+Note that Kubetruth watches for changes to ProjectMappings, so touching any of
+them wakes it up from a polling sleep.  This makes it quick and easy to test out
+configuration changes without having a short polling interval.
+
 ### Example Config
 
 The `projectmapping` resource has a shortname of `pm` for convenience when using kubectl.
@@ -138,6 +142,8 @@ spec:
     skip: true
 EOF
 ```
+Note that project imports are non-recursive, so if A imports B and B imports C,
+then A will only get B's parameters.
 
 To override the naming of kubernetes Resources on a per-Project basis:
 ```

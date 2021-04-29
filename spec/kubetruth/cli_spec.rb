@@ -94,6 +94,7 @@ module Kubetruth
             --kube-token kt
             --kube-url ku
             --dry-run
+            --polling-interval 27
         ]
         etl = double(ETL)
         expect(ETL).to receive(:new).with(ct_context: {
@@ -105,17 +106,10 @@ module Kubetruth
                                               namespace: "kn",
                                               token: "kt",
                                               api_url: "ku"
-                                          }).and_return(etl)
-        expect(etl).to receive(:apply).with(dry_run: true)
+                                          },
+                                          dry_run: true).and_return(etl)
+        expect(etl).to receive(:with_polling).with(27)
         cli.run(args)
-      end
-
-      it "polls at interval" do
-        etl = double(ETL)
-        expect(ETL).to receive(:new).and_return(etl)
-        expect(etl).to receive(:apply)
-        expect(cli).to receive(:sleep).with(27).and_raise(SystemExit)
-        expect { cli.run(%w[--api-key abc123 --polling-interval 27]) }.to raise_error(SystemExit)
       end
 
     end

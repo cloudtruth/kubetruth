@@ -89,23 +89,10 @@ module Kubetruth
           api_url: kube_url
       }
 
-      etl = ETL.new(ct_context: ct_context, kube_context: kube_context)
+      etl = ETL.new(ct_context: ct_context, kube_context: kube_context, dry_run: dry_run?)
 
-      while true
-
-        begin
-          etl.apply(dry_run: dry_run?)
-        rescue => e
-          logger.log_exception(e, "Failure while applying config transforms")
-        end
-
-        logger.debug("Poller sleeping for #{polling_interval}")
-        if dry_run?
-          break
-        else
-          sleep polling_interval
-        end
-
+      etl.with_polling(polling_interval) do
+        etl.apply
       end
 
     end

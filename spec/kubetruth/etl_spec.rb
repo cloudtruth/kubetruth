@@ -88,6 +88,103 @@ module Kubetruth
 
     end
 
+    describe "#interruptible_sleep" do
+
+      it "runs for interval without interruption" do
+        etl = described_class.new(init_args)
+        t = Time.now.to_f
+        etl.interruptible_sleep(0.2)
+        expect(Time.now.to_f - t).to be >= 0.2
+      end
+
+      it "can be interrupted" do
+        etl = described_class.new(init_args)
+        Thread.new do
+          sleep 0.1
+          etl.interrupt_sleep
+        end
+        t = Time.now.to_f
+        etl.interruptible_sleep(0.5)
+        expect(Time.now.to_f - t).to be < 0.2
+      end
+
+    end
+
+    describe "#with_polling" do
+
+      class ForceExit < Exception; end
+
+      it "runs with an interval" do
+        etl = described_class.new(init_args)
+
+        watcher = double()
+        expect(@kubeapi).to receive(:watch_project_mappings).and_return(watcher).twice
+        expect(watcher).to receive(:each).twice
+        expect(watcher).to receive(:finish).twice
+        expect(etl).to receive(:apply).twice
+
+        count = 0
+        expect(etl).to receive(:interruptible_sleep).
+          with(0.2).twice { |m, *args| count += 1; raise ForceExit if count > 1 }
+
+        begin
+          etl.with_polling(0.2) do
+            etl.apply
+          end
+        rescue ForceExit
+        end
+        expect(count).to eq(2)
+
+      end
+
+      it "isolates run loop from block failures" do
+        etl = described_class.new(init_args)
+
+        watcher = double()
+        expect(@kubeapi).to receive(:watch_project_mappings).and_return(watcher).twice
+        expect(watcher).to receive(:each).twice
+        expect(watcher).to receive(:finish).twice
+        expect(etl).to receive(:apply).and_raise("fail").twice
+
+        count = 0
+        expect(etl).to receive(:interruptible_sleep).
+          with(0.2).twice { |m, *args| count += 1; raise ForceExit if count > 1 }
+
+        begin
+          etl.with_polling(0.2) do
+            etl.apply
+          end
+        rescue ForceExit
+        end
+        expect(count).to eq(2)
+
+      end
+
+      it "interrupts sleep on watch event" do
+        etl = described_class.new(init_args)
+
+        watcher = double()
+        notice = double("notice", type: "UPDATED", object: double("kube_resource"))
+        expect(@kubeapi).to receive(:watch_project_mappings).and_return(watcher)
+        expect(watcher).to receive(:each).and_yield(notice)
+        expect(watcher).to receive(:finish)
+        expect(etl).to receive(:apply)
+        expect(etl).to receive(:interrupt_sleep)
+
+        expect(etl).to receive(:interruptible_sleep).
+          with(0.2) { |m, *args| sleep(0.2); raise ForceExit }
+
+        begin
+          etl.with_polling(0.2) do
+            etl.apply
+          end
+        rescue ForceExit
+        end
+
+      end
+
+    end
+
     describe "#load_config" do
 
       it "loads config" do
@@ -371,12 +468,13 @@ module Kubetruth
           Parameter.new(key: "param1", value: "value1", secret: false),
           Parameter.new(key: "param2", value: "value2", secret: true)
         ]
+        etl = described_class.new(init_args.merge(dry_run: true))
         etl.load_config.root_spec.skip_secrets = true
         expect(etl.ctapi).to receive(:project_names).and_return(["default"])
         expect(etl).to receive(:get_params).and_return(params)
         expect(etl).to_not receive(:apply_config_map)
         expect(etl).to_not receive(:apply_secret)
-        etl.apply(dry_run: true)
+        etl.apply
         expect(Logging.contents).to match("Performing dry-run")
       end
 

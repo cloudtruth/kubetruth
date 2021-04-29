@@ -51,7 +51,7 @@ spec:
                   type: array
                   items:
                     type: string
-                  description: Include the parameters from other projects into the selected ones
+                  description: Include the parameters from other projects into the selected ones.  This is non-recursive, so if A imports B and B imports C, then A will only get B's parameters
               required:
                 - scope
       additionalPrinterColumns:

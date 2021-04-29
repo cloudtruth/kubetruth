@@ -11,9 +11,10 @@ module Kubetruth
     # From kubernetes error message
     DNS_VALIDATION_RE = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/
 
-    def initialize(ct_context:, kube_context:)
+    def initialize(ct_context:, kube_context:, dry_run: false)
       @ct_context = ct_context
       @kube_context = kube_context
+      @dry_run = dry_run
       @kubeapis = {}
     end
 
@@ -30,12 +31,60 @@ module Kubetruth
       @kubeapis[namespace] ||= KubeApi.new(**@kube_context.merge(namespace: namespace))
     end
 
+    def interruptible_sleep(interval)
+      @sleeper = Thread.current
+      Kernel.sleep interval
+    end
+
+    def interrupt_sleep
+      Thread.new { @sleeper&.run }
+    end
+
+    def with_polling(interval, &block)
+      while true
+
+        begin
+          watcher = kubeapi(@kube_context[:namespace]).watch_project_mappings
+
+          begin
+            thr = Thread.new do
+              logger.debug "Created watcher for CRD"
+              watcher.each do |notice|
+                logger.debug {"Interrupting polling sleep, CRD watcher woke up for: #{notice}"}
+                interrupt_sleep
+                break
+              end
+              logger.debug "CRD watcher exiting"
+            end
+
+            begin
+              block.call
+            rescue => e
+              logger.log_exception(e, "Failure while applying config transforms")
+            end
+
+            logger.debug("Poller sleeping for #{interval}")
+            interruptible_sleep(interval)
+          ensure
+            watcher.finish
+            thr.join
+          end
+
+        rescue => e
+          logger.log_exception(e, "Failure in watch/polling logic")
+        end
+
+      end
+    end
+
     def load_config
       mappings = kubeapi(@kube_context[:namespace]).get_project_mappings
       Kubetruth::Config.new(mappings)
     end
 
-    def apply(dry_run: false)
+    def apply
+      logger.warn("Performing dry-run") if @dry_run
+
       config = load_config
 
       projects = ctapi.project_names
@@ -99,9 +148,7 @@ module Kubetruth
         config_param_hash = params_to_hash(config_params)
         secret_param_hash = params_to_hash(secret_params)
 
-        if dry_run
-          logger.info("Performing dry-run")
-
+        if @dry_run
           logger.info("Config maps that would be created are:")
           logger.info(config_params.pretty_print_inspect)
 
