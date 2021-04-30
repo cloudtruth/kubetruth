@@ -1,6 +1,9 @@
 require "bundler/setup"
 require "kubetruth"
 require "kubetruth/logging"
+# Need to setup logging before loading any other files
+Kubetruth::Logging.setup_logging(level: :info, color: false)
+
 require "open3"
 
 if ENV['CI']

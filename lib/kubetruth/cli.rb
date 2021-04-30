@@ -1,4 +1,7 @@
 require_relative 'logging'
+# Need to setup logging before loading any other files
+Kubetruth::Logging.setup_logging(level: :info, color: false)
+
 require_relative 'etl'
 require 'clamp'
 
@@ -69,7 +72,7 @@ module Kubetruth
       level = :info
       level = :debug if debug?
       level = :error if quiet?
-      Logging.setup_logging(level: level, color: color?)
+      Kubetruth::Logging.setup_logging(level: level, color: color?)
     end
 
     def execute

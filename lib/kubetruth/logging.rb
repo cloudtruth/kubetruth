@@ -74,11 +74,10 @@ module Kubetruth
 
       ::Logging.logger.root.level = level
       appenders = []
-      detail_pattern = '[%d] %-5l %c{2} %m\n'
-      plain_pattern = '%m\n'
+      detail_pattern = '[%d] %-5l %c{1} %m\n'
 
       pattern_options = {
-          pattern: plain_pattern
+          pattern: detail_pattern
       }
       if color
         pattern_options[:color_scheme] = 'bright'
