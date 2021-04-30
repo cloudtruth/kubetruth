@@ -8,7 +8,7 @@ module Kubetruth
   def self.CtApi(api_key:, api_url: nil)
     api_url ||= "https://api.cloudtruth.com/graphql"
 
-    Class.new do
+    clazz = Class.new do
 
       include GemLogger::LoggerSupport
 
@@ -168,6 +168,12 @@ module Kubetruth
       end
 
     end
+
+    @ident ||= 0
+    @ident += 1
+    Kubetruth.const_set(:"CtApi_#{@ident}", clazz)
+
+    return clazz
   end
 
 end

@@ -10,6 +10,12 @@ module Kubetruth
 
     describe "class definition", :vcr do
 
+      it "names the anonymous class" do
+        expect(ctapi.name).to match(/Kubetruth::CtApi_\d+/)
+        ctapi.logger.debug "Hello"
+        expect(Logging.contents).to match(/DEBUG\s*CtApi_\d+/)
+      end
+
       it "defines class with key/schema" do
         expect(ctapi.client).to_not be_nil
         instance = ctapi.new()
