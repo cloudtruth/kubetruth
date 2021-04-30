@@ -4,10 +4,14 @@ require_relative 'ctapi'
 require_relative 'kubeapi'
 require 'active_support/core_ext/hash/keys'
 require 'liquid'
+require 'benchmark'
 
 module Kubetruth
   class ETL
     include GemLogger::LoggerSupport
+
+    class TemplateError < ::StandardError
+    end
 
     module CustomLiquidFilters
 
@@ -81,17 +85,22 @@ module Kubetruth
               logger.debug "CRD watcher exiting"
             end
 
-            begin
-              block.call
-            rescue => e
-              logger.log_exception(e, "Failure while applying config transforms")
+            run_time = Benchmark.measure do
+              begin
+                block.call
+              rescue TemplateError => e
+                logger.error e.message
+              rescue => e
+                logger.log_exception(e, "Failure while applying config transforms")
+              end
             end
+            logger.info "Benchmark: #{run_time}"
 
-            logger.debug("Poller sleeping for #{interval}")
+            logger.info("Poller sleeping for #{interval}")
             interruptible_sleep(interval)
           ensure
             watcher.finish
-            thr.join
+            thr.join(5)
           end
 
         rescue => e
@@ -102,7 +111,14 @@ module Kubetruth
     end
 
     def template_eval(tmpl, **kwargs)
-      Liquid::Template.parse(tmpl).render(**kwargs.stringify_keys)
+      begin
+        logger.debug { "Evaluating template '#{tmpl}' with context: #{kwargs.inspect}" }
+        Liquid::Template.parse(tmpl, error_mode: :strict).render!(kwargs.stringify_keys, strict_variables: true, strict_filters: true)
+      rescue Liquid::Error => e
+        msg = "Invalid template '#{tmpl}': #{e.message}"
+        msg << ", context: #{kwargs.inspect}" if e.is_a?(Liquid::UndefinedVariable)
+        raise TemplateError.new(msg)
+      end
     end
 
     def load_config
@@ -137,7 +153,6 @@ module Kubetruth
         match = project.match(project_spec.project_selector)
         matches_hash = matches_hash.merge(match.named_captures.symbolize_keys)
         matches_hash[:project] = project unless matches_hash.has_key?(:project)
-        matches_hash = Hash[*matches_hash.collect {|k, v| [k, v, "#{k}_upcase".to_sym, v.upcase]}.flatten]
 
         project_data[project] ||= {}
         project_data[project][:namespace] = template_eval(project_spec.namespace_template, **matches_hash)
@@ -202,7 +217,6 @@ module Kubetruth
         if matches = param.key.match(project_spec.key_selector)
           matches_hash = matches.named_captures.symbolize_keys
           matches_hash[:key] = param.key unless matches_hash.has_key?(:key)
-          matches_hash = Hash[*matches_hash.collect {|k, v| [k, v, "#{k}_upcase".to_sym, v.upcase]}.flatten]
           matches_hash = template_matches.merge(matches_hash)
 
           logger.debug {"Pattern matches '#{param.key}' with: #{matches_hash}"}

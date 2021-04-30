@@ -249,6 +249,11 @@ module Kubetruth
         expect(etl.template_eval("hello {{foo | env_safe}}", foo: "bar")).to eq("hello BAR")
       end
 
+      it "fails fast" do
+        expect { etl.template_eval("{{foo}}") }.to raise_error(Kubetruth::ETL::TemplateError)
+        expect { etl.template_eval("{{foo | nofilter}}", foo: "bar") }.to raise_error(Kubetruth::ETL::TemplateError)
+      end
+
     end
 
     describe "#load_config" do
@@ -314,18 +319,6 @@ module Kubetruth
         params = etl.get_params(project, project_spec)
         expect(params).to eq([
                                Parameter.new(original_key: "key1", key: "my_key1", value: "value1", secret: false),
-                             ])
-      end
-
-      it "has a number of template options" do
-        expect(@ctapi).to receive(:parameters).with(searchTerm: "", project: "foo").and_return([
-          Parameter.new(key: "svc.name1.key1", value: "value1", secret: false),
-        ])
-        project_spec.key_selector = /^(?<prefix>[^\.]+)\.(?<name>[^\.]+)\.(?<key>.*)/
-        project_spec.key_template = "start.{{key}}.{{name}}.{{prefix}}.middle.{{key_upcase}}.{{name_upcase}}.{{prefix_upcase}}.end"
-        params = etl.get_params(project, project_spec)
-        expect(params).to eq([
-                               Parameter.new(original_key: "svc.name1.key1", key: "start.key1.name1.svc.middle.KEY1.NAME1.SVC.end", value: "value1", secret: false)
                              ])
       end
 
