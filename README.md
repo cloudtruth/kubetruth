@@ -16,8 +16,13 @@ helm repo add cloudtruth https://packages.cloudtruth.com/charts/
 helm install \
     --set appSettings.apiKey=<api_key> \
     --set appSettings.environment=<environment> \
-    my-kubetruth-name cloudtruth/kubetruth
+    kubetruth cloudtruth/kubetruth
 ```
+
+Note that the helm release name (`kubetruth` above) is used in generating the
+names of the resources created at install time.  Thus in the examples below, a
+name like `kubetruth-root` for the default installed CRD would be different in
+your system if you gave `helm install` a different release name.
 
 ## Uninstall
 
@@ -72,7 +77,7 @@ ConfigMap named `otherProject`:
 
 Secret named `otherProject`:
 ```yaml
-    mySecret: val2
+    mySecret: value4
 ```
 
 These kubernetes resources can then be referenced in the standard ways.
