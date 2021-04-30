@@ -136,10 +136,14 @@ ones:
 
 The `projectmapping` resource has a shortname of `pm` for convenience when using kubectl.
 
+#### Namespace per Project
+
 To create kubernetes Resources in namespaces named after each Project:
 ```
 kubectl patch pm kubetruth-root --type json --patch '[{"op": "replace", "path": "/spec/namespace_template", "value": "{{project | dns_safe}}"}]'
 ```
+
+#### Share common data
 
 To include the parameters from a Project named `Base` into all other projects, without creating Resources for `Base` itself:
 ```
@@ -159,6 +163,8 @@ EOF
 Note that project imports are non-recursive, so if A imports B and B imports C,
 then A will only get B's parameters.
 
+#### Customize naming of Resources
+
 To override the naming of kubernetes Resources on a per-Project basis:
 ```
 kubectl apply -f - <<EOF
@@ -174,6 +180,8 @@ spec:
     namespace_template: notSoFunkyNsmespace
 EOF
 ```
+
+#### More specific project selection
 
 To limit the Projects processed to those whose names start with `service`, except for `serviceOddball`:
 ```
