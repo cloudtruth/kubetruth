@@ -13,6 +13,10 @@ module Kubetruth
       kapi = double(Kubetruth::KubeApi)
       ns = ns.present? ? ns : nil
       allow(Kubetruth::KubeApi).to receive(:new).with(hash_including(namespace: ns)).and_return(kapi)
+      allow(kapi).to receive(:get_config_map).and_return(Kubeclient::Resource.new)
+      allow(kapi).to receive(:get_secret).and_return(Kubeclient::Resource.new)
+      allow(kapi).to receive(:under_management?).and_return(true)
+      allow(kapi).to receive(:secret_hash).and_return({})
       allow(kapi).to receive(:get_config_map_names).and_return([])
       allow(kapi).to receive(:get_secret_names).and_return([])
       allow(kapi).to receive(:ensure_namespace)
@@ -524,11 +528,13 @@ module Kubetruth
           Parameter.new(key: "param2", value: "value2", secret: true)
         ]
         etl = described_class.new(init_args.merge(dry_run: true))
-        etl.load_config.root_spec.skip_secrets = true
         expect(etl.ctapi).to receive(:project_names).and_return(["default"])
         expect(etl).to receive(:get_params).and_return(params)
-        expect(etl).to_not receive(:apply_config_map)
-        expect(etl).to_not receive(:apply_secret)
+        expect(@kubeapi).to_not receive(:ensure_namespace)
+        expect(@kubeapi).to_not receive(:create_config_map)
+        expect(@kubeapi).to_not receive(:update_config_map)
+        expect(@kubeapi).to_not receive(:create_secret)
+        expect(@kubeapi).to_not receive(:update_secret)
         etl.apply
         expect(Logging.contents).to match("Performing dry-run")
       end

@@ -176,23 +176,10 @@ module Kubetruth
         config_param_hash = params_to_hash(config_params)
         secret_param_hash = params_to_hash(secret_params)
 
-        if @dry_run
-          logger.info("Config maps that would be created are:")
-          logger.info(config_params.pretty_print_inspect)
+        apply_config_map(namespace: data[:namespace], name: data[:configmap_name], param_hash: config_param_hash)
 
-          if ! project_spec.skip_secrets
-            logger.info("Secrets that would be created are:")
-            secret_params.each {|p| p.value = "<masked>" if p.secret}
-            logger.info(secret_params.pretty_print_inspect)
-          end
-
-          next
-        else
-          apply_config_map(namespace: data[:namespace], name: data[:configmap_name], param_hash: config_param_hash)
-
-          if ! project_spec.skip_secrets
-            apply_secret(namespace: data[:namespace], name: data[:secret_name], param_hash: secret_param_hash)
-          end
+        if ! project_spec.skip_secrets
+          apply_secret(namespace: data[:namespace], name: data[:secret_name], param_hash: secret_param_hash)
         end
       end
     end
@@ -238,52 +225,54 @@ module Kubetruth
 
     def apply_config_map(namespace:, name:, param_hash:)
       logger.info("Applying config map #{namespace}:#{name}")
+      logger.debug { "  with params: #{param_hash.keys.inspect}}" }
 
       kapi = kubeapi(namespace)
-      kapi.ensure_namespace
+      kapi.ensure_namespace unless @dry_run
       logger.debug { "Existing config maps (ns=#{kapi.namespace}): #{kapi.get_config_map_names}" }
 
       begin
         resource = kapi.get_config_map(name)
         data = resource.data.to_h
-        logger.debug("Config map for '#{name}': #{data.inspect}")
+        logger.debug { "Existing config map for '#{name}': #{data.inspect}" }
         if ! kapi.under_management?(resource)
           logger.warn "Skipping config map '#{name}' as it doesn't have a label indicating it is under kubetruth management"
         elsif param_hash != data.transform_keys! {|k| k.to_s }
-          logger.info "Updating config map '#{name}' with params: #{param_hash.inspect}"
-          kapi.update_config_map(name, param_hash)
+          logger.info "Updating config map '#{name}'"
+          kapi.update_config_map(name, param_hash) unless @dry_run
         else
-          logger.info "No changes needed for config map '#{name}' with params: #{param_hash.inspect}}"
+          logger.info "No changes needed for config map '#{name}'"
         end
       rescue Kubeclient::ResourceNotFoundError
-        logger.info "Creating config map '#{name}' with params: #{param_hash.inspect}}"
-        kapi.create_config_map(name, param_hash)
+        logger.info "Creating config map '#{name}'"
+        kapi.create_config_map(name, param_hash) unless @dry_run
       end
     end
 
     def apply_secret(namespace:, name:, param_hash:)
       logger.info("Applying secrets #{namespace}:#{name}")
+      logger.debug { "  with params: #{param_hash.keys.inspect}" }
 
       kapi = kubeapi(namespace)
-      kapi.ensure_namespace
+      kapi.ensure_namespace unless @dry_run
       logger.debug { "Existing secrets (ns=#{kapi.namespace}): #{kapi.get_secret_names}" }
 
       begin
         logger.debug { "Namespace '#{kapi.namespace}'" }
         resource = kapi.get_secret(name)
         data = kapi.secret_hash(resource)
-        logger.debug { "Secret keys for '#{name}': #{data.transform_keys! {|k| k.to_s }}" }
+        logger.debug { "Existing Secret for '#{name}': #{data.transform_keys! {|k| k.to_s }}" }
         if ! kapi.under_management?(resource)
           logger.warn "Skipping secret '#{name}' as it doesn't have a label indicating it is under kubetruth management"
         elsif param_hash != data.transform_keys! {|k| k.to_s }
-          logger.info "Updating secret '#{name}' with params: #{param_hash.keys.inspect}"
-          kapi.update_secret(name, param_hash)
+          logger.info "Updating secret '#{name}'"
+          kapi.update_secret(name, param_hash) unless @dry_run
         else
-          logger.info "No changes needed for secret '#{name}' with params: #{param_hash.keys.inspect}}"
+          logger.info "No changes needed for secret '#{name}'"
         end
       rescue Kubeclient::ResourceNotFoundError
-        logger.info "Creating secret '#{name}' with params: #{param_hash.keys.inspect}}"
-        kapi.create_secret(name, param_hash)
+        logger.info "Creating secret '#{name}'"
+        kapi.create_secret(name, param_hash) unless @dry_run
       end
     end
 
