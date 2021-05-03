@@ -3,41 +3,11 @@ require_relative 'config'
 require_relative 'ctapi'
 require_relative 'kubeapi'
 require 'active_support/core_ext/hash/keys'
-require 'liquid'
 require 'benchmark'
 
 module Kubetruth
   class ETL
     include GemLogger::LoggerSupport
-
-    class TemplateError < ::StandardError
-    end
-
-    module CustomLiquidFilters
-
-      # From kubernetes error message
-      DNS_VALIDATION_RE = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/
-      ENV_VALIDATION_RE = /^[A-Z_][A-Z0-9_]*$/
-
-      def dns_safe(str)
-        return str if str =~ DNS_VALIDATION_RE
-        result = str.to_s.downcase.gsub(/[^-.a-z0-9)]+/, '-')
-        result = result.gsub(/(^[^a-z0-9]+)|([^a-z0-9]+$)/, '')
-        result
-      end
-
-      def env_safe(str)
-        return str if str =~ ENV_VALIDATION_RE
-        result = str.upcase
-        result = result.gsub(/(^\W+)|(\W+$)/, '')
-        result = result.gsub(/\W+/, '_')
-        result = result.sub(/^\d/, '_\&')
-        result
-      end
-
-    end
-
-    Liquid::Template.register_filter(CustomLiquidFilters)
 
     def initialize(ct_context:, kube_context:, dry_run: false)
       @ct_context = ct_context
@@ -88,7 +58,7 @@ module Kubetruth
             run_time = Benchmark.measure do
               begin
                 block.call
-              rescue TemplateError => e
+              rescue Kubetruth::Template::Error => e
                 logger.error e.message
               rescue => e
                 logger.log_exception(e, "Failure while applying config transforms")
@@ -107,17 +77,6 @@ module Kubetruth
           logger.log_exception(e, "Failure in watch/polling logic")
         end
 
-      end
-    end
-
-    def template_eval(tmpl, **kwargs)
-      begin
-        logger.debug { "Evaluating template '#{tmpl}' with context: #{kwargs.inspect}" }
-        Liquid::Template.parse(tmpl, error_mode: :strict).render!(kwargs.stringify_keys, strict_variables: true, strict_filters: true)
-      rescue Liquid::Error => e
-        msg = "Invalid template '#{tmpl}': #{e.message}"
-        msg << ", context: #{kwargs.inspect}" if e.is_a?(Liquid::UndefinedVariable)
-        raise TemplateError.new(msg)
       end
     end
 
@@ -155,9 +114,9 @@ module Kubetruth
         matches_hash[:project] = project unless matches_hash.has_key?(:project)
 
         project_data[project] ||= {}
-        project_data[project][:namespace] = template_eval(project_spec.namespace_template, **matches_hash)
-        project_data[project][:configmap_name] = template_eval(project_spec.configmap_name_template, **matches_hash)
-        project_data[project][:secret_name] = template_eval(project_spec.secret_name_template, **matches_hash)
+        project_data[project][:namespace] = project_spec.namespace_template.render(**matches_hash)
+        project_data[project][:configmap_name] = project_spec.configmap_name_template.render(**matches_hash)
+        project_data[project][:secret_name] = project_spec.secret_name_template.render(**matches_hash)
 
         params = get_params(project, project_spec, template_matches: matches_hash)
         project_data[project][:params] = params
@@ -221,7 +180,7 @@ module Kubetruth
 
           logger.debug {"Pattern matches '#{param.key}' with: #{matches_hash}"}
 
-          key = template_eval(project_spec.key_template, **matches_hash)
+          key = project_spec.key_template.render(**matches_hash)
           param.original_key, param.key = param.key, key
 
           result << param

@@ -66,19 +66,20 @@ module Kubetruth
             scope: "override",
             project_selector: "project_overrides:project_selector",
             configmap_name_template: "project_overrides:configmap_name_template"
-
           }
         ]
         config = described_class.new(data)
         config.load
         expect(config.instance_variable_get(:@config)).to_not eq(Kubetruth::Config::DEFAULT_SPEC)
         expect(config.root_spec).to be_an_instance_of(Kubetruth::Config::ProjectSpec)
-        expect(config.root_spec.configmap_name_template).to eq("configmap_name_template")
+        expect(config.root_spec.configmap_name_template).to be_an_instance_of(Kubetruth::Template)
+        expect(config.root_spec.configmap_name_template.source).to eq("configmap_name_template")
         expect(config.root_spec.key_selector).to eq(/key_selector/)
         expect(config.override_specs.size).to eq(1)
         expect(config.override_specs.first).to be_an_instance_of(Kubetruth::Config::ProjectSpec)
-        expect(config.override_specs.first.configmap_name_template).to eq("project_overrides:configmap_name_template")
-        expect(config.override_specs.first.secret_name_template).to eq(config.root_spec.secret_name_template)
+        expect(config.override_specs.first.configmap_name_template).to be_an_instance_of(Kubetruth::Template)
+        expect(config.override_specs.first.configmap_name_template.source).to eq("project_overrides:configmap_name_template")
+        expect(config.override_specs.first.secret_name_template.source).to eq(config.root_spec.secret_name_template.source)
       end
 
     end
@@ -117,7 +118,8 @@ module Kubetruth
         config = described_class.new([{scope: "override", project_selector: "fo+", configmap_name_template: "foocm"}])
         spec = config.spec_for_project("foo")
         expect(spec).to_not equal(config.root_spec)
-        expect(spec.configmap_name_template).to eq("foocm")
+        expect(spec.configmap_name_template).to be_an_instance_of(Kubetruth::Template)
+        expect(spec.configmap_name_template.source).to eq("foocm")
       end
 
       it "warns for multiple matching specs" do
@@ -128,7 +130,8 @@ module Kubetruth
         ])
         spec = config.spec_for_project("foo")
         expect(Logging.contents).to include("Multiple configuration specs match the project")
-        expect(spec.configmap_name_template).to eq("first")
+        expect(spec.configmap_name_template).to be_an_instance_of(Kubetruth::Template)
+        expect(spec.configmap_name_template.source).to eq("first")
       end
 
     end

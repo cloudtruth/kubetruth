@@ -69,70 +69,6 @@ module Kubetruth
 
     end
 
-    describe "CustomLiquidFilters" do
-
-      include Kubetruth::ETL::CustomLiquidFilters
-
-      describe "#dns_safe" do
-
-        it "returns if already valid" do
-          str = "foo"
-          expect(dns_safe(str)).to equal(str)
-        end
-
-        it "cleans up name" do
-          expect(dns_safe("foo_bar")).to eq("foo-bar")
-        end
-
-        it "forces lower case" do
-          expect(dns_safe("Foo_Bar")).to eq("foo-bar")
-        end
-
-        it "simplifies successive non-chars" do
-          expect(dns_safe("foo_&!bar")).to eq("foo-bar")
-        end
-
-        it "strips leading/trailing non-chars" do
-          expect(dns_safe("_foo!bar_")).to eq("foo-bar")
-        end
-
-      end
-
-      describe "#env_safe" do
-
-        it "returns if already valid" do
-          str = "FOO"
-          expect(env_safe(str)).to equal(str)
-        end
-
-        it "cleans up name" do
-          expect(env_safe("foo-bar")).to eq("FOO_BAR")
-        end
-
-        it "forces upper case" do
-          expect(env_safe("Foo")).to eq("FOO")
-        end
-
-        it "precedes leading digit with underscore" do
-          expect(env_safe("9foo")).to eq("_9FOO")
-        end
-
-        it "simplifies successive non-chars" do
-          expect(env_safe("foo-&!bar")).to eq("FOO_BAR")
-        end
-
-        it "preserves successive underscores" do
-          expect(env_safe("__foo__bar__")).to eq("__FOO__BAR__")
-        end
-
-        it "strips leading/trailing non-chars" do
-          expect(env_safe("-foo!bar-")).to eq("FOO_BAR")
-        end
-
-      end
-
-    end
-
     describe "#interruptible_sleep" do
 
       it "runs for interval without interruption" do
@@ -230,32 +166,6 @@ module Kubetruth
 
     end
 
-    describe "#template_eval" do
-
-      it "works with plain strings" do
-        expect(etl.template_eval(nil)).to eq("")
-        expect(etl.template_eval("")).to eq("")
-        expect(etl.template_eval("foo")).to eq("foo")
-      end
-
-      it "substitutes from kwargs" do
-        expect(etl.template_eval("hello {{foo}}", "foo" => "bar")).to eq("hello bar")
-        expect(etl.template_eval("hello {{foo}}", foo: "bar")).to eq("hello bar")
-      end
-
-
-      it "has custom filters" do
-        expect(etl.template_eval("hello {{foo | dns_safe}}", foo: "BAR")).to eq("hello bar")
-        expect(etl.template_eval("hello {{foo | env_safe}}", foo: "bar")).to eq("hello BAR")
-      end
-
-      it "fails fast" do
-        expect { etl.template_eval("{{foo}}") }.to raise_error(Kubetruth::ETL::TemplateError)
-        expect { etl.template_eval("{{foo | nofilter}}", foo: "bar") }.to raise_error(Kubetruth::ETL::TemplateError)
-      end
-
-    end
-
     describe "#load_config" do
 
       it "loads config" do
@@ -301,7 +211,7 @@ module Kubetruth
             Parameter.new(key: "bar.key2", value: "value2", secret: false)
         ])
         project_spec.key_selector = /^(?<prefix>.*)\.(?<key>.*)$/
-        project_spec.key_template = "{{key}}_{{prefix}}_{{project}}"
+        project_spec.key_template = Kubetruth::Template.new("{{key}}_{{prefix}}_{{project}}")
         params = etl.get_params(project, project_spec, template_matches: {project: "myproj"})
         expect(params.size).to eq(2)
         expect(params).to eq([
@@ -315,7 +225,7 @@ module Kubetruth
           Parameter.new(key: "key1", value: "value1", secret: false),
         ])
         project_spec.key_selector = //
-        project_spec.key_template = "my_{{key}}"
+        project_spec.key_template = Kubetruth::Template.new("my_{{key}}")
         params = etl.get_params(project, project_spec)
         expect(params).to eq([
                                Parameter.new(original_key: "key1", key: "my_key1", value: "value1", secret: false),

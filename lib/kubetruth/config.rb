@@ -1,4 +1,5 @@
 require_relative 'logging'
+require_relative 'template'
 
 module Kubetruth
   class Config
@@ -40,8 +41,16 @@ module Kubetruth
 
     def convert_types(hash)
       selector_key_pattern = /_selector$/
+      template_key_pattern = /_template$/
       hash.merge(hash) do |k, v|
-        k =~ selector_key_pattern ? Regexp.new(v) : v
+        case k
+          when selector_key_pattern
+            Regexp.new(v)
+          when template_key_pattern
+            Kubetruth::Template.new(v)
+          else
+            v
+        end
       end
     end
 
@@ -55,7 +64,7 @@ module Kubetruth
 
         config = DEFAULT_SPEC.merge(root_mapping)
         @root_spec = ProjectSpec.new(**convert_types(config))
-        @override_specs = overrides.collect { |o| ProjectSpec.new(convert_types(config.merge(o))) }
+        @override_specs = overrides.collect { |o| ProjectSpec.new(**convert_types(config.merge(o))) }
         config
       end
     end
