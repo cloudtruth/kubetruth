@@ -43,7 +43,7 @@ spec:
                   description: The template to use in generating key names
                 skip:
                   type: boolean
-                  description: Skips the generation of resources for the selected projects.  Useful for excluding projects that should only be included into others.
+                  description: Skips the generation of resources for the selected projects
                 skip_secrets:
                   type: boolean
                   description: Prevent transfer of secrets to kubernetes Secrets

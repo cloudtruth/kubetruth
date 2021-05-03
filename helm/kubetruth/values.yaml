@@ -72,3 +72,26 @@ appSettings:
   pollingInterval:
   debug: false
   config:
+
+# Create instances of the ProjectMapping CRD.  A single mapping with scope=root
+# is required (named root below.  You can also add multiple override mappings
+# (scope=override), any properties not overriden are inherited from the root
+# mapping.  An example override mapping could look like:
+#  my-override-name:
+#    scope: "override"
+#    project_selector: "common"
+#    skip: true
+#
+projectMappings:
+  root:
+    scope: "root"
+    project_selector: ""
+    key_selector: ""
+    key_filter: ""
+    configmap_name_template: "{{project | dns_safe}}"
+    secret_name_template: "{{project | dns_safe}}"
+    namespace_template: ""
+    key_template: "{{key}}"
+    skip: false
+    skip_secrets: false
+    included_projects: []

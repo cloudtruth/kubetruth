@@ -27,7 +27,7 @@ your system if you gave `helm install` a different release name.
 ## Uninstall
 
 ```shell
-helm delete my-kubetruth-name
+helm delete kubetruth
 helm repo remove cloudtruth
 ```
 
@@ -41,6 +41,17 @@ Parameterize the helm install with `--set appSettings.**` to control how kubetru
 | appSettings.environment | The cloudtruth environment to lookup parameter values for.  Use a separate helm install for each environment | string | `default` | yes |
 | appSettings.pollingInterval | Interval to poll cloudtruth api for changes | integer | 300 | no |
 | appSettings.debug | Debug logging | flag | n/a | no |
+| projectMappings.root.project_selector | A regexp to limit the projects acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
+| projectMappings.root.key_selector | A regexp to limit the keys acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
+| projectMappings.root.key_filter | Limits the keys fetched to contain the given substring (server-side, api search param) | string | "" | no |
+| projectMappings.root.configmap_name_template | The template to use in generating ConfigMap names | string | "{{project \| dns_safe}}" | no |
+| projectMappings.root.secret_name_template | The template to use in generating Secret names | string | "{{project \| dns_safe}}" | no |
+| projectMappings.root.namespace_template | The template to use in generating namespace names | string | "" | no |
+| projectMappings.root.key_template | The template to use in generating key names | string | "{{key}}" | no |
+| projectMappings.root.skip | Skips the generation of resources for the selected projects | flag | false | no |
+| projectMappings.root.skip_secrets | Prevent transfer of secrets to kubernetes Secrets | flag | false | no |
+| projectMappings.root.included_projects | Include the parameters from other projects into the selected ones.  This is non-recursive, so if A imports B and B imports C, then A will only get B's parameters.  For key conflicts, if A includes [B, C], then the precendence is A overrides C overrides B. | list | [] | no |
+| projectMappings.<override_name>.* | Define override mappings to override settings from the root selector for specific projects. When doing this on the command-line (e.g. for `helm install`), it may be more convenient to use `--values <file>` instead of `--set` for large data sets | map | {} | no |
 
 By default, Kubetruth maps the parameters from CloudTruth Projects into
 ConfigMaps and Secrets of the same names as the Projects. Kubetruth will not

@@ -1,0 +1,14 @@
+{{- if .Values.projectMappings }}
+{{- range $k, $v := .Values.projectMappings }}
+---
+apiVersion: kubetruth.cloudtruth.com/v1
+kind: ProjectMapping
+metadata:
+  name: {{ include "kubetruth.fullname" $ }}-{{$k}}
+  namespace:  {{ $.Release.Namespace }}
+  labels:
+    {{- include "kubetruth.labels" $ | nindent 4 }}
+spec:
+  {{- toYaml $v | nindent 2 }}
+{{- end }}
+{{- end -}}
