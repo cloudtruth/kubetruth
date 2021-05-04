@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    kubetruth (0.3.1)
+    kubetruth (0.4.0)
       activesupport
       clamp
       gem_logger

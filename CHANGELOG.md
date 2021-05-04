@@ -1,3 +1,23 @@
+0.4.0 (05/04/2021)
+------------------
+
+#### Notes on major changes
+
+* \[breaking change] Template evaluation is now strict so existing templates may fail if they reference an invalid variable or filter
+
+#### Full changelog
+
+* extra tests around using templates and regex match assumptions [b47757d](../../commit/b47757d)
+* refactor template processing to only parse templates during config load [8098da7](../../commit/8098da7)
+* update comment [3a701d2](../../commit/3a701d2)
+* enable creation/modification of mappings through helm configuration mechanism e.g. at install time [4e5703b](../../commit/4e5703b)
+* doc fixes [4f01412](../../commit/4f01412)
+* give anonymous class a name for visibility in logs [58dacfc](../../commit/58dacfc)
+* make logging output more detailed [7f17c8d](../../commit/7f17c8d)
+* Make template evaluation be strict (fails fast on invalid variable or filter references), benchmark run loop [8b00c1d](../../commit/8b00c1d)
+* Make the dry run option exercise more of the code [8d9c9b4](../../commit/8d9c9b4)
+* add headers to allow deep linking for for examples [853ef3a](../../commit/853ef3a)
+
 0.3.0 (04/29/2021)
 ------------------
 

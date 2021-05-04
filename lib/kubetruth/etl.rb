@@ -99,10 +99,10 @@ module Kubetruth
 
         match = project.match(config.root_spec.project_selector)
         if match.nil?
-          logger.info "Project '#{project}' does not match root selector #{config.root_spec.project_selector}"
+          logger.info "Project '#{project}' does not match root selector #{config.root_spec.project_selector.inspect}"
           next
         else
-          logger.info "Project '#{project}' matches root selector #{config.root_spec.project_selector}"
+          logger.info "Project '#{project}' matches root selector #{config.root_spec.project_selector.inspect}"
         end
         matches_hash = match.named_captures.symbolize_keys
 
@@ -170,7 +170,7 @@ module Kubetruth
         "Filtered params: #{cleaned.inspect}"
       end
 
-      logger.debug {"Looking for key pattern matches to '#{project_spec.key_selector}'"}
+      logger.debug {"Looking for key pattern matches to '#{project_spec.key_selector.inspect}'"}
 
       params.each do |param|
         if matches = param.key.match(project_spec.key_selector)
