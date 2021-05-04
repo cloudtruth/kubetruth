@@ -68,6 +68,16 @@ module Kubetruth
 
     end
 
+    describe "regexp match" do
+
+      it "sets matchdata to nil for missing matches" do
+        regex = /^(?<head>[^_]*)(_(?<tail>.*))?$/
+        expect("foo_bar".match(regex).named_captures.symbolize_keys).to eq(head: "foo", tail: "bar")
+        expect("foobar".match(regex).named_captures.symbolize_keys).to eq(head: "foobar", tail: nil)
+      end
+
+    end
+
     describe "#render" do
 
       it "works with plain strings" do
@@ -81,6 +91,9 @@ module Kubetruth
         expect(described_class.new("hello {{foo}}").render(foo: "bar")).to eq("hello bar")
       end
 
+      it "handles nil value in kwargs" do
+        expect(described_class.new("hello {{foo}}").render(foo: nil)).to eq("hello ")
+      end
 
       it "has custom filters" do
         expect(described_class.new("hello {{foo | dns_safe}}").render(foo: "BAR")).to eq("hello bar")
