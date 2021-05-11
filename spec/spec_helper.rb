@@ -6,12 +6,14 @@ Kubetruth::Logging.setup_logging(level: :info, color: false)
 
 require "open3"
 
-if ENV['CI']
-  require 'coveralls'
-  Coveralls.wear!
-else
-  require 'simplecov'
-  SimpleCov.start
+require 'simplecov'
+SimpleCov.start do
+  add_filter 'spec'
+end
+
+if ENV['CI'] && ENV['CODECOV_TOKEN']
+  require 'codecov'
+  SimpleCov.formatter = SimpleCov::Formatter::Codecov
 end
 
 require 'vcr'

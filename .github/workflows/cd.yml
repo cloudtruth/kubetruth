@@ -4,7 +4,8 @@ on: push
 
 env:
   CI: true
-  CLOUDTRUTH_API_KEY: ${{ secrets.CLOUDTRUTH_API_KEY }}
+  CLOUDTRUTH_API_KEY: "${{ secrets.CLOUDTRUTH_API_KEY }}"
+  CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
 
 jobs:
 
@@ -27,8 +28,6 @@ jobs:
         uses: cloudtruth/cli-action@v1
         with:
           version: 0.4.1
-
-      - run: cloudtruth -e production template get deploy.coveralls_yml > .coveralls.yml
 
       - run: ruby -v
       - run: gem install --no-document bundler
