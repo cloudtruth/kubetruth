@@ -1,5 +1,5 @@
 [![Build Status](https://github.com/cloudtruth/kubetruth/workflows/CD/badge.svg)](https://github.com/cloudtruth/kubetruth/actions)
-[![Coverage Status](https://coveralls.io/repos/github/cloudtruth/kubetruth/badge.svg?branch=master)](https://coveralls.io/github/cloudtruth/kubetruth?branch=master)
+[![Coverage Status](https://codecov.io/gh/cloudtruth/kubetruth/branch/master/graph/badge.svg)](https://codecov.io/gh/cloudtruth/kubetruth)
 
 # Kubetruth
 
