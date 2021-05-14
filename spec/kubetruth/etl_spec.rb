@@ -407,8 +407,8 @@ module Kubetruth
         ]
         expect(etl.ctapi).to receive(:project_names).and_return(["default"])
         expect(etl).to receive(:get_params).and_return(params)
-        expect(etl).to receive(:apply_config_map).with(namespace: '', name: "default", param_hash: etl.params_to_hash([params[0]]))
-        expect(etl).to receive(:apply_secret).with(namespace: '', name: "default", param_hash: etl.params_to_hash([params[1]]))
+        expect(etl).to receive(:apply_config_map).with(namespace: '', name: "default", param_hash: hash_including(etl.params_to_hash([params[0]])))
+        expect(etl).to receive(:apply_secret).with(namespace: '', name: "default", param_hash: hash_including(etl.params_to_hash([params[1]])))
         etl.apply()
       end
 
@@ -420,7 +420,7 @@ module Kubetruth
         etl.load_config.root_spec.skip_secrets = true
         expect(etl.ctapi).to receive(:project_names).and_return(["default"])
         expect(etl).to receive(:get_params).and_return(params)
-        expect(etl).to receive(:apply_config_map).with(namespace: '', name: "default", param_hash: etl.params_to_hash([params[0]]))
+        expect(etl).to receive(:apply_config_map).with(namespace: '', name: "default", param_hash: hash_including(etl.params_to_hash([params[0]])))
         expect(etl).to_not receive(:apply_secret)
         etl.apply()
       end
@@ -486,7 +486,7 @@ module Kubetruth
         expect(etl).to receive(:apply_config_map).
           with(namespace: 'bar-foo',
                name: "foo.bar",
-               param_hash: etl.params_to_hash([Parameter.new(key: "foo:bar:foo.bar:param1", original_key: "param1", value: "value1", secret: false),]))
+               param_hash: hash_including(etl.params_to_hash([Parameter.new(key: "foo:bar:foo.bar:param1", original_key: "param1", value: "value1", secret: false),])))
         expect(etl).to receive(:apply_secret)
         etl.apply
       end
@@ -502,22 +502,85 @@ module Kubetruth
         ]
 
         expect(etl).to receive(:load_config).and_return(Kubetruth::Config.new([
-          {
-            scope: "root",
-            included_projects: ["base"]
-          },
-          {scope: "override", project_selector: "^base$", skip: true}
-        ]))
+                                                                                {
+                                                                                  scope: "root",
+                                                                                  included_projects: ["base"]
+                                                                                },
+                                                                                {scope: "override", project_selector: "^base$", skip: true}
+                                                                              ]))
 
         expect(etl.ctapi).to receive(:project_names).and_return(["base", "foo"])
         expect(etl).to receive(:get_params).with("base", any_args).and_return(base_params)
         expect(etl).to receive(:get_params).with("foo", any_args).and_return(foo_params)
-        expect(etl).to receive(:apply_config_map).with(namespace: '', name: "foo", param_hash: {
-          "param0" => "value0",
-          "param1" => "value1",
-          "param2" => "value2"
-        })
+        expect(etl).to receive(:apply_config_map).with(namespace: '', name: "foo", param_hash: hash_including({
+                                                                                                                "param0" => "value0",
+                                                                                                                "param1" => "value1",
+                                                                                                                "param2" => "value2"
+                                                                                                              }))
         allow(etl).to receive(:apply_secret)
+        etl.apply()
+      end
+
+      it "indicates param's project origin in metadata" do
+        base_params = [
+          Parameter.new(key: "param0", value: "value0", secret: false),
+          Parameter.new(key: "param2", value: "basevalue2", secret: false),
+          Parameter.new(key: "sparam0", value: "svalue0", secret: true),
+          Parameter.new(key: "sparam2", value: "sbasevalue2", secret: true)
+        ]
+        foo_params = [
+          Parameter.new(key: "param1", value: "value1", secret: false),
+          Parameter.new(key: "param2", value: "value2", secret: false),
+          Parameter.new(key: "sparam1", value: "svalue1", secret: true),
+          Parameter.new(key: "sparam2", value: "svalue2", secret: true)
+        ]
+
+        expect(etl).to receive(:load_config).and_return(Kubetruth::Config.new([
+                                                                                {
+                                                                                  scope: "root",
+                                                                                  included_projects: ["base"]
+                                                                                },
+                                                                                {scope: "override", project_selector: "^base$", skip: true}
+                                                                              ]))
+
+        expect(etl.ctapi).to receive(:project_names).and_return(["base", "foo"])
+        expect(etl).to receive(:get_params).with("base", any_args).and_return(base_params)
+        expect(etl).to receive(:get_params).with("foo", any_args).and_return(foo_params)
+        expect(etl).to receive(:apply_config_map) do |*args, **kwargs|
+          expect(JSON.parse(kwargs[:param_hash][:cloudtruth_metadata])).to eq({
+                                                                                "param_origins" => {
+                                                                                  "param0" => "base",
+                                                                                  "param1" => "foo",
+                                                                                  "param2" => "foo"
+                                                                                }
+                                                                              })
+        end
+        expect(etl).to receive(:apply_secret) do |*args, **kwargs|
+          expect(JSON.parse(kwargs[:param_hash][:cloudtruth_metadata])).to eq({
+                                                                                "param_origins" => {
+                                                                                  "sparam0" => "base",
+                                                                                  "sparam1" => "foo",
+                                                                                  "sparam2" => "foo"
+                                                                                }
+                                                                              })
+        end
+        etl.apply()
+      end
+
+      it "can turn off metadata" do
+        etl = described_class.new(init_args.merge(metadata: false))
+        params = [
+          Parameter.new(key: "param1", value: "value1", secret: false),
+          Parameter.new(key: "param2", value: "value2", secret: true)
+        ]
+        expect(etl.ctapi).to receive(:project_names).and_return(["default"])
+        expect(etl).to receive(:get_params).and_return(params)
+        expect(etl).to receive(:apply_config_map) do |*args, **kwargs|
+          expect(kwargs[:param_hash]).to_not include(:cloudtruth_metadata)
+        end
+        expect(etl).to receive(:apply_secret) do |*args, **kwargs|
+          expect(kwargs[:param_hash]).to_not include(:cloudtruth_metadata)
+        end
         etl.apply()
       end
 

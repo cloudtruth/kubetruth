@@ -48,6 +48,9 @@ spec:
             - --polling-interval
             - "{{ .Values.appSettings.pollingInterval }}"
             {{- end }}
+            {{- if .Values.appSettings.noMetadata }}
+            - --no-metadata
+            {{- end }}
             {{- if .Values.appSettings.debug }}
             - --debug
             {{- end }}

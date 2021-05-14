@@ -42,16 +42,20 @@ module Kubetruth
       Integer(a)
     end
 
+    option "--[no-]metadata",
+           :flag, "Saves additional cloudtruth metadata in the kubernetes resources, e.g. the project origin for param values after inclusions/overrides are applied",
+           default: true
+
     option ["-n", "--dry-run"],
-           :flag, "perform a dry run",
+           :flag, "Perform a dry run",
            default: false
 
     option ["-q", "--quiet"],
-           :flag, "suppress output",
+           :flag, "Suppress output",
            default: false
 
     option ["-d", "--debug"],
-           :flag, "debug output",
+           :flag, "Debug output",
            default: false
 
     option ["-c", "--[no-]color"],
@@ -92,7 +96,7 @@ module Kubetruth
           api_url: kube_url
       }
 
-      etl = ETL.new(ct_context: ct_context, kube_context: kube_context, dry_run: dry_run?)
+      etl = ETL.new(ct_context: ct_context, kube_context: kube_context, dry_run: dry_run?, metadata: metadata?)
 
       etl.with_polling(polling_interval) do
         etl.apply

@@ -9,10 +9,11 @@ module Kubetruth
   class ETL
     include GemLogger::LoggerSupport
 
-    def initialize(ct_context:, kube_context:, dry_run: false)
+    def initialize(ct_context:, kube_context:, dry_run: false, metadata: true)
       @ct_context = ct_context
       @kube_context = kube_context
       @dry_run = dry_run
+      @metadata = metadata
       @kubeapis = {}
     end
 
@@ -131,6 +132,8 @@ module Kubetruth
           next
         end
 
+        param_origins = {}
+
         # TODO: make project inclusion recursive?
         included_params = []
         project_spec.included_projects.each do |included_project|
@@ -139,7 +142,16 @@ module Kubetruth
             logger.warn "Skipping the included project not selected by root selector: #{included_project}"
             next
           end
+
+          included_data[:params].each do |p|
+            param_origins[p.key] = included_project
+          end
+
           included_params.concat(included_data[:params])
+        end
+
+        data[:params].each do |p|
+          param_origins[p.key] = project
         end
 
         # constructing the hash will cause any overrides to happen in the right
@@ -149,6 +161,12 @@ module Kubetruth
         config_params, secret_params = (parts[false] || []), (parts[true] || [])
         config_param_hash = params_to_hash(config_params)
         secret_param_hash = params_to_hash(secret_params)
+
+        if @metadata
+          param_source_parts = param_origins.group_by {|k, v| config_param_hash.has_key?(k) }
+          config_param_hash[:cloudtruth_metadata] = {param_origins: Hash[param_source_parts[true] || []]}.to_json
+          secret_param_hash[:cloudtruth_metadata] = {param_origins: Hash[param_source_parts[false] || []]}.to_json
+        end
 
         apply_config_map(namespace: data[:namespace], name: data[:configmap_name], param_hash: config_param_hash)
 

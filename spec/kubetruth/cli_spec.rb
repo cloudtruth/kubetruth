@@ -95,6 +95,7 @@ module Kubetruth
             --kube-url ku
             --dry-run
             --polling-interval 27
+            --no-metadata
         ]
         etl = double(ETL)
         expect(ETL).to receive(:new).with(ct_context: {
@@ -107,7 +108,8 @@ module Kubetruth
                                               token: "kt",
                                               api_url: "ku"
                                           },
-                                          dry_run: true).and_return(etl)
+                                          dry_run: true,
+                                          metadata: false).and_return(etl)
         expect(etl).to receive(:with_polling).with(27)
         cli.run(args)
       end

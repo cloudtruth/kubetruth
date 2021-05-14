@@ -40,7 +40,8 @@ Parameterize the helm install with `--set appSettings.**` to control how kubetru
 | appSettings.apiKey | The cloudtruth api key.  Read only access is sufficient | string | n/a | yes |
 | appSettings.environment | The cloudtruth environment to lookup parameter values for.  Use a separate helm install for each environment | string | `default` | yes |
 | appSettings.pollingInterval | Interval to poll cloudtruth api for changes | integer | 300 | no |
-| appSettings.debug | Debug logging | flag | n/a | no |
+| appSettings.noMetadata | Do not write cloudtruth metadata (e.g. param value origins) to kubernetes resources | flag | false | no |
+| appSettings.debug | Debug logging | flag | false | no |
 | projectMappings.root.project_selector | A regexp to limit the projects acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
 | projectMappings.root.key_selector | A regexp to limit the keys acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
 | projectMappings.root.key_filter | Limits the keys fetched to contain the given substring (server-side, api search param) | string | "" | no |
