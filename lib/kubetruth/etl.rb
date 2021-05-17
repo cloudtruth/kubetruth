@@ -144,14 +144,16 @@ module Kubetruth
           end
 
           included_data[:params].each do |p|
-            param_origins[p.key] = included_project
+            param_origins[p.key] ||= []
+            param_origins[p.key] << included_project
           end
 
           included_params.concat(included_data[:params])
         end
 
         data[:params].each do |p|
-          param_origins[p.key] = project
+          param_origins[p.key] ||= []
+          param_origins[p.key] << project
         end
 
         # constructing the hash will cause any overrides to happen in the right
@@ -163,9 +165,23 @@ module Kubetruth
         secret_param_hash = params_to_hash(secret_params)
 
         if @metadata
-          param_source_parts = param_origins.group_by {|k, v| config_param_hash.has_key?(k) }
-          config_param_hash[:cloudtruth_metadata] = {param_origins: Hash[param_source_parts[true] || []]}.to_json
-          secret_param_hash[:cloudtruth_metadata] = {param_origins: Hash[param_source_parts[false] || []]}.to_json
+          metadata = {}
+          metadata["project_heirarchy"] = (project_spec.included_projects + [project]).reverse.join(" -> ")
+
+          param_origins.merge!(param_origins) do |_, v|
+            origin = "#{v.pop}"
+            if v.length > 0
+              origin << " (#{v.reverse.join(" -> ")})"
+            end
+            origin
+          end
+
+          param_origins_parts = param_origins.group_by {|k, v| config_param_hash.has_key?(k) }
+          config_origins = Hash[param_origins_parts[true] || []]
+          secret_origins = Hash[param_origins_parts[false] || []]
+
+          config_param_hash[:cloudtruth_metadata] = metadata.merge({ "parameter_origins" => config_origins }).to_yaml
+          secret_param_hash[:cloudtruth_metadata] = metadata.merge({ "parameter_origins" => secret_origins }).to_yaml
         end
 
         apply_config_map(namespace: data[:namespace], name: data[:configmap_name], param_hash: config_param_hash)

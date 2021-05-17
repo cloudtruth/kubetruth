@@ -525,42 +525,55 @@ module Kubetruth
         base_params = [
           Parameter.new(key: "param0", value: "value0", secret: false),
           Parameter.new(key: "param2", value: "basevalue2", secret: false),
+          Parameter.new(key: "param3", value: "basevalue3", secret: false),
           Parameter.new(key: "sparam0", value: "svalue0", secret: true),
-          Parameter.new(key: "sparam2", value: "sbasevalue2", secret: true)
+          Parameter.new(key: "sparam2", value: "sbasevalue2", secret: true),
+          Parameter.new(key: "sparam3", value: "sbasevalue3", secret: true)
+        ]
+        bar_params = [
+          Parameter.new(key: "param3", value: "barvalue3", secret: false),
+          Parameter.new(key: "sparam3", value: "sbarvalue3", secret: true),
         ]
         foo_params = [
           Parameter.new(key: "param1", value: "value1", secret: false),
           Parameter.new(key: "param2", value: "value2", secret: false),
+          Parameter.new(key: "param3", value: "value3", secret: false),
           Parameter.new(key: "sparam1", value: "svalue1", secret: true),
-          Parameter.new(key: "sparam2", value: "svalue2", secret: true)
+          Parameter.new(key: "sparam2", value: "svalue2", secret: true),
+          Parameter.new(key: "sparam3", value: "svalue3", secret: true)
         ]
 
         expect(etl).to receive(:load_config).and_return(Kubetruth::Config.new([
                                                                                 {
                                                                                   scope: "root",
-                                                                                  included_projects: ["base"]
+                                                                                  included_projects: ["base", "bar"]
                                                                                 },
-                                                                                {scope: "override", project_selector: "^base$", skip: true}
+                                                                                {scope: "override", project_selector: "^ba.*$", skip: true}
                                                                               ]))
 
-        expect(etl.ctapi).to receive(:project_names).and_return(["base", "foo"])
+        expect(etl.ctapi).to receive(:project_names).and_return(["base", "bar", "foo"])
         expect(etl).to receive(:get_params).with("base", any_args).and_return(base_params)
+        expect(etl).to receive(:get_params).with("bar", any_args).and_return(bar_params)
         expect(etl).to receive(:get_params).with("foo", any_args).and_return(foo_params)
         expect(etl).to receive(:apply_config_map) do |*args, **kwargs|
-          expect(JSON.parse(kwargs[:param_hash][:cloudtruth_metadata])).to eq({
-                                                                                "param_origins" => {
+          expect(YAML.load(kwargs[:param_hash][:cloudtruth_metadata])).to eq({
+                                                                               "project_heirarchy" => "foo -> bar -> base",
+                                                                                "parameter_origins" => {
                                                                                   "param0" => "base",
                                                                                   "param1" => "foo",
-                                                                                  "param2" => "foo"
+                                                                                  "param2" => "foo (base)",
+                                                                                  "param3" => "foo (bar -> base)"
                                                                                 }
                                                                               })
         end
         expect(etl).to receive(:apply_secret) do |*args, **kwargs|
-          expect(JSON.parse(kwargs[:param_hash][:cloudtruth_metadata])).to eq({
-                                                                                "param_origins" => {
+          expect(YAML.load(kwargs[:param_hash][:cloudtruth_metadata])).to eq({
+                                                                                "project_heirarchy" => "foo -> bar -> base",
+                                                                                "parameter_origins" => {
                                                                                   "sparam0" => "base",
                                                                                   "sparam1" => "foo",
-                                                                                  "sparam2" => "foo"
+                                                                                  "sparam2" => "foo (base)",
+                                                                                  "sparam3" => "foo (bar -> base)"
                                                                                 }
                                                                               })
         end
