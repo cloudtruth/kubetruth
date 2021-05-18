@@ -521,6 +521,26 @@ module Kubetruth
         etl.apply()
       end
 
+      it "skips project include of self" do
+        base_params = [
+          Parameter.new(key: "param0", value: "value0", secret: false),
+        ]
+
+        expect(etl).to receive(:load_config).and_return(Kubetruth::Config.new([
+                                                                                {
+                                                                                  scope: "root",
+                                                                                  included_projects: ["base"]
+                                                                                }
+                                                                              ]))
+
+        expect(etl.ctapi).to receive(:project_names).and_return(["base"])
+        expect(etl).to receive(:get_params).with("base", any_args).and_return(base_params)
+        expect(etl).to receive(:apply_config_map)
+        allow(etl).to receive(:apply_secret)
+        etl.apply()
+        expect(Logging.contents).to include("Skipping project's import of itself")
+      end
+
       it "indicates param's project origin in metadata" do
         base_params = [
           Parameter.new(key: "param0", value: "value0", secret: false),

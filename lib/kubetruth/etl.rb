@@ -137,6 +137,10 @@ module Kubetruth
         # TODO: make project inclusion recursive?
         included_params = []
         project_spec.included_projects.each do |included_project|
+          if included_project == project
+            logger.warn("Skipping project's import of itself, included_projects for '#{project}' are: #{project_spec.included_projects.inspect}")
+            next
+          end
           included_data = project_data[included_project]
           if included_data.nil?
             logger.warn "Skipping the included project not selected by root selector: #{included_project}"
