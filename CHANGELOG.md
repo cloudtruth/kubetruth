@@ -1,3 +1,10 @@
+0.4.1 (05/19/2021)
+------------------
+
+* Add cloudtruth_metadata attribute to kubernetes resources (#5) [157eda7](../../commit/157eda7)
+* switch readme badge to codecov [38ccd10](../../commit/38ccd10)
+* switch to codecov [80b361d](../../commit/80b361d)
+
 0.4.0 (05/04/2021)
 ------------------
 
