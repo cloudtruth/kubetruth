@@ -149,6 +149,17 @@ ones:
  * dns_safe - ensures the string is safe for use as a kubernetes resource name (i.e. Namespace/ConfigMap/Secret names)
  * env_safe - ensures the string is safe for setting as a shell environment variable
 
+By default, kubetruth will add the `cloudtruth_metadata` key to each ConfigMap
+and Secret under management.  This can be disabled with the `noMetadata` helm
+setting at install time.  The data contained by this key helps to illustrate how
+project inclusion affects the project the resources were written for.   It
+currently shows the project heirarchy and the project each parameter originates
+from, for example an entry like `timeout: myService (commonService -> common)`
+indicates that the timeout parameter is getting its value from the `myService`
+project, and if you removed it from there, it would then get it from the
+`commonService` project, and if you removed that, it would then get it from the
+`common` project.
+
 ### Example Config
 
 The `projectmapping` resource has a shortname of `pm` for convenience when using kubectl.
