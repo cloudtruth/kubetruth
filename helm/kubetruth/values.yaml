@@ -69,9 +69,9 @@ affinity: {}
 appSettings:
   apiKey:
   environment:
+  noMetadata: false
   pollingInterval:
   debug: false
-  config:
 
 # Create instances of the ProjectMapping CRD.  A single mapping with scope=root
 # is required (named root below).  You can also add multiple override mappings
