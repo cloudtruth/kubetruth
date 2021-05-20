@@ -4,7 +4,6 @@ on: push
 
 env:
   CI: true
-  CLOUDTRUTH_API_KEY: "${{ secrets.CLOUDTRUTH_API_KEY }}"
   CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
 
 jobs:
@@ -24,11 +23,6 @@ jobs:
       - name: Install Ruby version specified in `.ruby-version`
         uses: eregon/use-ruby-action@master # this will use by default the .ruby-version file
 
-      - name: Install cloudtruth cli
-        uses: cloudtruth/cli-action@v1
-        with:
-          version: 0.4.1
-
       - run: ruby -v
       - run: gem install --no-document bundler
       - run: bundle config path vendor/bundle
@@ -43,10 +37,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install cloudtruth cli
-        uses: cloudtruth/cli-action@v1
+      - name: Set environment from cloudtruth
+        uses: cloudtruth/configure-action@v1
         with:
-          version: 0.4.1
+          token: "${{ secrets.CLOUDTRUTH_API_KEY }}"
+          project: "deploy"
+          environment: "production"
 
       - name: Install Atmos
         run: sudo gem install --no-document simplygenius-atmos
@@ -54,7 +50,7 @@ jobs:
       - name: Setup Atmos
         run: |
           mkdir -p config
-          cloudtruth -e production template get deploy.atmos_yml > config/atmos.yml
+          echo -e "${ATMOS_YML}" > config/atmos.yml
 
       - name: Build the Docker image
         run: |
@@ -64,7 +60,6 @@ jobs:
         run: |
           tag=${GITHUB_REF##*/v}
           echo "Pushing version '$tag' to docker hub"
-          source <(cloudtruth -e production template get deploy.docker_credentials_env)
           echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
           docker tag kubetruth cloudtruth/kubetruth:latest
@@ -74,7 +69,7 @@ jobs:
 
       - name: Package helm chart
         run: |
-          source <(cloudtruth -e production template get deploy.helm_package_env)
+          export HELM_REPO_URL="${PACKAGES_URL}/${PACKAGES_HELM_PATH}"
           mkdir -p tmp/packaged-chart/
           (cd tmp/packaged-chart && helm package ../../helm/kubetruth)
           ./bin/generate-helmv2.sh
@@ -83,19 +78,16 @@ jobs:
           if curl -sfL ${HELM_REPO_URL}/index.yaml -o tmp/old-index.yaml; then
             maybe_merge="--merge tmp/old-index.yaml"
           fi
-          echo helm repo index ${maybe_merge} --url ${HELM_REPO_URL} tmp/packaged-chart/
           helm repo index ${maybe_merge} --url ${HELM_REPO_URL} tmp/packaged-chart/
 
       - name: Deploy helm chart to S3
         run: |
-          source <(cloudtruth -e production template get deploy.aws_credentials_env)
-          source <(cloudtruth -e production template get deploy.helm_package_env)
-          atmos -e production auth_exec aws s3 sync tmp/packaged-chart/ s3://${BUCKET_NAME}/${BUCKET_PATH}/
+          atmos -e production auth_exec aws s3 sync tmp/packaged-chart/ s3://${PACKAGES_BUCKET_NAME}/${PACKAGES_HELM_PATH}/
 
           assets=""
           for asset in tmp/packaged-chart/*; do
             asset=${asset##*/}
-            asset="/${BUCKET_PATH}/${asset}"
+            asset="/${PACKAGES_HELM_PATH}/${asset}"
             assets="${assets} ${asset}"
           done
-          atmos -e production auth_exec aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths ${assets}
+          atmos -e production auth_exec aws cloudfront create-invalidation --distribution-id ${PACKAGES_DISTRIBUTION_ID} --paths ${assets}
