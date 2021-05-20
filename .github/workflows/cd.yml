@@ -1,4 +1,4 @@
-sudo sh -s -- -v 0.5.2name: CD
+name: CD
 
 on: push
 
