@@ -4,7 +4,6 @@ on: push
 
 env:
   CI: true
-  CLOUDTRUTH_API_KEY: "${{ secrets.CLOUDTRUTH_API_KEY }}"
   CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
 
 jobs:
@@ -52,7 +51,6 @@ jobs:
         run: |
           mkdir -p config
           echo -e "${ATMOS_YML}" > config/atmos.yml
-          cat config/atmos.yml
 
       - name: Build the Docker image
         run: |
@@ -80,7 +78,6 @@ jobs:
           if curl -sfL ${HELM_REPO_URL}/index.yaml -o tmp/old-index.yaml; then
             maybe_merge="--merge tmp/old-index.yaml"
           fi
-          echo helm repo index ${maybe_merge} --url ${HELM_REPO_URL} tmp/packaged-chart/
           helm repo index ${maybe_merge} --url ${HELM_REPO_URL} tmp/packaged-chart/
 
       - name: Deploy helm chart to S3
