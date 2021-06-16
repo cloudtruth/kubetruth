@@ -200,10 +200,7 @@ To include the parameters from a Project named `Base` into all other projects, w
 # Set the included_project in the root mapping
 kubectl patch pm kubetruth-root --type json --patch '[{"op": "replace", "path": "/spec/included_projects", "value": ["Base"]}]'
 
-# Either exclude the Base project from being matched in the root mapping:
-kubectl patch pm kubetruth-root --type json --patch '[{"op": "replace", "path": "/spec/project_selector", "value": "^(?!Base)"}]'
-
-# OR exclude the Base project by creating an override mapping that skips it:
+# Exclude the Base project by creating an override mapping that skips it:
 kubectl apply -f - <<EOF
 apiVersion: kubetruth.cloudtruth.com/v1
 kind: ProjectMapping
@@ -213,6 +210,7 @@ spec:
     scope: override
     project_selector: "^Base$"
     skip: true
+    included_projects: []
 EOF
 ```
 
