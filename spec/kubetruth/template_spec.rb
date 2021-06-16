@@ -4,6 +4,14 @@ require 'kubetruth/template'
 module Kubetruth
   describe Template do
 
+    describe "#to_s" do
+
+      it "shows the template source" do
+        expect(Template.new("foo").to_s).to eq("foo")
+      end
+
+    end
+
     describe "CustomLiquidFilters" do
 
       include Kubetruth::Template::CustomLiquidFilters
@@ -62,6 +70,71 @@ module Kubetruth
 
         it "strips leading/trailing non-chars" do
           expect(env_safe("-foo!bar-")).to eq("FOO_BAR")
+        end
+
+      end
+
+      describe "#indent" do
+
+        it "indents by count spaces for each line" do
+          expect(indent("foo\nbar", 3)).to eq("   foo\n   bar")
+        end
+
+      end
+
+      describe "#nindent" do
+
+        it "indents by count spaces for each line with a leading newline" do
+          expect(nindent("foo\nbar", 3)).to eq("   \n   foo\n   bar")
+        end
+
+      end
+
+      describe "#stringify" do
+
+        it "produces a yaml string" do
+          expect(stringify("foo")).to eq('"foo"')
+          expect(stringify(%q(foo'"bar))).to eq(%q("foo'\"bar"))
+        end
+
+      end
+
+      describe "#to_yaml" do
+
+        it "produces a yaml string" do
+          expect(to_yaml([1, 2])).to eq("---\n- 1\n- 2\n")
+        end
+
+      end
+
+      describe "#to_json" do
+
+        it "produces a json string" do
+          expect(to_json({"foo" => "bar"})).to eq('{"foo":"bar"}')
+        end
+
+      end
+
+      describe "#sha256" do
+
+        it "does a sha256 digest" do
+          expect(sha256("foo")).to eq(Digest::SHA256.hexdigest("foo"))
+        end
+
+      end
+
+      describe "#encode64" do
+
+        it "does a base64 encode" do
+          expect(encode64("foo")).to eq(Base64.strict_encode64("foo"))
+        end
+
+      end
+
+      describe "#decode64" do
+
+        it "does a base64 decode" do
+          expect(decode64(Base64.strict_encode64("foo"))).to eq("foo")
         end
 
       end

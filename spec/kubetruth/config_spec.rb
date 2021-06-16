@@ -6,14 +6,34 @@ module Kubetruth
 
     let(:config) { described_class.new([]) }
 
+    describe "ProjectSpec" do
+
+      it "has same keys for defaults and struct" do
+        expect(described_class::ProjectSpec.new.to_h.keys).to eq(described_class::DEFAULT_SPEC.keys)
+      end
+
+      it "converts types" do
+        spec = described_class::ProjectSpec.new(
+          scope: "root",
+          project_selector: "foo",
+          configmap_template: "bar",
+          skip: true
+        )
+        expect(spec.scope).to be_an_instance_of(String)
+        expect(spec.scope).to eq("root")
+        expect(spec.project_selector).to be_an_instance_of(Regexp)
+        expect(spec.project_selector).to eq(/foo/)
+        expect(spec.configmap_template).to be_an_instance_of(Template)
+        expect(spec.configmap_template.source).to eq("bar")
+        expect(spec.skip).to equal(true)
+      end
+
+    end
+
     describe "initialization" do
 
       it "sets mappings" do
         expect(config.instance_variable_get(:@project_mapping_crds)).to eq([])
-      end
-
-      it "has same keys for defaults and struct" do
-        expect(described_class::ProjectSpec.new.to_h.keys).to eq(described_class::DEFAULT_SPEC.keys)
       end
 
     end
@@ -53,33 +73,30 @@ module Kubetruth
             scope: "root",
             project_selector: "project_selector",
             key_selector: "key_selector",
-            key_filter: "key_filter",
-            configmap_name_template: "configmap_name_template",
-            secret_name_template: "secret_name_template",
-            namespace_template: "namespace_template",
-            key_template: "key_template",
             skip: true,
             skip_secrets: true,
-            included_projects: ["included_projects"]
+            included_projects: ["included_projects"],
+            configmap_template: "configmap_template",
+            secret_template: "secret_template"
           },
           {
             scope: "override",
             project_selector: "project_overrides:project_selector",
-            configmap_name_template: "project_overrides:configmap_name_template"
+            configmap_template: "project_overrides:configmap_template"
           }
         ]
         config = described_class.new(data)
         config.load
         expect(config.instance_variable_get(:@config)).to_not eq(Kubetruth::Config::DEFAULT_SPEC)
         expect(config.root_spec).to be_an_instance_of(Kubetruth::Config::ProjectSpec)
-        expect(config.root_spec.configmap_name_template).to be_an_instance_of(Kubetruth::Template)
-        expect(config.root_spec.configmap_name_template.source).to eq("configmap_name_template")
+        expect(config.root_spec.configmap_template).to be_an_instance_of(Kubetruth::Template)
+        expect(config.root_spec.configmap_template.source).to eq("configmap_template")
         expect(config.root_spec.key_selector).to eq(/key_selector/)
         expect(config.override_specs.size).to eq(1)
         expect(config.override_specs.first).to be_an_instance_of(Kubetruth::Config::ProjectSpec)
-        expect(config.override_specs.first.configmap_name_template).to be_an_instance_of(Kubetruth::Template)
-        expect(config.override_specs.first.configmap_name_template.source).to eq("project_overrides:configmap_name_template")
-        expect(config.override_specs.first.secret_name_template.source).to eq(config.root_spec.secret_name_template.source)
+        expect(config.override_specs.first.configmap_template).to be_an_instance_of(Kubetruth::Template)
+        expect(config.override_specs.first.configmap_template.source).to eq("project_overrides:configmap_template")
+        expect(config.override_specs.first.secret_template.source).to eq(config.root_spec.secret_template.source)
       end
 
     end
@@ -115,23 +132,30 @@ module Kubetruth
       end
 
       it "returns the matching override specs" do
-        config = described_class.new([{scope: "override", project_selector: "fo+", configmap_name_template: "foocm"}])
+        config = described_class.new([{scope: "override", project_selector: "fo+", configmap_template: "foocm"}])
         spec = config.spec_for_project("foo")
         expect(spec).to_not equal(config.root_spec)
-        expect(spec.configmap_name_template).to be_an_instance_of(Kubetruth::Template)
-        expect(spec.configmap_name_template.source).to eq("foocm")
+        expect(spec.configmap_template).to be_an_instance_of(Kubetruth::Template)
+        expect(spec.configmap_template.source).to eq("foocm")
       end
 
-      it "warns for multiple matching specs" do
+      it "raises for multiple matching specs" do
         config = described_class.new([
-          {scope: "override", project_selector: "bo+", configmap_name_template: "not"},
-          {scope: "override", project_selector: "fo+", configmap_name_template: "first"},
-          {scope: "override", project_selector: "foo", configmap_name_template: "second"}
+          {scope: "override", project_selector: "bo+", configmap_template: "not"},
+          {scope: "override", project_selector: "fo+", configmap_template: "first"},
+          {scope: "override", project_selector: "foo", configmap_template: "second"}
         ])
+        expect { config.spec_for_project("foo") }.to raise_error(Config::DuplicateSelection, /Multiple configuration specs/)
+      end
+
+      it "memoizes specs by project name" do
+        config = described_class.new([{scope: "override", project_selector: "fo+", configmap_template: "foocm"}])
+        expect(config.instance_variable_get(:@spec_mapping)).to eq({})
         spec = config.spec_for_project("foo")
-        expect(Logging.contents).to include("Multiple configuration specs match the project")
-        expect(spec.configmap_name_template).to be_an_instance_of(Kubetruth::Template)
-        expect(spec.configmap_name_template.source).to eq("first")
+        expect(config.instance_variable_get(:@spec_mapping)).to eq({"foo" => spec})
+        expect(config.override_specs).to_not receive(:find_all)
+        spec2 = config.spec_for_project("foo")
+        expect(spec2).to equal(spec)
       end
 
     end

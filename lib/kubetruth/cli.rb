@@ -1,9 +1,6 @@
-require_relative 'logging'
-# Need to setup logging before loading any other files
-Kubetruth::Logging.setup_logging(level: :info, color: false)
-
-require_relative 'etl'
 require 'clamp'
+require_relative 'project'
+require_relative 'etl'
 
 module Kubetruth
   class CLI < Clamp::Command
@@ -41,10 +38,6 @@ module Kubetruth
     option "--polling-interval", "INTERVAL", "the polling interval", default: 300 do |a|
       Integer(a)
     end
-
-    option "--[no-]metadata",
-           :flag, "Saves additional cloudtruth metadata in the kubernetes resources, e.g. the project origin for param values after inclusions/overrides are applied",
-           default: true
 
     option ["-n", "--dry-run"],
            :flag, "Perform a dry run",
@@ -96,7 +89,8 @@ module Kubetruth
           api_url: kube_url
       }
 
-      etl = ETL.new(ct_context: ct_context, kube_context: kube_context, dry_run: dry_run?, metadata: metadata?)
+      Project.ctapi_context = ct_context
+      etl = ETL.new(kube_context: kube_context, dry_run: dry_run?)
 
       etl.with_polling(polling_interval) do
         etl.apply

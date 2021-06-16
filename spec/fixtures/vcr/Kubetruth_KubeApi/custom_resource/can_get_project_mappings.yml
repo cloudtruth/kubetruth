@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://127.0.0.1:61828/apis/kubetruth.cloudtruth.com/v1
+    uri: https://127.0.0.1:60761/apis/kubetruth.cloudtruth.com/v1
     body:
       encoding: US-ASCII
       string: ''
@@ -10,13 +10,13 @@ http_interactions:
       Accept:
       - "*/*"
       User-Agent:
-      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      - rest-client/2.1.0 (darwin20 x86_64) ruby/2.7.3p183
       Authorization:
       - Bearer <BEARER_TOKEN>
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
-      - 127.0.0.1:61828
+      - 127.0.0.1:60761
   response:
     status:
       code: 200
@@ -27,11 +27,11 @@ http_interactions:
       Content-Type:
       - application/json
       X-Kubernetes-Pf-Flowschema-Uid:
-      - 603a7cd9-f3d5-41ac-85ce-63c2b2e318ba
+      - c6d9dbd7-dd7c-4844-9970-a2c737a707e7
       X-Kubernetes-Pf-Prioritylevel-Uid:
-      - 666de615-bfc9-45df-957e-e4aaa9dee586
+      - 3bc95a2c-9c78-4c16-8ee2-9c0b68ead8f6
       Date:
-      - Thu, 29 Apr 2021 19:18:37 GMT
+      - Wed, 16 Jun 2021 15:28:49 GMT
       Content-Length:
       - '346'
     body:
@@ -39,10 +39,10 @@ http_interactions:
       string: '{"kind":"APIResourceList","apiVersion":"v1","groupVersion":"kubetruth.cloudtruth.com/v1","resources":[{"name":"projectmappings","singularName":"projectmapping","namespaced":true,"kind":"ProjectMapping","verbs":["delete","deletecollection","get","list","patch","create","update","watch"],"shortNames":["pm"],"storageVersionHash":"UqtD9M7id/A="}]}
 
         '
-  recorded_at: Thu, 29 Apr 2021 19:18:37 GMT
+  recorded_at: Wed, 16 Jun 2021 15:28:49 GMT
 - request:
     method: get
-    uri: https://127.0.0.1:61828/apis/kubetruth.cloudtruth.com/v1/namespaces/kubetruth-test-ns/projectmappings
+    uri: https://127.0.0.1:60761/apis/kubetruth.cloudtruth.com/v1/namespaces/kubetruth-test-ns/projectmappings
     body:
       encoding: US-ASCII
       string: ''
@@ -50,13 +50,13 @@ http_interactions:
       Accept:
       - "*/*"
       User-Agent:
-      - rest-client/2.1.0 (darwin19.6.0 x86_64) ruby/2.7.2p137
+      - rest-client/2.1.0 (darwin20 x86_64) ruby/2.7.3p183
       Authorization:
       - Bearer <BEARER_TOKEN>
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
-      - 127.0.0.1:61828
+      - 127.0.0.1:60761
   response:
     status:
       code: 200
@@ -67,18 +67,29 @@ http_interactions:
       Content-Type:
       - application/json
       X-Kubernetes-Pf-Flowschema-Uid:
-      - 603a7cd9-f3d5-41ac-85ce-63c2b2e318ba
+      - c6d9dbd7-dd7c-4844-9970-a2c737a707e7
       X-Kubernetes-Pf-Prioritylevel-Uid:
-      - 666de615-bfc9-45df-957e-e4aaa9dee586
+      - 3bc95a2c-9c78-4c16-8ee2-9c0b68ead8f6
       Date:
-      - Thu, 29 Apr 2021 19:18:37 GMT
-      Content-Length:
-      - '1728'
+      - Wed, 16 Jun 2021 15:28:49 GMT
+      Transfer-Encoding:
+      - chunked
     body:
       encoding: UTF-8
-      string: '{"apiVersion":"kubetruth.cloudtruth.com/v1","items":[{"apiVersion":"kubetruth.cloudtruth.com/v1","kind":"ProjectMapping","metadata":{"annotations":{"meta.helm.sh/release-name":"kubetruth-test-app","meta.helm.sh/release-namespace":"kubetruth-test-ns"},"creationTimestamp":"2021-04-29T19:18:36Z","generation":1,"labels":{"app.kubernetes.io/instance":"kubetruth-test-app","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"kubetruth","app.kubernetes.io/version":"0.3.0","helm.sh/chart":"kubetruth-0.3.0"},"managedFields":[{"apiVersion":"kubetruth.cloudtruth.com/v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/instance":{},"f:app.kubernetes.io/managed-by":{},"f:app.kubernetes.io/name":{},"f:app.kubernetes.io/version":{},"f:helm.sh/chart":{}}},"f:spec":{".":{},"f:configmap_name_template":{},"f:included_projects":{},"f:key_filter":{},"f:key_selector":{},"f:key_template":{},"f:namespace_template":{},"f:project_selector":{},"f:scope":{},"f:secret_name_template":{},"f:skip":{},"f:skip_secrets":{}}},"manager":"Go-http-client","operation":"Update","time":"2021-04-29T19:18:36Z"}],"name":"kubetruth-test-app-root","namespace":"kubetruth-test-ns","resourceVersion":"55912","uid":"73358f87-dee2-4656-87a1-c9276c19ceef"},"spec":{"configmap_name_template":"{{project}}","included_projects":[],"key_filter":"","key_selector":"","key_template":"{{key}}","namespace_template":"","project_selector":"","scope":"root","secret_name_template":"{{project
-        | dns_safe}}","skip":false,"skip_secrets":false}}],"kind":"ProjectMappingList","metadata":{"continue":"","resourceVersion":"55925"}}
+      string: '{"apiVersion":"kubetruth.cloudtruth.com/v1","items":[{"apiVersion":"kubetruth.cloudtruth.com/v1","kind":"ProjectMapping","metadata":{"annotations":{"meta.helm.sh/release-name":"kubetruth-test-app","meta.helm.sh/release-namespace":"kubetruth-test-ns"},"creationTimestamp":"2021-06-16T15:28:37Z","generation":1,"labels":{"app.kubernetes.io/instance":"kubetruth-test-app","app.kubernetes.io/managed-by":"Helm","app.kubernetes.io/name":"kubetruth","app.kubernetes.io/version":"0.4.1","helm.sh/chart":"kubetruth-0.4.1"},"managedFields":[{"apiVersion":"kubetruth.cloudtruth.com/v1","fieldsType":"FieldsV1","fieldsV1":{"f:metadata":{"f:annotations":{".":{},"f:meta.helm.sh/release-name":{},"f:meta.helm.sh/release-namespace":{}},"f:labels":{".":{},"f:app.kubernetes.io/instance":{},"f:app.kubernetes.io/managed-by":{},"f:app.kubernetes.io/name":{},"f:app.kubernetes.io/version":{},"f:helm.sh/chart":{}}},"f:spec":{".":{},"f:configmap_template":{},"f:included_projects":{},"f:key_selector":{},"f:project_selector":{},"f:scope":{},"f:secret_template":{},"f:skip":{},"f:skip_secrets":{}}},"manager":"Go-http-client","operation":"Update","time":"2021-06-16T15:28:37Z"}],"name":"kubetruth-test-app-root","namespace":"kubetruth-test-ns","resourceVersion":"45342","uid":"8d25947c-eabe-4a98-89ab-fc56fc736fa9"},"spec":{"configmap_template":"apiVersion:
+        v1\nkind: ConfigMap\nmetadata:\n  name: \"{{ project | dns_safe }}\"\n  labels:\n    version:
+        \"{{ parameters | sort | sha256 | slice: 0, 7 }}\"\n  annotations:\n    kubetruth/project_heirarchy:
+        |\n      {{ project_heirarchy | to_yaml | indent: 6 | lstrip }}\n    kubtruth/parameter_origins:
+        |\n      {{ parameter_origins | to_yaml | indent: 6 | lstrip }}\ndata:\n  {%
+        for parameter in parameters %}\n  {{ parameter[0] | stringify }}: {{ parameter[1]
+        | stringify }}\n  {% endfor %}\n","included_projects":[],"key_selector":"","project_selector":"","scope":"root","secret_template":"apiVersion:
+        v1\nkind: Secret\nmetadata:\n  name: \"{{ project | dns_safe }}\"\n  labels:\n    version:
+        \"{{ parameters | sort | sha256 | slice: 0, 7 }}\"\n  annotations:\n    kubetruth/project_heirarchy:
+        |\n      {{ project_heirarchy | to_yaml | indent: 6 | lstrip }}\n    kubtruth/parameter_origins:
+        |\n      {{ parameter_origins | to_yaml | indent: 6 | lstrip }}\ndata:\n  {%
+        for parameter in parameters %}\n  {{ parameter[0] | stringify }}: {{ parameter[1]
+        | encode64 | stringify }}\n  {% endfor %}\n","skip":false,"skip_secrets":false}}],"kind":"ProjectMappingList","metadata":{"continue":"","resourceVersion":"45397"}}
 
         '
-  recorded_at: Thu, 29 Apr 2021 19:18:37 GMT
+  recorded_at: Wed, 16 Jun 2021 15:28:49 GMT
 recorded_with: VCR 6.0.0

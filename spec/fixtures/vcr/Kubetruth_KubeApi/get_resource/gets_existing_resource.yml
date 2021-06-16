@@ -1,0 +1,169 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://127.0.0.1:60761/api/v1/namespaces/kubetruth-test-ns/configmaps/rspec-examplegroups-kubetruthkubeapi-getresourcegets-existing-resource
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin20 x86_64) ruby/2.7.3p183
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:60761
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c6d9dbd7-dd7c-4844-9970-a2c737a707e7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bc95a2c-9c78-4c16-8ee2-9c0b68ead8f6
+      Date:
+      - Wed, 16 Jun 2021 15:28:45 GMT
+      Content-Length:
+      - '320'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"configmaps
+        \"rspec-examplegroups-kubetruthkubeapi-getresourcegets-existing-resource\"
+        not found","reason":"NotFound","details":{"name":"rspec-examplegroups-kubetruthkubeapi-getresourcegets-existing-resource","kind":"configmaps"},"code":404}
+
+        '
+  recorded_at: Wed, 16 Jun 2021 15:28:45 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:60761/api/v1
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin20 x86_64) ruby/2.7.3p183
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:60761
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c6d9dbd7-dd7c-4844-9970-a2c737a707e7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bc95a2c-9c78-4c16-8ee2-9c0b68ead8f6
+      Date:
+      - Wed, 16 Jun 2021 15:28:45 GMT
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: '{"kind":"APIResourceList","groupVersion":"v1","resources":[{"name":"bindings","singularName":"","namespaced":true,"kind":"Binding","verbs":["create"]},{"name":"componentstatuses","singularName":"","namespaced":false,"kind":"ComponentStatus","verbs":["get","list"],"shortNames":["cs"]},{"name":"configmaps","singularName":"","namespaced":true,"kind":"ConfigMap","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["cm"],"storageVersionHash":"qFsyl6wFWjQ="},{"name":"endpoints","singularName":"","namespaced":true,"kind":"Endpoints","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["ep"],"storageVersionHash":"fWeeMqaN/OA="},{"name":"events","singularName":"","namespaced":true,"kind":"Event","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["ev"],"storageVersionHash":"r2yiGXH7wu8="},{"name":"limitranges","singularName":"","namespaced":true,"kind":"LimitRange","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["limits"],"storageVersionHash":"EBKMFVe6cwo="},{"name":"namespaces","singularName":"","namespaced":false,"kind":"Namespace","verbs":["create","delete","get","list","patch","update","watch"],"shortNames":["ns"],"storageVersionHash":"Q3oi5N2YM8M="},{"name":"namespaces/finalize","singularName":"","namespaced":false,"kind":"Namespace","verbs":["update"]},{"name":"namespaces/status","singularName":"","namespaced":false,"kind":"Namespace","verbs":["get","patch","update"]},{"name":"nodes","singularName":"","namespaced":false,"kind":"Node","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["no"],"storageVersionHash":"XwShjMxG9Fs="},{"name":"nodes/proxy","singularName":"","namespaced":false,"kind":"NodeProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"nodes/status","singularName":"","namespaced":false,"kind":"Node","verbs":["get","patch","update"]},{"name":"persistentvolumeclaims","singularName":"","namespaced":true,"kind":"PersistentVolumeClaim","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["pvc"],"storageVersionHash":"QWTyNDq0dC4="},{"name":"persistentvolumeclaims/status","singularName":"","namespaced":true,"kind":"PersistentVolumeClaim","verbs":["get","patch","update"]},{"name":"persistentvolumes","singularName":"","namespaced":false,"kind":"PersistentVolume","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["pv"],"storageVersionHash":"HN/zwEC+JgM="},{"name":"persistentvolumes/status","singularName":"","namespaced":false,"kind":"PersistentVolume","verbs":["get","patch","update"]},{"name":"pods","singularName":"","namespaced":true,"kind":"Pod","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["po"],"categories":["all"],"storageVersionHash":"xPOwRZ+Yhw8="},{"name":"pods/attach","singularName":"","namespaced":true,"kind":"PodAttachOptions","verbs":["create","get"]},{"name":"pods/binding","singularName":"","namespaced":true,"kind":"Binding","verbs":["create"]},{"name":"pods/eviction","singularName":"","namespaced":true,"group":"policy","version":"v1beta1","kind":"Eviction","verbs":["create"]},{"name":"pods/exec","singularName":"","namespaced":true,"kind":"PodExecOptions","verbs":["create","get"]},{"name":"pods/log","singularName":"","namespaced":true,"kind":"Pod","verbs":["get"]},{"name":"pods/portforward","singularName":"","namespaced":true,"kind":"PodPortForwardOptions","verbs":["create","get"]},{"name":"pods/proxy","singularName":"","namespaced":true,"kind":"PodProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"pods/status","singularName":"","namespaced":true,"kind":"Pod","verbs":["get","patch","update"]},{"name":"podtemplates","singularName":"","namespaced":true,"kind":"PodTemplate","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"storageVersionHash":"LIXB2x4IFpk="},{"name":"replicationcontrollers","singularName":"","namespaced":true,"kind":"ReplicationController","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["rc"],"categories":["all"],"storageVersionHash":"Jond2If31h0="},{"name":"replicationcontrollers/scale","singularName":"","namespaced":true,"group":"autoscaling","version":"v1","kind":"Scale","verbs":["get","patch","update"]},{"name":"replicationcontrollers/status","singularName":"","namespaced":true,"kind":"ReplicationController","verbs":["get","patch","update"]},{"name":"resourcequotas","singularName":"","namespaced":true,"kind":"ResourceQuota","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["quota"],"storageVersionHash":"8uhSgffRX6w="},{"name":"resourcequotas/status","singularName":"","namespaced":true,"kind":"ResourceQuota","verbs":["get","patch","update"]},{"name":"secrets","singularName":"","namespaced":true,"kind":"Secret","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"storageVersionHash":"S6u1pOWzb84="},{"name":"serviceaccounts","singularName":"","namespaced":true,"kind":"ServiceAccount","verbs":["create","delete","deletecollection","get","list","patch","update","watch"],"shortNames":["sa"],"storageVersionHash":"pbx9ZvyFpBE="},{"name":"serviceaccounts/token","singularName":"","namespaced":true,"group":"authentication.k8s.io","version":"v1","kind":"TokenRequest","verbs":["create"]},{"name":"services","singularName":"","namespaced":true,"kind":"Service","verbs":["create","delete","get","list","patch","update","watch"],"shortNames":["svc"],"categories":["all"],"storageVersionHash":"0/CO1lhkEBI="},{"name":"services/proxy","singularName":"","namespaced":true,"kind":"ServiceProxyOptions","verbs":["create","delete","get","patch","update"]},{"name":"services/status","singularName":"","namespaced":true,"kind":"Service","verbs":["get","patch","update"]}]}
+
+        '
+  recorded_at: Wed, 16 Jun 2021 15:28:45 GMT
+- request:
+    method: post
+    uri: https://127.0.0.1:60761/api/v1/namespaces/kubetruth-test-ns/configmaps
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"name":"rspec-examplegroups-kubetruthkubeapi-getresourcegets-existing-resource","namespace":"kubetruth-test-ns"},"data":{"bar":"baz"},"kind":"ConfigMap","apiVersion":"v1"}'
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin20 x86_64) ruby/2.7.3p183
+      Content-Type:
+      - application/json
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Content-Length:
+      - '184'
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:60761
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c6d9dbd7-dd7c-4844-9970-a2c737a707e7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bc95a2c-9c78-4c16-8ee2-9c0b68ead8f6
+      Date:
+      - Wed, 16 Jun 2021 15:28:45 GMT
+      Content-Length:
+      - '478'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"rspec-examplegroups-kubetruthkubeapi-getresourcegets-existing-resource","namespace":"kubetruth-test-ns","uid":"d12047c0-3b74-41f7-bb0a-b1bd03dc5cb0","resourceVersion":"45384","creationTimestamp":"2021-06-16T15:28:45Z","managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-06-16T15:28:45Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}}}}]},"data":{"bar":"baz"}}
+
+        '
+  recorded_at: Wed, 16 Jun 2021 15:28:45 GMT
+- request:
+    method: get
+    uri: https://127.0.0.1:60761/api/v1/namespaces/kubetruth-test-ns/configmaps/rspec-examplegroups-kubetruthkubeapi-getresourcegets-existing-resource
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      User-Agent:
+      - rest-client/2.1.0 (darwin20 x86_64) ruby/2.7.3p183
+      Authorization:
+      - Bearer <BEARER_TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Host:
+      - 127.0.0.1:60761
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, private
+      Content-Type:
+      - application/json
+      X-Kubernetes-Pf-Flowschema-Uid:
+      - c6d9dbd7-dd7c-4844-9970-a2c737a707e7
+      X-Kubernetes-Pf-Prioritylevel-Uid:
+      - 3bc95a2c-9c78-4c16-8ee2-9c0b68ead8f6
+      Date:
+      - Wed, 16 Jun 2021 15:28:45 GMT
+      Content-Length:
+      - '478'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ConfigMap","apiVersion":"v1","metadata":{"name":"rspec-examplegroups-kubetruthkubeapi-getresourcegets-existing-resource","namespace":"kubetruth-test-ns","uid":"d12047c0-3b74-41f7-bb0a-b1bd03dc5cb0","resourceVersion":"45384","creationTimestamp":"2021-06-16T15:28:45Z","managedFields":[{"manager":"rest-client","operation":"Update","apiVersion":"v1","time":"2021-06-16T15:28:45Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{".":{},"f:bar":{}}}}]},"data":{"bar":"baz"}}
+
+        '
+  recorded_at: Wed, 16 Jun 2021 15:28:45 GMT
+recorded_with: VCR 6.0.0

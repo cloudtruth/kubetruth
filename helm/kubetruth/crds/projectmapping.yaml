@@ -22,25 +22,10 @@ spec:
                   default: "override"
                 project_selector:
                   type: string
-                  description: A regexp to limit the projects acted against (client-side).  Supplies any named matches for template evaluation
+                  description: A regexp to limit the projects acted against
                 key_selector:
                   type: string
-                  description: A regexp to limit the keys acted against (client-side).  Supplies any named matches for template evaluation
-                key_filter:
-                  type: string
-                  description: Limits the keys fetched to contain the given substring (server-side, api search param)
-                configmap_name_template:
-                  type: string
-                  description: The template to use in generating ConfigMap names
-                secret_name_template:
-                  type: string
-                  description: The template to use in generating Secret names
-                namespace_template:
-                  type: string
-                  description: The template to use in generating namespace names
-                key_template:
-                  type: string
-                  description: The template to use in generating key names
+                  description: A regexp to limit the keys acted against
                 skip:
                   type: boolean
                   description: Skips the generation of resources for the selected projects
@@ -51,7 +36,13 @@ spec:
                   type: array
                   items:
                     type: string
-                  description: Include the parameters from other projects into the selected ones.  This is non-recursive, so if A imports B and B imports C, then A will only get B's parameters.  For key conflicts, if A includes [B, C], then the precendence is A overrides C overrides B.
+                  description: Include the parameters from other projects into the selected ones.  This can be recursive in a depth first fashion, so if A imports B and B imports C, then A will get B's and C's parameters.  For key conflicts, if A includes B and B includes C, then the precendence is A overrides B overrides C.  If A includes [B, C], then the precendence is A overrides C overrides B.
+                configmap_template:
+                  type: string
+                  description: The template to use in generating a kubernetes resource (ConfigMap) for non-secret parameters
+                secret_template:
+                  type: string
+                  description: The template to use in generating a kubernetes resource (Secret) for secret parameters
               required:
                 - scope
       additionalPrinterColumns:

@@ -1,7 +1,5 @@
 require 'logging'
 require 'gem_logger'
-# prevent our use of ActiveSupport causing an error with json adapters
-require 'active_support/json'
 
 module Kubetruth
   module Logging
@@ -62,11 +60,11 @@ module Kubetruth
     end
 
     def self.contents
-      sio.try(:sio).try(:to_s)
+      sio&.sio&.to_s
     end
 
     def self.clear
-      sio.try(:clear)
+      sio&.clear
     end
 
     def self.setup_logging(level: :info, color: true)

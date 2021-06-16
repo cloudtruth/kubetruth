@@ -27,13 +27,13 @@ module Kubetruth
       it "logs with color" do
         described_class.setup_logging(level: :info, color: true)
         logger.info("howdy")
-        a = ::Logging.logger.root.appenders.find {|a| a.try(:layout).try(:color_scheme) }
+        a = ::Logging.logger.root.appenders.find {|a| a&.layout&.color_scheme }
         expect(a).to_not be_nil
       end
 
       it "outputs plain text" do
         described_class.setup_logging(level: :info, color: false)
-        a = ::Logging.logger.root.appenders.find {|a| a.try(:layout).try(:color_scheme) }
+        a = ::Logging.logger.root.appenders.find {|a| a&.layout&.color_scheme }
         expect(a).to be_nil
       end
 

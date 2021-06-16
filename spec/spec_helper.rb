@@ -1,9 +1,6 @@
 require "bundler/setup"
 ENV['CLOUDTRUTH_API_KEY'] ||= 'fake_api_key'
 require "kubetruth"
-require "kubetruth/logging"
-# Need to setup logging before loading any other files
-Kubetruth::Logging.setup_logging(level: :info, color: false)
 
 require "open3"
 

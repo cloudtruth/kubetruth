@@ -95,22 +95,23 @@ module Kubetruth
             --kube-url ku
             --dry-run
             --polling-interval 27
-            --no-metadata
         ]
+
+        expect(Project).to receive(:ctapi_context=).with({
+          organization: "acme",
+          environment: "production",
+          api_key: "abc123"
+        })
+
         etl = double(ETL)
-        expect(ETL).to receive(:new).with(ct_context: {
-                                              organization: "acme",
-                                              environment: "production",
-                                              api_key: "abc123"
-                                          },
-                                          kube_context: {
+        expect(ETL).to receive(:new).with(kube_context: {
                                               namespace: "kn",
                                               token: "kt",
                                               api_url: "ku"
                                           },
-                                          dry_run: true,
-                                          metadata: false).and_return(etl)
-        expect(etl).to receive(:with_polling).with(27)
+                                          dry_run: true).and_return(etl)
+        expect(etl).to receive(:apply)
+        expect(etl).to receive(:with_polling).with(27).and_yield
         cli.run(args)
       end
 

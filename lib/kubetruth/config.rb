@@ -1,4 +1,3 @@
-require_relative 'logging'
 require_relative 'template'
 
 module Kubetruth
@@ -6,52 +5,55 @@ module Kubetruth
 
     include GemLogger::LoggerSupport
 
+    class DuplicateSelection < Kubetruth::Error; end
+
     ProjectSpec = Struct.new(
       :scope,
       :project_selector,
       :key_selector,
-      :key_filter,
-      :configmap_name_template,
-      :secret_name_template,
-      :namespace_template,
-      :key_template,
       :skip,
       :skip_secrets,
       :included_projects,
+      :configmap_template,
+      :secret_template,
       keyword_init: true
-    )
+    ) do
+
+      def initialize(*args, **kwargs)
+        super(*args, **convert_types(kwargs))
+      end
+
+      def convert_types(hash)
+        selector_key_pattern = /_selector$/
+        template_key_pattern = /_template$/
+        hash.merge(hash) do |k, v|
+          case k
+            when selector_key_pattern
+              Regexp.new(v)
+            when template_key_pattern
+              Kubetruth::Template.new(v)
+            else
+              v
+          end
+        end
+      end
+
+    end
 
     DEFAULT_SPEC = {
       scope: 'override',
       project_selector: '',
       key_selector: '',
-      key_filter: '',
-      configmap_name_template: '{{project | dns_safe}}',
-      secret_name_template: '{{project | dns_safe}}',
-      namespace_template: '',
-      key_template: '{{key}}',
       skip: false,
       skip_secrets: false,
-      included_projects: []
+      included_projects: [],
+      configmap_template: "",
+      secret_template: ""
     }.freeze
 
     def initialize(project_mapping_crds)
       @project_mapping_crds = project_mapping_crds
-    end
-
-    def convert_types(hash)
-      selector_key_pattern = /_selector$/
-      template_key_pattern = /_template$/
-      hash.merge(hash) do |k, v|
-        case k
-          when selector_key_pattern
-            Regexp.new(v)
-          when template_key_pattern
-            Kubetruth::Template.new(v)
-          else
-            v
-        end
-      end
+      @spec_mapping = {}
     end
 
     def load
@@ -63,8 +65,8 @@ module Kubetruth
         overrides = parts["override"] || []
 
         config = DEFAULT_SPEC.merge(root_mapping)
-        @root_spec = ProjectSpec.new(**convert_types(config))
-        @override_specs = overrides.collect { |o| ProjectSpec.new(**convert_types(config.merge(o))) }
+        @root_spec = ProjectSpec.new(**config)
+        @override_specs = overrides.collect { |o| ProjectSpec.new(**config.merge(o)) }
         config
       end
     end
@@ -80,18 +82,24 @@ module Kubetruth
     end
 
     def spec_for_project(project_name)
-      spec = nil
+      spec = @spec_mapping[project_name]
+      return spec unless spec.nil?
+
       specs = override_specs.find_all { |o| project_name =~ o.project_selector }
       case specs.size
         when 0
           spec = root_spec
+          logger.debug {"Using root spec for project '#{project_name}'"}
         when 1
           spec = specs.first
+          logger.debug {"Using override spec '#{spec.project_selector}' for project '#{project_name}'"}
         else
-          logger.warn "Multiple configuration specs match the project '#{project_name}', using first: #{specs.collect(&:project_selector).inspect}"
-          spec = specs.first
+          dupes = specs.collect {|s| "'#{s.project_selector}'" }
+          raise DuplicateSelection, "Multiple configuration specs (#{dupes.inspect}) match the project '#{project_name}': }"
       end
-      spec
+
+      @spec_mapping[project_name] = spec
+      return spec
     end
 
   end

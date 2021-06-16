@@ -1,7 +1,6 @@
-require_relative 'logging'
-require_relative 'parameter'
 require "graphql/client"
 require "graphql/client/http"
+require_relative 'parameter'
 
 module Kubetruth
 

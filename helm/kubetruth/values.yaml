@@ -69,7 +69,6 @@ affinity: {}
 appSettings:
   apiKey:
   environment:
-  noMetadata: false
   pollingInterval:
   debug: false
 
@@ -88,11 +87,38 @@ projectMappings:
     scope: "root"
     project_selector: ""
     key_selector: ""
-    key_filter: ""
-    configmap_name_template: "{{project | dns_safe}}"
-    secret_name_template: "{{project | dns_safe}}"
-    namespace_template: ""
-    key_template: "{{key}}"
     skip: false
     skip_secrets: false
     included_projects: []
+    configmap_template: |
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: "{{ project | dns_safe }}"
+        labels:
+          version: "{{ parameters | sort | to_json | sha256 | slice: 0, 7 }}"
+        annotations:
+          kubetruth/project_heirarchy: |
+            {{ project_heirarchy | to_yaml | indent: 6 | lstrip }}
+          kubtruth/parameter_origins: |
+            {{ parameter_origins | to_yaml | indent: 6 | lstrip }}
+      data:
+        {% for parameter in parameters %}
+        {{ parameter[0] | stringify }}: {{ parameter[1] | stringify }}
+        {% endfor %}
+    secret_template: |
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ project | dns_safe }}"
+        labels:
+          version: "{{ parameters | sort | to_json | sha256 | slice: 0, 7 }}"
+        annotations:
+          kubetruth/project_heirarchy: |
+            {{ project_heirarchy | to_yaml | indent: 6 | lstrip }}
+          kubtruth/parameter_origins: |
+            {{ parameter_origins | to_yaml | indent: 6 | lstrip }}
+      data:
+        {% for parameter in parameters %}
+        {{ parameter[0] | stringify }}: {{ parameter[1] | encode64 | stringify }}
+        {% endfor %}

@@ -5,66 +5,38 @@ module Kubetruth
   describe ETL do
 
     let(:init_args) {{
-      ct_context: {}, kube_context: {}
+      kube_context: {}
     }}
     let(:etl) { described_class.new(init_args) }
 
-    def kubeapi(ns)
+    def kubeapi
       kapi = double(Kubetruth::KubeApi)
-      ns = ns.present? ? ns : nil
-      allow(Kubetruth::KubeApi).to receive(:new).with(hash_including(namespace: ns)).and_return(kapi)
-      allow(kapi).to receive(:get_config_map).and_return(Kubeclient::Resource.new)
-      allow(kapi).to receive(:get_secret).and_return(Kubeclient::Resource.new)
+      allow(Kubetruth::KubeApi).to receive(:new).and_return(kapi)
+      allow(kapi).to receive(:get_resource).and_return(Kubeclient::Resource.new)
+      allow(kapi).to receive(:apply_resource)
       allow(kapi).to receive(:under_management?).and_return(true)
-      allow(kapi).to receive(:secret_hash).and_return({})
-      allow(kapi).to receive(:get_config_map_names).and_return([])
-      allow(kapi).to receive(:get_secret_names).and_return([])
       allow(kapi).to receive(:ensure_namespace)
-      allow(kapi).to receive(:namespace).and_return(ns.nil? ? "default" : ns)
+      allow(kapi).to receive(:namespace).and_return("default")
       allow(kapi).to receive(:get_project_mappings).and_return([])
       kapi
     end
 
     before(:each) do
-      @ctapi_class = Class.new
-      @ctapi = double()
-      allow(Kubetruth).to receive(:CtApi).and_return(@ctapi_class)
-      allow(@ctapi_class).to receive(:new).and_return(@ctapi)
-
-      @kubeapi = kubeapi("")
-    end
-
-    describe "#ctapi" do
-
-      it "is memoized" do
-        etl = described_class.new(init_args)
-        expect(etl.ctapi).to equal(etl.ctapi)
-      end
-
+      @kubeapi = kubeapi
     end
 
     describe "#kubeapi" do
 
       it "passes namespace to ctor" do
-        etl = described_class.new(init_args)
-        expect(Kubetruth::KubeApi).to receive(:new).with(hash_including(namespace: "foo"))
-        etl.kubeapi("foo")
-      end
-
-      it "overrides namespace from kube context in ctor" do
-        etl = described_class.new(init_args.merge({kube_context: {namespace: "bar"}}))
-        expect(Kubetruth::KubeApi).to receive(:new).with(hash_including(namespace: "foo"))
-        etl.kubeapi("foo")
+        etl = described_class.new(kube_context: {namespace: "foo"})
+        expect(Kubetruth::KubeApi).to receive(:new).with(namespace: "foo")
+        etl.kubeapi
       end
 
       it "is memoized" do
         etl = described_class.new(init_args)
-        expect(etl.kubeapi("")).to equal(etl.kubeapi(""))
-      end
-
-      it "same behavior with nil or blank namespace" do
-        etl = described_class.new(init_args)
-        expect(etl.kubeapi("")).to equal(etl.kubeapi(nil))
+        allow(Kubetruth::KubeApi).to receive(:new)
+        expect(etl.kubeapi).to equal(etl.kubeapi)
       end
 
     end
@@ -177,219 +149,94 @@ module Kubetruth
 
     end
 
-    describe "#get_params" do
+    describe "#kube_apply" do
 
-      let(:project) { "foo" }
-      let(:project_spec) { etl.load_config.spec_for_project(project) }
-
-      it "handles empty" do
-        expect(@ctapi).to receive(:parameters).with(searchTerm: "", project: "foo").and_return([])
-        params = etl.get_params(project, project_spec)
-        expect(params).to eq([])
+      it "calls kube to create new resource" do
+        resource_yml = <<~EOF
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: "group1"
+          data:
+            "param1": "value1"
+        EOF
+        expect(@kubeapi).to receive(:ensure_namespace).with(@kubeapi.namespace)
+        expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", @kubeapi.namespace).and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
+        expect(@kubeapi).to_not receive(:under_management?)
+        expect(@kubeapi).to receive(:apply_resource).with(YAML.load(resource_yml))
+        etl.kube_apply(resource_yml)
+        expect(Logging.contents).to match(/Creating kubernetes resource/)
       end
 
-      it "only selects for matching key_filter" do
-        project_spec.key_filter = "svc"
-        expect(@ctapi).to receive(:parameters).with(searchTerm: "svc", project: "foo").and_return([])
-        params = etl.get_params(project, project_spec)
+      it "calls to kube to update existing resource" do
+        resource_yml = <<~EOF
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: "group1"
+          data:
+            "param1": "value1"
+        EOF
+        resource_hash = YAML.load(resource_yml)
+        resource = Kubeclient::Resource.new(resource_hash.merge(data: {param1: "oldvalue"}))
+        expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", @kubeapi.namespace).and_return(resource)
+        expect(@kubeapi).to receive(:under_management?).and_return(true)
+        expect(@kubeapi).to receive(:apply_resource).with(resource_hash)
+        etl.kube_apply(resource_yml)
+        expect(Logging.contents).to match(/Updating kubernetes resource/)
       end
 
-      it "only selects for matching selector" do
-        project_spec.key_selector = /foo$/
-        expect(@ctapi).to receive(:parameters).with(searchTerm: "", project: "foo").and_return([
-          Parameter.new(key: "svc.param1", value: "value1", secret: false),
-          Parameter.new(key: "svc.param2.foo", value: "value2", secret: false),
-        ])
-        params = etl.get_params(project, project_spec)
-        expect(params.size).to eq(1)
-        expect(params.collect(&:original_key)).to eq(["svc.param2.foo"])
+      it "skips call to kube for existing resource not under management" do
+        resource_yml = <<~EOF
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: "group1"
+          data:
+            "param1": "value1"
+        EOF
+        resource = Kubeclient::Resource.new(YAML.load(resource_yml))
+        expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", @kubeapi.namespace).and_return(resource)
+        expect(@kubeapi).to receive(:under_management?).and_return(false)
+        expect(@kubeapi).to_not receive(:apply_resource)
+        etl.kube_apply(resource_yml)
+        expect(Logging.contents).to match(/Skipping.*kubetruth management/)
       end
 
-      it "applies templates to matches" do
-        expect(@ctapi).to receive(:parameters).with(searchTerm: "", project: "foo").and_return([
-            Parameter.new(key: "foo.key1", value: "value1", secret: false),
-            Parameter.new(key: "bar.key2", value: "value2", secret: false)
-        ])
-        project_spec.key_selector = /^(?<prefix>.*)\.(?<key>.*)$/
-        project_spec.key_template = Kubetruth::Template.new("{{key}}_{{prefix}}_{{project}}")
-        params = etl.get_params(project, project_spec, template_matches: {project: "myproj"})
-        expect(params.size).to eq(2)
-        expect(params).to eq([
-          Parameter.new(original_key: "foo.key1", key: "key1_foo_myproj", value: "value1", secret: false),
-          Parameter.new(original_key: "bar.key2", key: "key2_bar_myproj", value: "value2", secret: false)
-        ])
-      end
-
-      it "sets key in template if not in selector" do
-        expect(@ctapi).to receive(:parameters).with(searchTerm: "", project: "foo").and_return([
-          Parameter.new(key: "key1", value: "value1", secret: false),
-        ])
-        project_spec.key_selector = //
-        project_spec.key_template = Kubetruth::Template.new("my_{{key}}")
-        params = etl.get_params(project, project_spec)
-        expect(params).to eq([
-                               Parameter.new(original_key: "key1", key: "my_key1", value: "value1", secret: false),
-                             ])
-      end
-
-      it "doesn't expose secret in debug log" do
-        Logging.setup_logging(level: :debug, color: false)
-
-        expect(@ctapi).to receive(:parameters).with(searchTerm: "", project: "foo").and_return([
-                                                              Parameter.new(key: "param1", value: "value1", secret: false),
-                                                              Parameter.new(key: "param2", value: "sekret", secret: true),
-                                                              Parameter.new(key: "param3", value: "alsosekret", secret: true),
-                                                              Parameter.new(key: "param4", value: "value4", secret: false),
-                                                          ])
-        params = etl.get_params(project, project_spec)
-        expect(Logging.contents).to include("param2")
-        expect(Logging.contents).to include("param3")
-        expect(Logging.contents).to include("<masked>")
-        expect(Logging.contents).to_not include("sekret")
-      end
-
-    end
-
-    describe "#apply_config_map" do
-
-      it "calls kube to create new config map" do
-        params = [
-          Parameter.new(key: "param1", value: "value1", secret: false),
-          Parameter.new(key: "param2", value: "value2", secret: false)
-        ]
-        expect(@kubeapi).to receive(:get_config_map).with("group1").and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
-        expect(@kubeapi).to_not receive(:update_config_map)
-        expect(@kubeapi).to receive(:create_config_map).with("group1", {"param1" => "value1", "param2" => "value2"})
-        etl.apply_config_map(namespace: '', name: "group1", param_hash: etl.params_to_hash(params))
-      end
-
-      it "calls kube to update config map" do
-        params = [
-          Parameter.new(key: "param1", value: "value1", secret: false),
-          Parameter.new(key: "param2", value: "value2", secret: false)
-        ]
-        resource = Kubeclient::Resource.new
-        resource.data = {oldparam: "oldvalue"}
-        expect(@kubeapi).to receive(:get_config_map).with("group1").and_return(resource)
-        expect(@kubeapi).to receive(:under_management?).with(resource).and_return(true)
-        expect(@kubeapi).to_not receive(:create_config_map)
-        expect(@kubeapi).to receive(:update_config_map).with("group1", {"param1" => "value1", "param2" => "value2"})
-        etl.apply_config_map(namespace: '', name: "group1", param_hash: etl.params_to_hash(params))
-      end
-
-      it "doesn't update config map if data same" do
-        params = [
-          Parameter.new(key: "param1", value: "value1", secret: false),
-          Parameter.new(key: "param2", value: "value2", secret: false)
-        ]
-        resource = Kubeclient::Resource.new
-        resource.data = {param1: "value1", param2: "value2"}
-        expect(@kubeapi).to receive(:get_config_map).with("group1").and_return(resource)
-        expect(@kubeapi).to receive(:under_management?).with(resource).and_return(true)
-        expect(@kubeapi).to_not receive(:create_config_map)
-        expect(@kubeapi).to_not receive(:update_config_map)
-        etl.apply_config_map(namespace: '', name: "group1", param_hash: etl.params_to_hash(params))
-      end
-
-      it "doesn't update config map if not under management" do
-        params = [
-          Parameter.new(key: "param1", value: "value1", secret: false),
-          Parameter.new(key: "param2", value: "value2", secret: false)
-        ]
-        resource = Kubeclient::Resource.new
-        resource.data = {oldparam: "oldvalue"}
-        expect(@kubeapi).to receive(:get_config_map).with("group1").and_return(resource)
-        expect(@kubeapi).to receive(:under_management?).with(resource).and_return(false)
-        expect(@kubeapi).to_not receive(:create_config_map)
-        expect(@kubeapi).to_not receive(:update_config_map)
-        etl.apply_config_map(namespace: '', name: "group1", param_hash: etl.params_to_hash(params))
-        expect(Logging.contents).to match(/Skipping config map 'group1'/)
+      it "doesn't update resource if data same" do
+        resource_yml = <<~EOF
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: "group1"
+          data:
+            "param1": "value1"
+        EOF
+        resource_hash = YAML.load(resource_yml)
+        resource = Kubeclient::Resource.new(resource_hash)
+        expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", @kubeapi.namespace).and_return(resource)
+        expect(@kubeapi).to receive(:under_management?).and_return(true)
+        expect(@kubeapi).to_not receive(:apply_resource).with(resource_hash)
+        etl.kube_apply(resource_yml)
+        expect(Logging.contents).to match(/Skipping update for identical kubernetes resource/)
       end
 
       it "uses namespace for kube when supplied" do
-        params = [
-          Parameter.new(key: "param1", value: "value1", secret: false),
-          Parameter.new(key: "param2", value: "value2", secret: false)
-        ]
-        foo_kapi = kubeapi("foo")
-        expect(etl).to receive(:kubeapi).with("foo").at_least(:once).and_return(foo_kapi)
-        expect(foo_kapi).to receive(:get_config_map).with("group1").and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
-        expect(foo_kapi).to_not receive(:update_config_map)
-        expect(foo_kapi).to receive(:create_config_map).with("group1", {"param1" => "value1", "param2" => "value2"})
-        etl.apply_config_map(namespace: 'foo', name: "group1", param_hash: etl.params_to_hash(params))
-      end
-
-    end
-
-    describe "#apply_secret" do
-
-      it "calls kube to create new secret" do
-        params = [
-            Parameter.new(key: "param1", value: "value1", secret: true),
-            Parameter.new(key: "param2", value: "value2", secret: true)
-        ]
-        expect(@kubeapi).to receive(:get_secret).with("group1").and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
-        expect(@kubeapi).to_not receive(:update_secret)
-        expect(@kubeapi).to receive(:create_secret).with("group1", {"param1" => "value1", "param2" => "value2"})
-        etl.apply_secret(namespace: '', name: "group1", param_hash: etl.params_to_hash(params))
-      end
-
-      it "calls kube to update secret" do
-        params = [
-          Parameter.new(key: "param1", value: "value1", secret: true),
-          Parameter.new(key: "param2", value: "value2", secret: true)
-        ]
-        resource = Kubeclient::Resource.new
-        resource.stringData = {oldparam: "oldvalue"}
-        expect(@kubeapi).to receive(:get_secret).with("group1").and_return(resource)
-        expect(@kubeapi).to receive(:under_management?).with(resource).and_return(true)
-        expect(@kubeapi).to receive(:secret_hash).with(resource).and_return({oldparam: "oldvalue"})
-        expect(@kubeapi).to_not receive(:create_secret)
-        expect(@kubeapi).to receive(:update_secret).with("group1", {"param1" => "value1", "param2" => "value2"})
-        etl.apply_secret(namespace: '', name: "group1", param_hash: etl.params_to_hash(params))
-      end
-
-      it "doesn't update secret if data same" do
-        params = [
-          Parameter.new(key: "param1", value: "value1", secret: true),
-          Parameter.new(key: "param2", value: "value2", secret: true)
-        ]
-        resource = Kubeclient::Resource.new
-        resource.stringData = {param1: "value1", param2: "value2"}
-        expect(@kubeapi).to receive(:get_secret).with("group1").and_return(resource)
-        expect(@kubeapi).to receive(:under_management?).with(resource).and_return(true)
-        expect(@kubeapi).to receive(:secret_hash).with(resource).and_return({param1: "value1", param2: "value2"})
-        expect(@kubeapi).to_not receive(:create_secret)
-        expect(@kubeapi).to_not receive(:update_secret)
-        etl.apply_secret(namespace: '', name: "group1", param_hash: etl.params_to_hash(params))
-      end
-
-      it "doesn't update secret if not under management=" do
-        params = [
-          Parameter.new(key: "param1", value: "value1", secret: true),
-          Parameter.new(key: "param2", value: "value2", secret: true)
-        ]
-        resource = Kubeclient::Resource.new
-        resource.stringData = {oldparam: "oldvalue"}
-        expect(@kubeapi).to receive(:get_secret).with("group1").and_return(resource)
-        expect(@kubeapi).to receive(:under_management?).with(resource).and_return(false)
-        expect(@kubeapi).to receive(:secret_hash).with(resource).and_return({oldparam: "oldvalue"})
-        expect(@kubeapi).to_not receive(:create_secret)
-        expect(@kubeapi).to_not receive(:update_secret)
-        etl.apply_secret(namespace: '', name: "group1", param_hash: etl.params_to_hash(params))
-        expect(Logging.contents).to match(/Skipping secret 'group1'/)
-      end
-
-      it "uses namespace for kube when supplied" do
-        params = [
-          Parameter.new(key: "param1", value: "value1", secret: true),
-          Parameter.new(key: "param2", value: "value2", secret: true)
-        ]
-        foo_kapi = kubeapi("foo")
-        expect(foo_kapi).to receive(:get_secret).with("group1").and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
-        expect(foo_kapi).to_not receive(:update_secret)
-        expect(foo_kapi).to receive(:create_secret).with("group1", {"param1" => "value1", "param2" => "value2"})
-        etl.apply_secret(namespace: 'foo', name: "group1", param_hash: etl.params_to_hash(params))
+        resource_yml = <<~EOF
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: "group1"
+            namespace: "ns1"
+          data:
+            "param1": "value1"
+        EOF
+        expect(@kubeapi).to receive(:ensure_namespace).with("ns1")
+        expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", "ns1").and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
+        expect(@kubeapi).to_not receive(:under_management?)
+        expect(@kubeapi).to receive(:apply_resource).with(YAML.load(resource_yml))
+        etl.kube_apply(resource_yml)
+        expect(Logging.contents).to match(/Creating kubernetes resource/)
       end
 
     end
@@ -397,226 +244,144 @@ module Kubetruth
     describe "#apply" do
 
       before(:each) do
-        allow(etl).to receive(:load_config).and_return(Kubetruth::Config.new([]))
+        default_root_spec = YAML.load_file(File.expand_path("../../helm/kubetruth/values.yaml", __dir__)).deep_symbolize_keys
+        @root_spec_crd = default_root_spec[:projectMappings][:root]
+        allow(etl).to receive(:load_config).and_return(Kubetruth::Config.new([@root_spec_crd]))
+        allow(Project).to receive(:create).and_wrap_original do |m, *args|
+          project = m.call(*args)
+          allow(project).to receive(:parameters).and_return([
+                                                              Parameter.new(key: "param1", value: "value1", secret: false),
+                                                              Parameter.new(key: "param2", value: "value2", secret: true)
+                                                            ])
+          project
+        end
       end
 
       it "sets config and secrets" do
-        params = [
-          Parameter.new(key: "param1", value: "value1", secret: false),
-          Parameter.new(key: "param2", value: "value2", secret: true)
-        ]
-        expect(etl.ctapi).to receive(:project_names).and_return(["default"])
-        expect(etl).to receive(:get_params).and_return(params)
-        expect(etl).to receive(:apply_config_map).with(namespace: '', name: "default", param_hash: hash_including(etl.params_to_hash([params[0]])))
-        expect(etl).to receive(:apply_secret).with(namespace: '', name: "default", param_hash: hash_including(etl.params_to_hash([params[1]])))
+        expect(Project).to receive(:names).and_return(["proj1"])
+
+        allow(etl).to receive(:kube_apply) do |yml|
+          if yml.include?("kind: ConfigMap")
+            expect(yml).to match(/"param1": "value1"/)
+            expect(yml).to_not match(/"param2": "value2"/)
+          elsif yml.include?("kind: Secret")
+            expect(yml).to_not match(/"param1": "value1"/)
+            expect(yml).to match(/"param2": "#{Base64.strict_encode64('value2')}"/)
+          else
+            raise "Unexpected kubernetes resource kind"
+          end
+        end
+
         etl.apply()
       end
 
       it "skips secrets" do
-        params = [
-          Parameter.new(key: "param1", value: "value1", secret: false),
-          Parameter.new(key: "param2", value: "value2", secret: true)
-        ]
+        expect(Project).to receive(:names).and_return(["proj1"])
         etl.load_config.root_spec.skip_secrets = true
-        expect(etl.ctapi).to receive(:project_names).and_return(["default"])
-        expect(etl).to receive(:get_params).and_return(params)
-        expect(etl).to receive(:apply_config_map).with(namespace: '', name: "default", param_hash: hash_including(etl.params_to_hash([params[0]])))
-        expect(etl).to_not receive(:apply_secret)
+
+        allow(etl).to receive(:kube_apply) do |yml|
+          if yml.include?("kind: ConfigMap")
+            expect(yml).to match(/"param1": "value1"/)
+            expect(yml).to_not match(/"param2": "value2"/)
+          elsif yml.include?("kind: Secret")
+            raise "Secret should not be present"
+          else
+            raise "Unexpected kubernetes resource kind"
+          end
+        end
+
         etl.apply()
       end
 
       it "allows dryrun" do
-        params = [
-          Parameter.new(key: "param1", value: "value1", secret: false),
-          Parameter.new(key: "param2", value: "value2", secret: true)
-        ]
-        etl = described_class.new(init_args.merge(dry_run: true))
-        expect(etl.ctapi).to receive(:project_names).and_return(["default"])
-        expect(etl).to receive(:get_params).and_return(params)
+        etl.instance_variable_set(:@dry_run, true)
+        expect(Project).to receive(:names).and_return(["proj1"])
+
         expect(@kubeapi).to_not receive(:ensure_namespace)
-        expect(@kubeapi).to_not receive(:create_config_map)
-        expect(@kubeapi).to_not receive(:update_config_map)
-        expect(@kubeapi).to_not receive(:create_secret)
-        expect(@kubeapi).to_not receive(:update_secret)
-        etl.apply
+        expect(@kubeapi).to_not receive(:apply_resource)
+
+        etl.apply()
         expect(Logging.contents).to match("Performing dry-run")
       end
 
       it "skips projects when selector fails" do
         etl.load_config.root_spec.project_selector = /oo/
-        expect(etl.ctapi).to receive(:project_names).and_return(["default", "foo", "bar"])
-        expect(etl).to_not receive(:get_params).with("default", any_args)
-        expect(etl).to receive(:get_params).with("foo", any_args).and_return([])
-        expect(etl).to_not receive(:get_params).with("bar", any_args)
-        expect(etl).to receive(:apply_config_map)
-        expect(etl).to receive(:apply_secret)
+        expect(Project).to receive(:names).and_return(["proj1", "foo", "bar"])
+
+        allow(etl).to receive(:kube_apply) do |yml|
+          expect(yml).to match(/name: "foo"/)
+        end
+
         etl.apply()
       end
 
       it "skips projects if flag is set" do
-        expect(etl).to receive(:load_config).and_return(Kubetruth::Config.new([
-          {scope: "override", project_selector: "foo", skip: true}
-        ]))
+        allow(etl).to receive(:load_config).
+          and_return(Kubetruth::Config.new([@root_spec_crd, {scope: "override", project_selector: "foo", skip: true}]))
+        expect(Project).to receive(:names).and_return(["proj1", "foo", "bar"])
 
-        expect(etl.ctapi).to receive(:project_names).and_return(["default", "foo", "bar"])
-        allow(etl).to receive(:get_params).and_return([])
-        expect(etl).to receive(:apply_config_map).with(hash_including(name: "default"))
-        expect(etl).to_not receive(:apply_config_map).with(hash_including(name: "foo"))
-        expect(etl).to receive(:apply_config_map).with(hash_including(name: "bar"))
-        allow(etl).to receive(:apply_secret)
-        etl.apply()
-      end
-
-      it "gets captures for template from both levels of project selectors" do
-        expect(etl).to receive(:load_config).and_return(Kubetruth::Config.new([
-          {
-            scope: "root",
-            namespace_template: "{{child_match}}-{{root_match}}",
-            project_selector: "^(?<root_match>[^.]+)",
-            key_template: "{{root_match}}:{{child_match}}:{{project}}:{{key}}"
-          },
-          {scope: "override", project_selector: "(?<child_match>[^.]+)$"}
-        ]))
-
-        params = [
-          Parameter.new(key: "param1", value: "value1", secret: false)
-        ]
-        expect(etl.ctapi).to receive(:project_names).and_return(["foo.bar"])
-        expect(etl.ctapi).to receive(:parameters).and_return(params)
-        expect(etl).to receive(:apply_config_map).
-          with(namespace: 'bar-foo',
-               name: "foo.bar",
-               param_hash: hash_including(etl.params_to_hash([Parameter.new(key: "foo:bar:foo.bar:param1", original_key: "param1", value: "value1", secret: false),])))
-        expect(etl).to receive(:apply_secret)
-        etl.apply
-      end
-
-      it "includes projects" do
-        base_params = [
-          Parameter.new(key: "param0", value: "value0", secret: false),
-          Parameter.new(key: "param2", value: "basevalue2", secret: false)
-        ]
-        foo_params = [
-          Parameter.new(key: "param1", value: "value1", secret: false),
-          Parameter.new(key: "param2", value: "value2", secret: false)
-        ]
-
-        expect(etl).to receive(:load_config).and_return(Kubetruth::Config.new([
-                                                                                {
-                                                                                  scope: "root",
-                                                                                  included_projects: ["base"]
-                                                                                },
-                                                                                {scope: "override", project_selector: "^base$", skip: true}
-                                                                              ]))
-
-        expect(etl.ctapi).to receive(:project_names).and_return(["base", "foo"])
-        expect(etl).to receive(:get_params).with("base", any_args).and_return(base_params)
-        expect(etl).to receive(:get_params).with("foo", any_args).and_return(foo_params)
-        expect(etl).to receive(:apply_config_map).with(namespace: '', name: "foo", param_hash: hash_including({
-                                                                                                                "param0" => "value0",
-                                                                                                                "param1" => "value1",
-                                                                                                                "param2" => "value2"
-                                                                                                              }))
-        allow(etl).to receive(:apply_secret)
-        etl.apply()
-      end
-
-      it "skips project include of self" do
-        base_params = [
-          Parameter.new(key: "param0", value: "value0", secret: false),
-        ]
-
-        expect(etl).to receive(:load_config).and_return(Kubetruth::Config.new([
-                                                                                {
-                                                                                  scope: "root",
-                                                                                  included_projects: ["base"]
-                                                                                }
-                                                                              ]))
-
-        expect(etl.ctapi).to receive(:project_names).and_return(["base"])
-        expect(etl).to receive(:get_params).with("base", any_args).and_return(base_params)
-        expect(etl).to receive(:apply_config_map)
-        allow(etl).to receive(:apply_secret)
-        etl.apply()
-        expect(Logging.contents).to include("Skipping project's import of itself")
-      end
-
-      it "indicates param's project origin in metadata" do
-        base_params = [
-          Parameter.new(key: "param0", value: "value0", secret: false),
-          Parameter.new(key: "param2", value: "basevalue2", secret: false),
-          Parameter.new(key: "param3", value: "basevalue3", secret: false),
-          Parameter.new(key: "sparam0", value: "svalue0", secret: true),
-          Parameter.new(key: "sparam2", value: "sbasevalue2", secret: true),
-          Parameter.new(key: "sparam3", value: "sbasevalue3", secret: true)
-        ]
-        bar_params = [
-          Parameter.new(key: "param3", value: "barvalue3", secret: false),
-          Parameter.new(key: "sparam3", value: "sbarvalue3", secret: true),
-        ]
-        foo_params = [
-          Parameter.new(key: "param1", value: "value1", secret: false),
-          Parameter.new(key: "param2", value: "value2", secret: false),
-          Parameter.new(key: "param3", value: "value3", secret: false),
-          Parameter.new(key: "sparam1", value: "svalue1", secret: true),
-          Parameter.new(key: "sparam2", value: "svalue2", secret: true),
-          Parameter.new(key: "sparam3", value: "svalue3", secret: true)
-        ]
-
-        expect(etl).to receive(:load_config).and_return(Kubetruth::Config.new([
-                                                                                {
-                                                                                  scope: "root",
-                                                                                  included_projects: ["base", "bar"]
-                                                                                },
-                                                                                {scope: "override", project_selector: "^ba.*$", skip: true}
-                                                                              ]))
-
-        expect(etl.ctapi).to receive(:project_names).and_return(["base", "bar", "foo"])
-        expect(etl).to receive(:get_params).with("base", any_args).and_return(base_params)
-        expect(etl).to receive(:get_params).with("bar", any_args).and_return(bar_params)
-        expect(etl).to receive(:get_params).with("foo", any_args).and_return(foo_params)
-        expect(etl).to receive(:apply_config_map) do |*args, **kwargs|
-          expect(YAML.load(kwargs[:param_hash][:cloudtruth_metadata])).to eq({
-                                                                               "project_heirarchy" => "foo -> bar -> base",
-                                                                                "parameter_origins" => {
-                                                                                  "param0" => "base",
-                                                                                  "param1" => "foo",
-                                                                                  "param2" => "foo (base)",
-                                                                                  "param3" => "foo (bar -> base)"
-                                                                                }
-                                                                              })
+        allow(etl).to receive(:kube_apply) do |yml|
+          expect(yml).to match(/name: "((proj1)|(bar))"/)
         end
-        expect(etl).to receive(:apply_secret) do |*args, **kwargs|
-          expect(YAML.load(kwargs[:param_hash][:cloudtruth_metadata])).to eq({
-                                                                                "project_heirarchy" => "foo -> bar -> base",
-                                                                                "parameter_origins" => {
-                                                                                  "sparam0" => "base",
-                                                                                  "sparam1" => "foo",
-                                                                                  "sparam2" => "foo (base)",
-                                                                                  "sparam3" => "foo (bar -> base)"
-                                                                                }
-                                                                              })
-        end
+
         etl.apply()
       end
 
-      it "can turn off metadata" do
-        etl = described_class.new(init_args.merge(metadata: false))
-        params = [
-          Parameter.new(key: "param1", value: "value1", secret: false),
-          Parameter.new(key: "param2", value: "value2", secret: true)
-        ]
-        expect(etl.ctapi).to receive(:project_names).and_return(["default"])
-        expect(etl).to receive(:get_params).and_return(params)
-        expect(etl).to receive(:apply_config_map) do |*args, **kwargs|
-          expect(kwargs[:param_hash]).to_not include(:cloudtruth_metadata)
+      it "allows included projects not selected by selector" do
+        etl.load_config.root_spec.project_selector = /proj1/
+        etl.load_config.root_spec.included_projects = ["proj2"]
+        expect(Project).to receive(:names).and_return(["proj1", "proj2", "proj3"])
+
+        allow(etl).to receive(:kube_apply)
+        expect(etl.load_config.root_spec.configmap_template).to receive(:render) do |*args, **kwargs|
+          expect(kwargs[:project]).to eq("proj1")
+          expect(kwargs[:project_heirarchy]).to eq({"proj1"=>{"proj2"=>{}}})
+          expect(kwargs[:parameter_origins]).to eq({"param1"=>"proj1 (proj2)"})
         end
-        expect(etl).to receive(:apply_secret) do |*args, **kwargs|
-          expect(kwargs[:param_hash]).to_not include(:cloudtruth_metadata)
-        end
+
         etl.apply()
       end
 
+      it "allows projects not selected by root selector" do
+        allow(etl).to receive(:load_config).
+          and_return(Kubetruth::Config.new([
+                                             @root_spec_crd,
+                                             {scope: "override", project_selector: "proj2"}
+                                           ]
+          ))
+        etl.load_config.root_spec.project_selector = /proj1/
+        expect(Project).to receive(:names).and_return(["proj2"])
+
+        allow(etl).to receive(:kube_apply) do |yml|
+          expect(yml).to match(/name: "proj2"/)
+        end
+
+        etl.apply()
+      end
+
+
+      it "renders templates with context" do
+        expect(Project).to receive(:names).and_return(["proj1"])
+
+        allow(etl).to receive(:kube_apply)
+        expect(etl.load_config.root_spec.configmap_template).to receive(:render) do |*args, **kwargs|
+          expect(kwargs[:project]).to eq("proj1")
+          expect(kwargs[:debug]).to eq(etl.logger.debug?)
+          expect(kwargs[:parameters]).to eq({"param1"=>"value1"})
+          expect(kwargs[:project_heirarchy]).to eq(Project.all["proj1"].heirarchy)
+          expect(kwargs[:parameter_origins]).to eq({"param1"=>"proj1"})
+        end
+
+        expect(etl.load_config.root_spec.secret_template).to receive(:render) do |*args, **kwargs|
+          expect(kwargs[:project]).to eq("proj1")
+          expect(kwargs[:debug]).to eq(etl.logger.debug?)
+          expect(kwargs[:parameters]).to eq({"param2"=>"value2"})
+          expect(kwargs[:project_heirarchy]).to eq(Project.all["proj1"].heirarchy)
+          expect(kwargs[:parameter_origins]).to eq({"param2"=>"proj1"})
+        end
+
+        etl.apply()
+      end
     end
 
   end

@@ -23,16 +23,16 @@ FROM base as build
 COPY Gemfile* *.gemspec $APP_DIR/
 COPY lib/kubetruth/version.rb $APP_DIR/lib/kubetruth/
 
-RUN apk --update upgrade && \
-  apk add \
+RUN apk add --no-cache \
     --virtual app \
     $APP_PACKAGES && \
-  apk add \
+  apk add --no-cache \
     --virtual build_deps \
     $BUILD_PACKAGES && \
   bundle install && \
-  apk del build_deps && \
-  rm -rf /var/cache/apk/*
+  apk del build_deps
+
+RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing kubectl
 
 COPY . $APP_DIR/
 RUN bundle config set deployment 'true' && \
@@ -41,11 +41,11 @@ RUN bundle config set deployment 'true' && \
 
 FROM base AS release
 
-RUN apk --update upgrade && \
-  apk add \
+RUN apk add --no-cache \
     --virtual app \
-    $RELEASE_PACKAGES && \
-  rm -rf /var/cache/apk/*
+    $RELEASE_PACKAGES
+
+RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing kubectl
 
 COPY --from=build $BUNDLE_PATH $BUNDLE_PATH
 COPY --from=build $APP_DIR $APP_DIR
