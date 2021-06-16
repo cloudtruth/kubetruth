@@ -83,20 +83,31 @@ module Kubetruth
       end
     end
 
+    INDENT = (" " * 2)
+
     def render(**kwargs)
       begin
-        logger.debug { "Evaluating template '#{@source}' with context: #{kwargs.inspect}" }
-        @liquid.render!(kwargs.stringify_keys, strict_variables: true, strict_filters: true)
-      rescue Liquid::Error => e
-        indent = "  "
-        msg = "Template failed to render:\n"
-        @source.lines.each {|l| msg << (indent * 2) << l }
-        msg << indent << "with error message:\n" << (indent * 2) << "#{e.message}"
-        if e.is_a?(Liquid::UndefinedVariable)
-          msg << "\n" << indent << "and variable context:\n"
-          msg << (indent * 2) << kwargs.inspect
+
+        logger.debug do
+          msg = "Evaluating template:\n"
+          @source.to_s.lines.collect {|l| msg << (INDENT * 2) << l }
+          msg << "\n" << INDENT << "with context:\n"
+          kwargs.deep_stringify_keys.to_yaml.lines.collect {|l| msg << (INDENT * 2) << l }
+          msg
         end
-        raise Error, msg
+
+        result = @liquid.render!(kwargs.stringify_keys, strict_variables: true, strict_filters: true)
+
+        logger.debug do
+          msg = "Rendered template:\n"
+          result.lines.collect {|l| msg << (INDENT * 2) << l }
+          msg
+        end
+
+        result
+
+      rescue Liquid::Error => e
+        raise Error, "Template failed to render: #{e.message}"
       end
     end
 

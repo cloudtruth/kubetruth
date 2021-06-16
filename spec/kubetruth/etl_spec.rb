@@ -160,11 +160,12 @@ module Kubetruth
           data:
             "param1": "value1"
         EOF
+        parsed_yml = YAML.load(resource_yml)
         expect(@kubeapi).to receive(:ensure_namespace).with(@kubeapi.namespace)
         expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", @kubeapi.namespace).and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
         expect(@kubeapi).to_not receive(:under_management?)
-        expect(@kubeapi).to receive(:apply_resource).with(YAML.load(resource_yml))
-        etl.kube_apply(resource_yml)
+        expect(@kubeapi).to receive(:apply_resource).with(parsed_yml)
+        etl.kube_apply(parsed_yml)
         expect(Logging.contents).to match(/Creating kubernetes resource/)
       end
 
@@ -177,12 +178,12 @@ module Kubetruth
           data:
             "param1": "value1"
         EOF
-        resource_hash = YAML.load(resource_yml)
-        resource = Kubeclient::Resource.new(resource_hash.merge(data: {param1: "oldvalue"}))
+        parsed_yml = YAML.load(resource_yml)
+        resource = Kubeclient::Resource.new(parsed_yml.merge(data: {param1: "oldvalue"}))
         expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", @kubeapi.namespace).and_return(resource)
         expect(@kubeapi).to receive(:under_management?).and_return(true)
-        expect(@kubeapi).to receive(:apply_resource).with(resource_hash)
-        etl.kube_apply(resource_yml)
+        expect(@kubeapi).to receive(:apply_resource).with(parsed_yml)
+        etl.kube_apply(parsed_yml)
         expect(Logging.contents).to match(/Updating kubernetes resource/)
       end
 
@@ -195,11 +196,12 @@ module Kubetruth
           data:
             "param1": "value1"
         EOF
-        resource = Kubeclient::Resource.new(YAML.load(resource_yml))
+        parsed_yml = YAML.load(resource_yml)
+        resource = Kubeclient::Resource.new(parsed_yml)
         expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", @kubeapi.namespace).and_return(resource)
         expect(@kubeapi).to receive(:under_management?).and_return(false)
         expect(@kubeapi).to_not receive(:apply_resource)
-        etl.kube_apply(resource_yml)
+        etl.kube_apply(parsed_yml)
         expect(Logging.contents).to match(/Skipping.*kubetruth management/)
       end
 
@@ -212,12 +214,12 @@ module Kubetruth
           data:
             "param1": "value1"
         EOF
-        resource_hash = YAML.load(resource_yml)
-        resource = Kubeclient::Resource.new(resource_hash)
+        parsed_yml = YAML.load(resource_yml)
+        resource = Kubeclient::Resource.new(parsed_yml)
         expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", @kubeapi.namespace).and_return(resource)
         expect(@kubeapi).to receive(:under_management?).and_return(true)
-        expect(@kubeapi).to_not receive(:apply_resource).with(resource_hash)
-        etl.kube_apply(resource_yml)
+        expect(@kubeapi).to_not receive(:apply_resource).with(parsed_yml)
+        etl.kube_apply(parsed_yml)
         expect(Logging.contents).to match(/Skipping update for identical kubernetes resource/)
       end
 
@@ -231,11 +233,12 @@ module Kubetruth
           data:
             "param1": "value1"
         EOF
+        parsed_yml = YAML.load(resource_yml)
         expect(@kubeapi).to receive(:ensure_namespace).with("ns1")
         expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", "ns1").and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
         expect(@kubeapi).to_not receive(:under_management?)
-        expect(@kubeapi).to receive(:apply_resource).with(YAML.load(resource_yml))
-        etl.kube_apply(resource_yml)
+        expect(@kubeapi).to receive(:apply_resource).with(parsed_yml)
+        etl.kube_apply(parsed_yml)
         expect(Logging.contents).to match(/Creating kubernetes resource/)
       end
 
@@ -260,13 +263,13 @@ module Kubetruth
       it "sets config and secrets" do
         expect(Project).to receive(:names).and_return(["proj1"])
 
-        allow(etl).to receive(:kube_apply) do |yml|
-          if yml.include?("kind: ConfigMap")
-            expect(yml).to match(/"param1": "value1"/)
-            expect(yml).to_not match(/"param2": "value2"/)
-          elsif yml.include?("kind: Secret")
-            expect(yml).to_not match(/"param1": "value1"/)
-            expect(yml).to match(/"param2": "#{Base64.strict_encode64('value2')}"/)
+        allow(etl).to receive(:kube_apply) do |parsed_yml|
+          if parsed_yml["kind"] == "ConfigMap"
+            expect(parsed_yml["data"]['param1']).to eq("value1")
+            expect(parsed_yml["data"].has_key?('param2')).to be false
+          elsif parsed_yml["kind"] == "Secret"
+            expect(parsed_yml["data"]['param2']).to eq(Base64.strict_encode64('value2'))
+            expect(parsed_yml["data"].has_key?('param1')).to be false
           else
             raise "Unexpected kubernetes resource kind"
           end
@@ -275,22 +278,29 @@ module Kubetruth
         etl.apply()
       end
 
-      it "skips secrets" do
+      it "renders multiple templates" do
+        expect(etl.load_config.root_spec.resource_templates.size).to eq(2)
         expect(Project).to receive(:names).and_return(["proj1"])
-        etl.load_config.root_spec.skip_secrets = true
 
-        allow(etl).to receive(:kube_apply) do |yml|
-          if yml.include?("kind: ConfigMap")
-            expect(yml).to match(/"param1": "value1"/)
-            expect(yml).to_not match(/"param2": "value2"/)
-          elsif yml.include?("kind: Secret")
-            raise "Secret should not be present"
-          else
-            raise "Unexpected kubernetes resource kind"
-          end
+        etl.load_config.root_spec.resource_templates.each_with_index do |t, i|
+          yml = YAML.dump({"key#{i}" => "value#{i}"})
+          expect(t).to receive(:render).and_return(yml)
+          expect(etl).to receive(:kube_apply).with(YAML.safe_load(yml))
         end
 
         etl.apply()
+      end
+
+      it "skips empty templates" do
+        etl.load_config.root_spec.resource_templates = [Template.new("\n\n   \n")]
+        expect(Project).to receive(:names).and_return(["proj1"])
+
+        tmpl = etl.load_config.root_spec.resource_templates.first
+        expect(tmpl).to receive(:render).and_call_original
+        expect(etl).to_not receive(:kube_apply)
+
+        etl.apply()
+        expect(Logging.contents).to match(/Skipping empty template/)
       end
 
       it "allows dryrun" do
@@ -308,8 +318,8 @@ module Kubetruth
         etl.load_config.root_spec.project_selector = /oo/
         expect(Project).to receive(:names).and_return(["proj1", "foo", "bar"])
 
-        allow(etl).to receive(:kube_apply) do |yml|
-          expect(yml).to match(/name: "foo"/)
+        allow(etl).to receive(:kube_apply) do |parsed_yml|
+          expect(parsed_yml["metadata"]["name"]).to eq("foo")
         end
 
         etl.apply()
@@ -320,8 +330,8 @@ module Kubetruth
           and_return(Kubetruth::Config.new([@root_spec_crd, {scope: "override", project_selector: "foo", skip: true}]))
         expect(Project).to receive(:names).and_return(["proj1", "foo", "bar"])
 
-        allow(etl).to receive(:kube_apply) do |yml|
-          expect(yml).to match(/name: "((proj1)|(bar))"/)
+        allow(etl).to receive(:kube_apply) do |parsed_yml|
+          expect(parsed_yml["metadata"]["name"]).to match(/(proj1)|(bar)/)
         end
 
         etl.apply()
@@ -333,10 +343,11 @@ module Kubetruth
         expect(Project).to receive(:names).and_return(["proj1", "proj2", "proj3"])
 
         allow(etl).to receive(:kube_apply)
-        expect(etl.load_config.root_spec.configmap_template).to receive(:render) do |*args, **kwargs|
+        expect(etl.load_config.root_spec.resource_templates.first).to receive(:render) do |*args, **kwargs|
           expect(kwargs[:project]).to eq("proj1")
           expect(kwargs[:project_heirarchy]).to eq({"proj1"=>{"proj2"=>{}}})
           expect(kwargs[:parameter_origins]).to eq({"param1"=>"proj1 (proj2)"})
+          ""
         end
 
         etl.apply()
@@ -352,8 +363,8 @@ module Kubetruth
         etl.load_config.root_spec.project_selector = /proj1/
         expect(Project).to receive(:names).and_return(["proj2"])
 
-        allow(etl).to receive(:kube_apply) do |yml|
-          expect(yml).to match(/name: "proj2"/)
+        allow(etl).to receive(:kube_apply) do |parsed_yml|
+          expect(parsed_yml["metadata"]["name"]).to eq("proj2")
         end
 
         etl.apply()
@@ -364,20 +375,15 @@ module Kubetruth
         expect(Project).to receive(:names).and_return(["proj1"])
 
         allow(etl).to receive(:kube_apply)
-        expect(etl.load_config.root_spec.configmap_template).to receive(:render) do |*args, **kwargs|
+        expect(etl.load_config.root_spec.resource_templates.first).to receive(:render) do |*args, **kwargs|
           expect(kwargs[:project]).to eq("proj1")
+          expect(kwargs[:project_heirarchy]).to eq(Project.all["proj1"].heirarchy)
           expect(kwargs[:debug]).to eq(etl.logger.debug?)
           expect(kwargs[:parameters]).to eq({"param1"=>"value1"})
-          expect(kwargs[:project_heirarchy]).to eq(Project.all["proj1"].heirarchy)
           expect(kwargs[:parameter_origins]).to eq({"param1"=>"proj1"})
-        end
-
-        expect(etl.load_config.root_spec.secret_template).to receive(:render) do |*args, **kwargs|
-          expect(kwargs[:project]).to eq("proj1")
-          expect(kwargs[:debug]).to eq(etl.logger.debug?)
-          expect(kwargs[:parameters]).to eq({"param2"=>"value2"})
-          expect(kwargs[:project_heirarchy]).to eq(Project.all["proj1"].heirarchy)
-          expect(kwargs[:parameter_origins]).to eq({"param2"=>"proj1"})
+          expect(kwargs[:secrets]).to eq({"param2"=>"value2"})
+          expect(kwargs[:secret_origins]).to eq({"param2"=>"proj1"})
+          ""
         end
 
         etl.apply()

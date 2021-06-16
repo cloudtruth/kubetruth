@@ -16,15 +16,15 @@ module Kubetruth
         spec = described_class::ProjectSpec.new(
           scope: "root",
           project_selector: "foo",
-          configmap_template: "bar",
+          resource_templates: ["bar"],
           skip: true
         )
         expect(spec.scope).to be_an_instance_of(String)
         expect(spec.scope).to eq("root")
         expect(spec.project_selector).to be_an_instance_of(Regexp)
         expect(spec.project_selector).to eq(/foo/)
-        expect(spec.configmap_template).to be_an_instance_of(Template)
-        expect(spec.configmap_template.source).to eq("bar")
+        expect(spec.resource_templates.first).to be_an_instance_of(Template)
+        expect(spec.resource_templates.first.source).to eq("bar")
         expect(spec.skip).to equal(true)
       end
 
@@ -74,29 +74,26 @@ module Kubetruth
             project_selector: "project_selector",
             key_selector: "key_selector",
             skip: true,
-            skip_secrets: true,
             included_projects: ["included_projects"],
-            configmap_template: "configmap_template",
-            secret_template: "secret_template"
+            resource_templates: ["resource_templates"]
           },
           {
             scope: "override",
             project_selector: "project_overrides:project_selector",
-            configmap_template: "project_overrides:configmap_template"
+            resource_templates: ["project_overrides:resource_templates"]
           }
         ]
         config = described_class.new(data)
         config.load
         expect(config.instance_variable_get(:@config)).to_not eq(Kubetruth::Config::DEFAULT_SPEC)
         expect(config.root_spec).to be_an_instance_of(Kubetruth::Config::ProjectSpec)
-        expect(config.root_spec.configmap_template).to be_an_instance_of(Kubetruth::Template)
-        expect(config.root_spec.configmap_template.source).to eq("configmap_template")
+        expect(config.root_spec.resource_templates.first).to be_an_instance_of(Kubetruth::Template)
+        expect(config.root_spec.resource_templates.first.source).to eq("resource_templates")
         expect(config.root_spec.key_selector).to eq(/key_selector/)
         expect(config.override_specs.size).to eq(1)
         expect(config.override_specs.first).to be_an_instance_of(Kubetruth::Config::ProjectSpec)
-        expect(config.override_specs.first.configmap_template).to be_an_instance_of(Kubetruth::Template)
-        expect(config.override_specs.first.configmap_template.source).to eq("project_overrides:configmap_template")
-        expect(config.override_specs.first.secret_template.source).to eq(config.root_spec.secret_template.source)
+        expect(config.override_specs.first.resource_templates.first).to be_an_instance_of(Kubetruth::Template)
+        expect(config.override_specs.first.resource_templates.first.source).to eq("project_overrides:resource_templates")
       end
 
     end
@@ -132,24 +129,24 @@ module Kubetruth
       end
 
       it "returns the matching override specs" do
-        config = described_class.new([{scope: "override", project_selector: "fo+", configmap_template: "foocm"}])
+        config = described_class.new([{scope: "override", project_selector: "fo+", resource_templates: ["foocm"]}])
         spec = config.spec_for_project("foo")
         expect(spec).to_not equal(config.root_spec)
-        expect(spec.configmap_template).to be_an_instance_of(Kubetruth::Template)
-        expect(spec.configmap_template.source).to eq("foocm")
+        expect(spec.resource_templates.first).to be_an_instance_of(Kubetruth::Template)
+        expect(spec.resource_templates.first.source).to eq("foocm")
       end
 
       it "raises for multiple matching specs" do
         config = described_class.new([
-          {scope: "override", project_selector: "bo+", configmap_template: "not"},
-          {scope: "override", project_selector: "fo+", configmap_template: "first"},
-          {scope: "override", project_selector: "foo", configmap_template: "second"}
+          {scope: "override", project_selector: "bo+", resource_templates: ["not"]},
+          {scope: "override", project_selector: "fo+", resource_templates: ["first"]},
+          {scope: "override", project_selector: "foo", resource_templates: ["second"]}
         ])
         expect { config.spec_for_project("foo") }.to raise_error(Config::DuplicateSelection, /Multiple configuration specs/)
       end
 
       it "memoizes specs by project name" do
-        config = described_class.new([{scope: "override", project_selector: "fo+", configmap_template: "foocm"}])
+        config = described_class.new([{scope: "override", project_selector: "fo+", resource_templates: ["foocm"]}])
         expect(config.instance_variable_get(:@spec_mapping)).to eq({})
         spec = config.spec_for_project("foo")
         expect(config.instance_variable_get(:@spec_mapping)).to eq({"foo" => spec})

@@ -5,11 +5,11 @@
 # Kubetruth
 
 The CloudTruth integration for kubernetes that pushes parameter updates into
-kubernetes resources (usually config maps and secrets).  The goal is to provide
-you a mechanism that is as hands off as possible, using naming conventions to
-automate the delivery of configuration so that you don't have to jump through
-setup hoops for each app/service/etc that you would like to configure with
-CloudTruth
+kubernetes resources - usually ConfigMaps and Secrets, but any resource is
+allowed.  The goal is to provide you a mechanism that is as hands off as
+possible, using naming conventions to automate the delivery of configuration so
+that you don't have to jump through setup hoops for each app/service/etc that
+you would like to configure with CloudTruth
 
 ## Installation
 
@@ -46,17 +46,16 @@ Parameterize the helm install with `--set appSettings.**` to control how kubetru
 | projectMappings.root.project_selector | A regexp to limit the projects acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
 | projectMappings.root.key_selector | A regexp to limit the keys acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
 | projectMappings.root.skip | Skips the generation of resources for the selected projects | flag | false | no |
-| projectMappings.root.skip_secrets | Prevent transfer of secrets to kubernetes Secrets | flag | false | no |
 | projectMappings.root.included_projects | Include the parameters from other projects into the selected ones.  This can be recursive in a depth first fashion, so if A imports B and B imports C, then A will get B's and C's parameters.  For key conflicts, if A includes B and B includes C, then the precendence is A overrides B overrides C.  If A includes \[B, C], then the precendence is A overrides C overrides B. | list | [] | no |
-| projectMappings.root.configmap_template | The template to use in generating a kubernetes resource (ConfigMap) for non-secret parameters | string | [default](helm/kubetruth/values.yaml#L94-L108) | no |
-| projectMappings.root.secret_template | The template to use in generating a kubernetes resource (Secret) for secret parameters | string | [default](helm/kubetruth/values.yaml#L110-L124) | no |
+| projectMappings.root.resource_templates | The templates to use in generating kubernetes resources (ConfigMap/Secrets/other) | string | [default](helm/kubetruth/values.yaml#L94-L129) | no |
 | projectMappings.<override_name>.* | Define override mappings to override settings from the root selector for specific projects. When doing this on the command-line (e.g. for `helm install`), it may be more convenient to use `--values <file>` instead of `--set` for large data sets | map | {} | no |
 
-By default, Kubetruth maps the parameters from CloudTruth Projects into
-ConfigMaps and Secrets of the same names as the Projects. Kubetruth will not
-overwrite any existing kubernetes resources that do not have the label
-`app.kubernetes.io/managed-by: kubetruth`.  If you have some that you want
-kubetruth to manage, then either add the label or delete them manually.
+With the default `resource_templates`, Kubetruth maps the parameters from
+CloudTruth Projects into ConfigMaps and Secrets of the same names as the
+Projects. Kubetruth will not overwrite any existing kubernetes resources that do
+not have the label `app.kubernetes.io/managed-by: kubetruth`.  If you have some
+that you want kubetruth to manage, then either add the label or delete them
+manually.
 
 For example, for a CloudTruth layout that looks like:
 
@@ -136,9 +135,11 @@ Note that Kubetruth watches for changes to ProjectMappings, so touching any of
 them wakes it up from a polling sleep.  This makes it quick and easy to test out
 configuration changes without having a short polling interval.
 
-To customize how the kubernetes resources are generated, edit the `*_template` properties in the
-ProjectMappings.  These templates are processed using the [Liquid template
-language](https://shopify.github.io/liquid/), and can reference the following liquid variables:
+To customize how the kubernetes resources are generated, edit the
+`resource_templatse` property in the ProjectMappings.  These templates are
+processed using the [Liquid template
+language](https://shopify.github.io/liquid/), and can reference the following
+liquid variables:
 
  * `project` - The project name
  * `project_heirarchy` - The `included_projects` tree this project includes (useful to debug when using complex `included_projects`)
@@ -160,7 +161,7 @@ ones:
  * `decode64` - The argument bas64 decoded
  * `sha256` - The sha256 digest of the argument
 
-The default `*_template`s  add the `parameter_origins` and `project_heirarchy`
+The default `resource_templates`  add the `parameter_origins` and `project_heirarchy`
 key as annotations on each kubernetes resource under management.  This can be
 disabled by removing them from the template, or wrapping them in a test for
 `debug`.  The data produced by these help to illustrate how project inclusion
@@ -181,14 +182,15 @@ To create kubernetes Resources in namespaces named after each Project:
 ```
 kubectl edit pm kubetruth-root
 ```
-and add the metadata.namespace field to configmap_template and secret_template like so:
+and add the metadata.namespace field to each template in `resource_templates` like so:
 ```yaml
 spec:
-  configmap_template: |
-    apiVersion: v1
-    kind: ConfigMap
-    metadata:
-        namespace: {{ project | dns_safe }}
+  resource_templates:
+    - |
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+          namespace: {{ project | dns_safe }}
 ```
 
 #### Share common data
@@ -226,20 +228,21 @@ metadata:
 spec:
     scope: override
     project_selector: funkyProject
-    configmap_template: |
-        apiVersion: v1
-        kind: ConfigMap
-        metadata:
-            namespace: notSoFunkyNamespace
-            name: notSoFunkyConfigMap
-        <snipped>
-    secret_template: |
-        apiVersion: v1
-        kind: Secret
-        metadata:
-            namespace: notSoFunkyNamespace
-            name: notSoFunkySecret
-        <snipped>
+    resource_templates:
+        - |
+            apiVersion: v1
+            kind: ConfigMap
+            metadata:
+                namespace: notSoFunkyNamespace
+                name: notSoFunkyConfigMap
+            <snipped>
+        - |
+            apiVersion: v1
+            kind: Secret
+            metadata:
+                namespace: notSoFunkyNamespace
+                name: notSoFunkySecret
+            <snipped>
 EOF
 ```
 
@@ -279,16 +282,16 @@ Kind:         ProjectMapping
 Metadata:
   <snipped>
 Spec:
-  configmap_template: |
-    <snipped>
-  secret_template: |
-    <snipped>
+  resource_templates:
+    - |
+        <snipped>
+    - |
+        <snipped>
   included_projects:
   key_selector:          
   project_selector:      
   scope:                 root
   skip:                  false
-  skip_secrets:          false
 Events:                  <none>
 ```
 

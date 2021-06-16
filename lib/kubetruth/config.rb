@@ -12,10 +12,8 @@ module Kubetruth
       :project_selector,
       :key_selector,
       :skip,
-      :skip_secrets,
       :included_projects,
-      :configmap_template,
-      :secret_template,
+      :resource_templates,
       keyword_init: true
     ) do
 
@@ -25,13 +23,17 @@ module Kubetruth
 
       def convert_types(hash)
         selector_key_pattern = /_selector$/
-        template_key_pattern = /_template$/
+        template_key_pattern = /_templates?$/
         hash.merge(hash) do |k, v|
           case k
             when selector_key_pattern
               Regexp.new(v)
             when template_key_pattern
-              Kubetruth::Template.new(v)
+              if k.ends_with?('s')
+                v.collect {|t| Kubetruth::Template.new(t) }
+              else
+                Kubetruth::Template.new(v)
+              end
             else
               v
           end
@@ -45,10 +47,8 @@ module Kubetruth
       project_selector: '',
       key_selector: '',
       skip: false,
-      skip_secrets: false,
       included_projects: [],
-      configmap_template: "",
-      secret_template: ""
+      resource_templates: []
     }.freeze
 
     def initialize(project_mapping_crds)
@@ -92,7 +92,7 @@ module Kubetruth
           logger.debug {"Using root spec for project '#{project_name}'"}
         when 1
           spec = specs.first
-          logger.debug {"Using override spec '#{spec.project_selector}' for project '#{project_name}'"}
+          logger.debug {"Using override spec '#{spec.project_selector.source}' for project '#{project_name}'"}
         else
           dupes = specs.collect {|s| "'#{s.project_selector}'" }
           raise DuplicateSelection, "Multiple configuration specs (#{dupes.inspect}) match the project '#{project_name}': }"

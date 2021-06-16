@@ -1,4 +1,5 @@
 require 'benchmark'
+require 'yaml'
 require_relative 'config'
 require_relative 'ctapi'
 require_relative 'kubeapi'
@@ -119,31 +120,24 @@ module Kubetruth
         config_origins = Hash[param_origins_parts[true] || []]
         secret_origins = Hash[param_origins_parts[false] || []]
 
-        template_vars = {
-          project: project.name,
-          project_heirarchy: project.heirarchy,
-          debug: logger.debug?
-        }
-
-        configmap_yml = project.spec.configmap_template.render(
-          **template_vars.merge(
+        project.spec.resource_templates.each_with_index do |template, i|
+          logger.debug { "Processing template #{i}/#{project.spec.resource_templates.size}" }
+          resource_yml = template.render(
+            project: project.name,
+            project_heirarchy: project.heirarchy,
+            debug: logger.debug?,
             parameters: config_param_hash,
-            parameter_origins: config_origins
+            parameter_origins: config_origins,
+            secrets: secret_param_hash,
+            secret_origins: secret_origins
           )
-        )
-        secret_yml = project.spec.secret_template.render(
-          **template_vars.merge(
-            parameters: secret_param_hash,
-            parameter_origins: secret_origins
-          )
-        )
-
-        kube_apply(configmap_yml)
-
-        if ! project.spec.skip_secrets
-          kube_apply(secret_yml)
+          parsed_yml = YAML.safe_load(resource_yml)
+          if parsed_yml
+            kube_apply(parsed_yml)
+          else
+            logger.debug {"Skipping empty template"}
+          end
         end
-
       end
 
     end
@@ -152,9 +146,7 @@ module Kubetruth
       Hash[param_list.collect {|param| [param.key, param.value]}]
     end
 
-    def kube_apply(yml)
-      parsed_yml = YAML.load(yml)
-      logger.debug parsed_yml
+    def kube_apply(parsed_yml)
       kind = parsed_yml["kind"]
       namespace = parsed_yml["metadata"]["namespace"] || kubeapi.namespace
       name = parsed_yml["metadata"]["name"]

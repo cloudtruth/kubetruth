@@ -27,20 +27,16 @@ spec:
         skip:
           type: boolean
           description: Skips the generation of resources for the selected projects.  Useful for excluding projects that should only be included into others.
-        skip_secrets:
-          type: boolean
-          description: Prevent transfer of secrets to kubernetes Secrets
         included_projects:
           type: array
           items:
             type: string
           description: Include the parameters from other projects into the selected ones.  This can be recursive in a depth first fashion, so if A imports B and B imports C, then A will get B's and C's parameters.  For key conflicts, if A includes B and B includes C, then the precendence is A overrides B overrides C.  If A includes [B, C], then the precendence is A overrides C overrides B.
-        configmap_template:
-          type: string
-          description: The template to use in generating a kubernetes resource (ConfigMap) for non-secret parameters
-        secret_template:
-          type: string
-          description: The template to use in generating a kubernetes resource (Secret) for secret parameters
+        resource_templates:
+          type: array
+          items:
+            type: string
+          description: The templates to use in generating kubernetes resources
   additionalPrinterColumns:
     - name: Scope
       type: string
