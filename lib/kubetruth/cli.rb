@@ -92,6 +92,11 @@ module Kubetruth
       Project.ctapi_context = ct_context
       etl = ETL.new(kube_context: kube_context, dry_run: dry_run?)
 
+      Signal.trap("HUP") do
+        puts "Handling HUP signal - waking up ETL poller" # logger cant be called from trap
+        etl.interrupt_sleep
+      end
+
       etl.with_polling(polling_interval) do
         etl.apply
       end

@@ -115,6 +115,37 @@ module Kubetruth
         cli.run(args)
       end
 
+      it "wakes up on signal" do
+        expect {
+          pid = fork do
+            $stdout.sync = $stderr.sync = true
+            Kubetruth::Logging.testing = false
+            Kubetruth::Logging.setup_logging(level: :debug, color: false)
+
+
+            etl = ETL.new(kube_context: {namespace: 'ns', token: 'xyz'}, dry_run: true)
+            allow(ETL).to receive(:new).and_return(etl)
+
+            watcher = double("watcher")
+            allow(watcher).to receive(:each)
+            allow(watcher).to receive(:finish)
+            allow(etl.kubeapi).to receive(:watch_project_mappings).and_return(watcher)
+
+            count = 0
+            allow(etl).to receive(:apply) do
+              puts "FakeApply #{count}"
+              count += 1
+              exit! if count > 1
+            end
+            cli.run(%w[--api-key xyz --polling-interval 1])
+          end
+          sleep 0.5
+          Process.kill("HUP", pid)
+          Process.wait(pid)
+        }.to output(/FakeApply 0.*Poller sleeping.*Handling HUP signal.*FakeApply 1/m).to_stdout_from_any_process
+
+      end
+
     end
 
   end

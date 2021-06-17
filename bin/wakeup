@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -e
+kubetruth_pid=$(ps ax | grep '[k]ubetruth' | awk '{print $1}')
+kill -HUP "${kubetruth_pid}"
