@@ -56,7 +56,7 @@ module Kubetruth
       rescue Kubeclient::ResourceNotFoundError
         newns = Kubeclient::Resource.new
         newns.metadata = {}
-        newns.metadata.name = namespace
+        newns.metadata.name = ns
         set_managed(newns)
         client.create_namespace(newns)
       end

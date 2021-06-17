@@ -106,6 +106,13 @@ module Kubetruth
         ns = kapi.client.get_namespace(kapi.namespace)
         expect(ns.kind).to eq("Namespace")
         expect(ns.metadata.name).to eq(kapi.namespace)
+
+        newns = "#{namespace}-newns2"
+        expect { kapi.client.get_namespace(newns) }.to raise_error(Kubeclient::ResourceNotFoundError, /namespaces.*not found/)
+        kapi.ensure_namespace(newns)
+        ns = kapi.client.get_namespace(newns)
+        expect(ns.kind).to eq("Namespace")
+        expect(ns.metadata.name).to eq(newns)
       end
 
       it "sets labels when creating namespace" do
