@@ -105,7 +105,7 @@ projectMappings:
               {{ parameter_origins | to_yaml | indent: 6 | lstrip }}
         data:
           {%- for parameter in parameters %}
-          {{ parameter[0] | stringify }}: {{ parameter[1] | stringify }}
+          {{ parameter[0] | key_safe | stringify }}: {{ parameter[1] | stringify }}
           {%- endfor %}
         {%- endif %}
 
@@ -124,6 +124,6 @@ projectMappings:
               {{ secret_origins | to_yaml | indent: 6 | lstrip }}
         data:
           {%- for secret in secrets %}
-          {{ secret[0] | stringify }}: {{ secret[1] | encode64 | stringify }}
+          {{ secret[0] | key_safe | stringify }}: {{ secret[1] | encode64 | stringify }}
           {%- endfor %}
         {%- endif %}

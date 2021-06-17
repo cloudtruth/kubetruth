@@ -15,6 +15,7 @@ module Kubetruth
       # From kubernetes error message
       DNS_VALIDATION_RE = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$/
       ENV_VALIDATION_RE = /^[A-Z_][A-Z0-9_]*$/
+      KEY_VALIDATION_RE = /^[\w\.\-]*$/
 
       def dns_safe(str)
         return str if str =~ DNS_VALIDATION_RE
@@ -30,6 +31,13 @@ module Kubetruth
         result = result.gsub(/\W+/, '_')
         result = result.sub(/^\d/, '_\&')
         result
+      end
+
+      # Kubernetes validation: a valid config key must consist of alphanumeric
+      # characters, '-', '_' or '.'
+      def key_safe(str)
+        return str if str =~ KEY_VALIDATION_RE
+        str.gsub(/[^\w\.\-]+/, '_')
       end
 
       def indent(str, count)

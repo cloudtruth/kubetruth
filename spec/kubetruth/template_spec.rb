@@ -74,6 +74,23 @@ module Kubetruth
 
       end
 
+      describe "#key_safe" do
+
+        it "returns if already valid" do
+          str = "aB1-_."
+          expect(key_safe(str)).to equal(str)
+        end
+
+        it "cleans up name" do
+          expect(key_safe("Foo/Bar.Baz-0")).to eq("Foo_Bar.Baz-0")
+        end
+
+        it "simplifies successive non-chars" do
+          expect(key_safe("foo/&!bar")).to eq("foo_bar")
+        end
+
+      end
+
       describe "#indent" do
 
         it "indents by count spaces for each line" do

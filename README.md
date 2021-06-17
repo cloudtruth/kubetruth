@@ -152,6 +152,7 @@ ones:
 
  * `dns_safe` - Ensures the string is safe for use as a kubernetes resource name (i.e. Namespace/ConfigMap/Secret names)
  * `env_safe` - Ensures the string is safe for setting as a shell environment variable
+ * `key_safe` - Ensures the string is safe for use as a key inside a ConfigMap/Secret data hash
  * `indent: count` - Indents each line in the argument by count spaces
  * `nindent: count` - Adds a leading newline, then indents each line in the argument by count spaces
  * `stringify` - Converts argument to a staring safe to use in yaml (escapes quotes and surrounds with the quote character)
