@@ -89,13 +89,17 @@ projectMappings:
     key_selector: ""
     skip: false
     included_projects: []
+    context:
+      resource_name: "{{ project | dns_safe }}"
+      resource_namespace: ""
     resource_templates:
-      - |
+      configmap: |
         {%- if parameters.size > 0 %}
         apiVersion: v1
         kind: ConfigMap
         metadata:
-          name: "{{ project | dns_safe }}"
+          name: "{{ context.resource_name }}"
+          namespace: "{{ context.resource_namespace }}"
           labels:
             version: "{{ parameters | sort | to_json | sha256 | slice: 0, 7 }}"
           annotations:
@@ -109,12 +113,13 @@ projectMappings:
           {%- endfor %}
         {%- endif %}
 
-      - |
+      secret: |
         {%- if secrets.size > 0 %}
         apiVersion: v1
         kind: Secret
         metadata:
-          name: "{{ project | dns_safe }}"
+          name: "{{ context.resource_name }}"
+          namespace: "{{ context.resource_namespace }}"
           labels:
             version: "{{ secrets | sort | to_json | sha256 | slice: 0, 7 }}"
           annotations:

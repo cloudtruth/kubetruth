@@ -15,7 +15,6 @@ module Kubetruth
       token_path = '/var/run/secrets/kubernetes.io/serviceaccount/token'
 
       @namespace = namespace.present? ? namespace : File.read(namespace_path).chomp
-      @labels = {MANAGED_LABEL_KEY => MANAGED_LABEL_VALUE}
 
       @auth_options = {}
       if token
@@ -64,14 +63,14 @@ module Kubetruth
     end
 
     def under_management?(resource)
-      labels = resource&.metadata&.labels
-      labels.nil? ? false : resource.metadata.labels[MANAGED_LABEL_KEY] == MANAGED_LABEL_VALUE
+      labels = resource&.[]("metadata")&.[]("labels")
+      labels.nil? ? false : resource["metadata"]["labels"][MANAGED_LABEL_KEY] == MANAGED_LABEL_VALUE
     end
 
     def set_managed(resource)
-      resource.metadata ||= {}
-      resource.metadata.labels ||= {}
-      resource.metadata.labels[MANAGED_LABEL_KEY] = MANAGED_LABEL_VALUE
+      resource["metadata"] ||= {}
+      resource["metadata"]["labels"] ||= {}
+      resource["metadata"]["labels"][MANAGED_LABEL_KEY] = MANAGED_LABEL_VALUE
     end
 
     def get_resource(resource_name, name, namespace=nil)
@@ -80,9 +79,7 @@ module Kubetruth
 
     def apply_resource(resource)
       resource = Kubeclient::Resource.new(resource) if resource.is_a? Hash
-      set_managed(resource)
       resource_name = resource.kind.downcase.pluralize
-      resource.metadata.namespace ||= self.namespace
       client.apply_entity(resource_name, resource, field_manager: "kubetruth")
     end
 

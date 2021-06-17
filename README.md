@@ -47,6 +47,7 @@ Parameterize the helm install with `--set appSettings.**` to control how kubetru
 | projectMappings.root.key_selector | A regexp to limit the keys acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
 | projectMappings.root.skip | Skips the generation of resources for the selected projects | flag | false | no |
 | projectMappings.root.included_projects | Include the parameters from other projects into the selected ones.  This can be recursive in a depth first fashion, so if A imports B and B imports C, then A will get B's and C's parameters.  For key conflicts, if A includes B and B includes C, then the precendence is A overrides B overrides C.  If A includes \[B, C], then the precendence is A overrides C overrides B. | list | [] | no |
+| projectMappings.root.context | Additional variables made available to the resource templates.  Can also be templates | string | [default](helm/kubetruth/values.yaml#L93-L129) | no |
 | projectMappings.root.resource_templates | The templates to use in generating kubernetes resources (ConfigMap/Secrets/other) | string | [default](helm/kubetruth/values.yaml#L93-L129) | no |
 | projectMappings.<override_name>.* | Define override mappings to override settings from the root selector for specific projects. When doing this on the command-line (e.g. for `helm install`), it may be more convenient to use `--values <file>` instead of `--set` for large data sets | map | {} | no |
 
@@ -136,16 +137,19 @@ them wakes it up from a polling sleep.  This makes it quick and easy to test out
 configuration changes without having a short polling interval.
 
 To customize how the kubernetes resources are generated, edit the
-`resource_templatse` property in the ProjectMappings.  These templates are
+`resource_templates` property in the ProjectMappings.  These templates are
 processed using the [Liquid template
 language](https://shopify.github.io/liquid/), and can reference the following
 liquid variables:
 
  * `project` - The project name
  * `project_heirarchy` - The `included_projects` tree this project includes (useful to debug when using complex `included_projects`)
+ * `debug` - Indicates if kubetruth is operating in debug (logging) mode.
  * `parameters` - The CloudTruth parameters from the project
  * `parameter_origins` - The projects each parameter originates from (useful to debug when using complex `included_projects`)
- * `debug` - Indicates if kubetruth is operating in debug (logging) mode.
+ * `secrets` - The CloudTruth secrets from the project
+ * `secret_origins` - The projects each secret originates from (useful to debug when using complex `included_projects`)
+ * `context` - A hash of context variables supplied from ProjectMappings (useful to override portions of templates without having to replace them completely in an override)
 
 In addition to the built in liquid filters, kubetruth also define a few custom
 ones:
@@ -227,21 +231,9 @@ metadata:
 spec:
     scope: override
     project_selector: funkyProject
-    resource_templates:
-        - |
-            apiVersion: v1
-            kind: ConfigMap
-            metadata:
-                namespace: notSoFunkyNamespace
-                name: notSoFunkyConfigMap
-            <snipped>
-        - |
-            apiVersion: v1
-            kind: Secret
-            metadata:
-                namespace: notSoFunkyNamespace
-                name: notSoFunkySecret
-            <snipped>
+    context:
+        resource_name: notSoFunkyConfigMap
+        resource_namespace: notSoFunkyNamespace
 EOF
 ```
 
@@ -274,24 +266,7 @@ kubetruth-root                root       ^service         27m
 $ kubectl describe pm kubetruth-root
 Name:         kubetruth-root
 Namespace:    default
-Labels:       ...
-Annotations:  ...
-API Version:  kubetruth.cloudtruth.com/v1
-Kind:         ProjectMapping
-Metadata:
-  <snipped>
-Spec:
-  resource_templates:
-    - |
-        <snipped>
-    - |
-        <snipped>
-  included_projects:
-  key_selector:          
-  project_selector:      
-  scope:                 root
-  skip:                  false
-Events:                  <none>
+<snipped>
 ```
 
 ## Development

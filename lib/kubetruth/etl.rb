@@ -120,8 +120,9 @@ module Kubetruth
         config_origins = Hash[param_origins_parts[true] || []]
         secret_origins = Hash[param_origins_parts[false] || []]
 
-        project.spec.resource_templates.each_with_index do |template, i|
-          logger.debug { "Processing template #{i}/#{project.spec.resource_templates.size}" }
+        project.spec.resource_templates.each_with_index do |pair, i|
+          template_name, template = *pair
+          logger.debug { "Processing template '#{template_name}' (#{i}/#{project.spec.resource_templates.size})" }
           resource_yml = template.render(
             project: project.name,
             project_heirarchy: project.heirarchy,
@@ -129,7 +130,8 @@ module Kubetruth
             parameters: config_param_hash,
             parameter_origins: config_origins,
             secrets: secret_param_hash,
-            secret_origins: secret_origins
+            secret_origins: secret_origins,
+            context: project.spec.context
           )
           parsed_yml = YAML.safe_load(resource_yml)
           if parsed_yml
@@ -148,8 +150,13 @@ module Kubetruth
 
     def kube_apply(parsed_yml)
       kind = parsed_yml["kind"]
-      namespace = parsed_yml["metadata"]["namespace"] || kubeapi.namespace
       name = parsed_yml["metadata"]["name"]
+      namespace = parsed_yml["metadata"]["namespace"]
+      if namespace.blank?
+        namespace = parsed_yml["metadata"]["namespace"] = kubeapi.namespace
+      end
+
+      kubeapi.set_managed(parsed_yml)
 
       ident = "'#{namespace}:#{kind}:#{name}'"
       logger.info("Applying kubernetes resource #{ident}")

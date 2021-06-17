@@ -32,9 +32,14 @@ spec:
           items:
             type: string
           description: Include the parameters from other projects into the selected ones.  This can be recursive in a depth first fashion, so if A imports B and B imports C, then A will get B's and C's parameters.  For key conflicts, if A includes B and B includes C, then the precendence is A overrides B overrides C.  If A includes [B, C], then the precendence is A overrides C overrides B.
+        context:
+          type: object
+          additionalProperties:
+            type: string
+          description: Context variables that can be used by templates.  The values can also be templates
         resource_templates:
-          type: array
-          items:
+          type: object
+          additionalProperties:
             type: string
           description: The templates to use in generating kubernetes resources
   additionalPrinterColumns:

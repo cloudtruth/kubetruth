@@ -10,6 +10,30 @@ module Kubetruth
     class Error < ::StandardError
     end
 
+    class TemplateHashDrop < Liquid::Drop
+
+      attr_reader :source
+
+      def initialize(template_hash)
+        @source = template_hash.stringify_keys
+        @parsed = {}
+      end
+
+      def liquid_method_missing(key)
+        if @source.has_key?(key)
+          @parsed[key] ||= Template.new(@source[key])
+          @parsed[key].render(@context)
+        else
+          super
+        end
+      end
+
+      def inspect
+        {source: @source, parsed: @parsed}.inspect
+      end
+
+    end
+
     module CustomLiquidFilters
 
       # From kubernetes error message
@@ -93,7 +117,7 @@ module Kubetruth
 
     INDENT = (" " * 2)
 
-    def render(**kwargs)
+    def render(*args, **kwargs)
       begin
 
         logger.debug do
@@ -104,7 +128,7 @@ module Kubetruth
           msg
         end
 
-        result = @liquid.render!(kwargs.stringify_keys, strict_variables: true, strict_filters: true)
+        result = @liquid.render!(*args, kwargs.stringify_keys, strict_variables: true, strict_filters: true)
 
         logger.debug do
           msg = "Rendered template:\n"
@@ -115,6 +139,16 @@ module Kubetruth
         result
 
       rescue Liquid::Error => e
+        indent = "  "
+        msg = "Template failed to render:\n"
+        @source.lines.each {|l| msg << (indent * 2) << l }
+        msg << indent << "with error message:\n" << (indent * 2) << "#{e.message}"
+        if e.is_a?(Liquid::UndefinedVariable)
+          msg << "\n" << indent << "and variable context:\n"
+          msg << (indent * 2) << kwargs.inspect
+        end
+        raise Error, msg
+
         raise Error, "Template failed to render: #{e.message}"
       end
     end

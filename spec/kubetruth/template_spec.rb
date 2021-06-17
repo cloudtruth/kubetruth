@@ -158,6 +158,53 @@ module Kubetruth
 
     end
 
+    describe Kubetruth::Template::TemplateHashDrop do
+
+      it "can be inspected" do
+        drop = described_class.new({})
+        expect(drop.inspect).to eq("{:source=>{}, :parsed=>{}}")
+      end
+
+      it "fails for missing key" do
+        drop = described_class.new({})
+        top = Template.new("{{ctx.badkey}}")
+        expect { top.render(ctx: drop) }.to raise_error(Kubetruth::Template::Error, /undefined method badkey/)
+      end
+
+      it "only parses template on first use" do
+        drop = described_class.new({tmpl: "{% if true %}hi{% endif %}"})
+        hash = drop.instance_variable_get(:@parsed)
+        expect(hash["tmpl"]).to be_nil
+        drop.liquid_method_missing("tmpl")
+        expect(hash["tmpl"]).to be_an_instance_of(Template)
+      end
+
+      it "runs nested template" do
+        drop = described_class.new("tmpl" => "{% if true %}hi{% endif %}")
+        top = Template.new("{{ctx.tmpl}}")
+        expect(top.render(ctx: drop)).to eq("hi")
+      end
+
+      it "allows symbols for keys" do
+        drop = described_class.new(tmpl: "{% if true %}hi{% endif %}")
+        top = Template.new("{{ctx.tmpl}}")
+        expect(top.render(ctx: drop)).to eq("hi")
+      end
+
+      it "nested template can reference top level vars" do
+        drop = described_class.new(tmpl: "{{hum}}")
+        top = Template.new("{{ctx.tmpl}}")
+        expect(top.render(ctx: drop, hum: "foo")).to eq("foo")
+      end
+
+      it "nested template can set top level vars" do
+        drop = described_class.new(tmpl: '{% assign foo = "bar" %}')
+        top = Template.new("{{ctx.tmpl}}{{foo}}")
+        expect(top.render(ctx: drop)).to eq("bar")
+      end
+
+    end
+
     describe "regexp match" do
 
       it "sets matchdata to nil for missing matches" do
@@ -194,6 +241,13 @@ module Kubetruth
         expect { described_class.new("{{foo") }.to raise_error(Kubetruth::Template::Error)
         expect { described_class.new("{{foo}}").render }.to raise_error(Kubetruth::Template::Error)
         expect { described_class.new("{{foo | nofilter}}").render(foo: "bar") }.to raise_error(Kubetruth::Template::Error)
+      end
+
+      it "does procs" do
+        top = Template.new("{{lambda}}")
+        i = 3
+        expect(top.render(lambda: ->() { i += 2 } )).to eq("5")
+        expect(top.render(lambda: ->() { i += 2 } )).to eq("7")
       end
 
     end

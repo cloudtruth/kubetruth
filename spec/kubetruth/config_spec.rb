@@ -16,15 +16,18 @@ module Kubetruth
         spec = described_class::ProjectSpec.new(
           scope: "root",
           project_selector: "foo",
-          resource_templates: ["bar"],
+          context: {"name1" => "template1"},
+          resource_templates: {"name1" => "template1"},
           skip: true
         )
         expect(spec.scope).to be_an_instance_of(String)
         expect(spec.scope).to eq("root")
         expect(spec.project_selector).to be_an_instance_of(Regexp)
         expect(spec.project_selector).to eq(/foo/)
-        expect(spec.resource_templates.first).to be_an_instance_of(Template)
-        expect(spec.resource_templates.first.source).to eq("bar")
+        expect(spec.context).to be_an_instance_of(Template::TemplateHashDrop)
+        expect(spec.context.liquid_method_missing("name1")).to eq("template1")
+        expect(spec.resource_templates["name1"]).to be_an_instance_of(Template)
+        expect(spec.resource_templates["name1"].source).to eq("template1")
         expect(spec.skip).to equal(true)
       end
 
@@ -75,25 +78,62 @@ module Kubetruth
             key_selector: "key_selector",
             skip: true,
             included_projects: ["included_projects"],
-            resource_templates: ["resource_templates"]
+            context: {"name1" => "template1"},
+            resource_templates: {"name1" => "template1"}
           },
           {
             scope: "override",
             project_selector: "project_overrides:project_selector",
-            resource_templates: ["project_overrides:resource_templates"]
+            context: {"name1" => "override_template1"},
+            resource_templates: {"name1" => "override_template1"}
           }
         ]
         config = described_class.new(data)
         config.load
         expect(config.instance_variable_get(:@config)).to_not eq(Kubetruth::Config::DEFAULT_SPEC)
         expect(config.root_spec).to be_an_instance_of(Kubetruth::Config::ProjectSpec)
-        expect(config.root_spec.resource_templates.first).to be_an_instance_of(Kubetruth::Template)
-        expect(config.root_spec.resource_templates.first.source).to eq("resource_templates")
+        expect(config.root_spec.context).to be_an_instance_of(Kubetruth::Template::TemplateHashDrop)
+        expect(config.root_spec.context.liquid_method_missing("name1")).to eq("template1")
+        expect(config.root_spec.resource_templates["name1"]).to be_an_instance_of(Kubetruth::Template)
+        expect(config.root_spec.resource_templates["name1"].source).to eq("template1")
         expect(config.root_spec.key_selector).to eq(/key_selector/)
         expect(config.override_specs.size).to eq(1)
         expect(config.override_specs.first).to be_an_instance_of(Kubetruth::Config::ProjectSpec)
-        expect(config.override_specs.first.resource_templates.first).to be_an_instance_of(Kubetruth::Template)
-        expect(config.override_specs.first.resource_templates.first.source).to eq("project_overrides:resource_templates")
+        expect(config.override_specs.first.context).to be_an_instance_of(Kubetruth::Template::TemplateHashDrop)
+        expect(config.override_specs.first.context.liquid_method_missing("name1")).to eq("override_template1")
+        expect(config.override_specs.first.resource_templates["name1"]).to be_an_instance_of(Kubetruth::Template)
+        expect(config.override_specs.first.resource_templates["name1"].source).to eq("override_template1")
+      end
+
+      it "does deep merges on hash types" do
+        data = [
+          {
+            scope: "root",
+            context: {"name1" => "template1", "name2" => "template2"},
+            resource_templates: {"name1" => "template1", "name2" => "template2"}
+          },
+          {
+            scope: "override",
+            context: {"name1" => "override_template1", "name3" => "override_template3"},
+            resource_templates: {"name1" => "override_template1", "name3" => "override_template3"}
+          }
+        ]
+        config = described_class.new(data)
+        config.load
+
+        expect(config.root_spec.context.liquid_method_missing("name1")).to eq("template1")
+        expect(config.root_spec.context.liquid_method_missing("name2")).to eq("template2")
+        expect(config.root_spec.context.liquid_method_missing("name3")).to be_nil
+        expect(config.root_spec.resource_templates["name1"].source).to eq("template1")
+        expect(config.root_spec.resource_templates["name2"].source).to eq("template2")
+        expect(config.root_spec.resource_templates["name3"]).to be_nil
+
+        expect(config.override_specs.first.context.liquid_method_missing("name1")).to eq("override_template1")
+        expect(config.override_specs.first.context.liquid_method_missing("name2")).to eq("template2")
+        expect(config.override_specs.first.context.liquid_method_missing("name3")).to eq("override_template3")
+        expect(config.override_specs.first.resource_templates["name1"].source).to eq("override_template1")
+        expect(config.override_specs.first.resource_templates["name2"].source).to eq("template2")
+        expect(config.override_specs.first.resource_templates["name3"].source).to eq("override_template3")
       end
 
     end
@@ -129,11 +169,11 @@ module Kubetruth
       end
 
       it "returns the matching override specs" do
-        config = described_class.new([{scope: "override", project_selector: "fo+", resource_templates: ["foocm"]}])
+        config = described_class.new([{scope: "override", project_selector: "fo+", resource_templates: {"name1" => "template1"}}])
         spec = config.spec_for_project("foo")
         expect(spec).to_not equal(config.root_spec)
-        expect(spec.resource_templates.first).to be_an_instance_of(Kubetruth::Template)
-        expect(spec.resource_templates.first.source).to eq("foocm")
+        expect(spec.resource_templates["name1"]).to be_an_instance_of(Kubetruth::Template)
+        expect(spec.resource_templates["name1"].source).to eq("template1")
       end
 
       it "raises for multiple matching specs" do

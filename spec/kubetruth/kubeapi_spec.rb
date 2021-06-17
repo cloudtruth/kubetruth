@@ -186,19 +186,7 @@ module Kubetruth
 
     describe "apply_resource" do
 
-      it "creates a resource using client namespace" do
-        expect { kubeapi.get_resource("configmaps", @spec_name) }.to raise_error(Kubeclient::ResourceNotFoundError)
-
-        resource = Kubeclient::Resource.new(apiVersion: "v1", kind: "ConfigMap", metadata: {name: @spec_name}, data: {bar: "baz"})
-        kubeapi.apply_resource(resource)
-
-        fetched_resource = kubeapi.get_resource("configmaps", @spec_name)
-        expect(fetched_resource.metadata.namespace).to eq(kubeapi.namespace)
-        expect(fetched_resource.metadata.name).to eq(@spec_name)
-        expect(fetched_resource.data.to_h).to eq({bar: "baz"})
-      end
-
-      it "creates a resource with supplied namespace" do
+      it "creates a resource" do
         kapi = described_class.new(namespace: "#{namespace}-arns", token: token, api_url: apiserver)
         kapi.ensure_namespace
         ns = kapi.namespace
@@ -216,7 +204,7 @@ module Kubetruth
       it "creates a resource from hash" do
         expect { kubeapi.get_resource("configmaps", @spec_name) }.to raise_error(Kubeclient::ResourceNotFoundError)
 
-        resource = { apiVersion: "v1", kind: "ConfigMap", metadata: { name: @spec_name }, data: { bar: "baz" } }
+        resource = { apiVersion: "v1", kind: "ConfigMap", metadata: { namespace: kubeapi.namespace, name: @spec_name }, data: { bar: "baz" } }
         kubeapi.apply_resource(resource)
 
         fetched_resource = kubeapi.get_resource("configmaps", @spec_name)
@@ -225,21 +213,10 @@ module Kubetruth
         expect(fetched_resource.data.to_h).to eq({bar: "baz"})
       end
 
-      it "sets up management when creating a resource" do
-        expect { kubeapi.get_resource("configmaps", @spec_name) }.to raise_error(Kubeclient::ResourceNotFoundError)
-
-        resource = Kubeclient::Resource.new(apiVersion: "v1", kind: "ConfigMap", metadata: {name: @spec_name}, data: {bar: "baz"})
-        kubeapi.apply_resource(resource)
-
-        fetched_resource = kubeapi.get_resource("configmaps", @spec_name)
-        expect(fetched_resource.metadata.name).to eq(@spec_name)
-        expect(fetched_resource.metadata.labels.to_h).to match(hash_including(KubeApi::MANAGED_LABEL_KEY.to_sym => KubeApi::MANAGED_LABEL_VALUE))
-      end
-
       it "creates other types of resources" do
         expect { kubeapi.get_resource("secrets", @spec_name) }.to raise_error(Kubeclient::ResourceNotFoundError)
 
-        resource = Kubeclient::Resource.new(apiVersion: "v1", kind: "Secret", metadata: {name: @spec_name}, data: {bar: Base64.strict_encode64("baz")})
+        resource = Kubeclient::Resource.new(apiVersion: "v1", kind: "Secret", metadata: {namespace: kubeapi.namespace, name: @spec_name}, data: {bar: Base64.strict_encode64("baz")})
         kubeapi.apply_resource(resource)
 
         fetched_resource = kubeapi.get_resource("secrets", @spec_name)

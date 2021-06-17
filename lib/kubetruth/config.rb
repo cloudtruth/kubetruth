@@ -13,6 +13,7 @@ module Kubetruth
       :key_selector,
       :skip,
       :included_projects,
+      :context,
       :resource_templates,
       keyword_init: true
     ) do
@@ -23,17 +24,17 @@ module Kubetruth
 
       def convert_types(hash)
         selector_key_pattern = /_selector$/
-        template_key_pattern = /_templates?$/
+        template_key_pattern = /_template$/
         hash.merge(hash) do |k, v|
           case k
             when selector_key_pattern
               Regexp.new(v)
             when template_key_pattern
-              if k.ends_with?('s')
-                v.collect {|t| Kubetruth::Template.new(t) }
-              else
-                Kubetruth::Template.new(v)
-              end
+              Kubetruth::Template.new(v)
+            when /^resource_templates$/
+              Hash[v.collect {|k, t| [k.to_s, Kubetruth::Template.new(t)] }]
+            when /^context$/
+              Kubetruth::Template::TemplateHashDrop.new(v)
             else
               v
           end
@@ -48,6 +49,7 @@ module Kubetruth
       key_selector: '',
       skip: false,
       included_projects: [],
+      context: {},
       resource_templates: []
     }.freeze
 
@@ -66,7 +68,12 @@ module Kubetruth
 
         config = DEFAULT_SPEC.merge(root_mapping)
         @root_spec = ProjectSpec.new(**config)
-        @override_specs = overrides.collect { |o| ProjectSpec.new(**config.merge(o)) }
+        logger.debug { "ProjectSpec for root mapping: #{@root_spec.inspect}"}
+        @override_specs = overrides.collect do |o|
+          spec = ProjectSpec.new(**config.deep_merge(o))
+          logger.debug { "ProjectSpec for override mapping: #{spec.inspect}"}
+          spec
+        end
         config
       end
     end
