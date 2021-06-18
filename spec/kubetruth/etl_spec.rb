@@ -209,26 +209,6 @@ module Kubetruth
         expect(Logging.contents).to match(/Skipping.*kubetruth management/)
       end
 
-      it "doesn't update resource if data same" do
-        resource_yml = <<~EOF
-          apiVersion: v1
-          kind: ConfigMap
-          metadata:
-            name: "group1"
-            namespace: "ns1" 
-          data:
-            "param1": "value1"
-        EOF
-        parsed_yml = YAML.load(resource_yml)
-        resource = Kubeclient::Resource.new(parsed_yml)
-        expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", "ns1").and_return(resource)
-        expect(@kubeapi).to receive(:set_managed) # test double, so doesn't actually set the label
-        expect(@kubeapi).to receive(:under_management?).and_return(true)
-        expect(@kubeapi).to_not receive(:apply_resource)
-        etl.kube_apply(parsed_yml)
-        expect(Logging.contents).to match(/Skipping update for identical kubernetes resource/)
-      end
-
       it "uses namespace for kube when supplied" do
         resource_yml = <<~EOF
           apiVersion: v1

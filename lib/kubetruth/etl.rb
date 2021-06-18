@@ -168,12 +168,13 @@ module Kubetruth
         if ! kubeapi.under_management?(resource)
           logger.warn "Skipping #{ident} as it doesn't have a label indicating it is under kubetruth management"
         else
-          if resource.to_h.deep_stringify_keys == parsed_yml
-            logger.info "Skipping update for identical kubernetes resource #{ident}"
-          else
-            logger.info "Updating kubernetes resource #{ident}"
-            kubeapi.apply_resource(parsed_yml) unless @dry_run
-          end
+          # apply is server side, and doesn't update unless there are diffs (the
+          # metadata.resourceVersion/creationTimestamp/uid stay constant)
+          # Trying to compare the fetched resource to the generated one doesn't
+          # work as there a bunch of fields we don't control, so we just rely on
+          # the server-side apply to do the right thing.
+          logger.info "Updating kubernetes resource #{ident}"
+          kubeapi.apply_resource(parsed_yml) unless @dry_run
         end
       rescue Kubeclient::ResourceNotFoundError
         logger.info "Creating kubernetes resource #{ident}"
