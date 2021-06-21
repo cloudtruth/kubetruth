@@ -134,7 +134,9 @@ CloudTruth projects whose names match its `project_selector` pattern.
 
 Note that Kubetruth watches for changes to ProjectMappings, so touching any of
 them wakes it up from a polling sleep.  This makes it quick and easy to test out
-configuration changes without having a short polling interval.
+configuration changes without having a short polling interval.  You can also
+force a wakeup by execing the wakeup script in the running container:
+`kubectl exec deployment/kubetruth -- wakeup`
 
 To customize how the kubernetes resources are generated, edit the
 `resource_templates` property in the ProjectMappings.  These templates are
@@ -271,7 +273,9 @@ Namespace:    default
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `bundle exec rspec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bundle` to install dependencies. Then, run
+`bundle exec rspec` to run the tests. You can also run `bundle exec rake console` for an
+interactive prompt that will allow you to experiment.
 
 To install and run via helm in a local cluster:
 ``` 
@@ -279,7 +283,7 @@ To install and run via helm in a local cluster:
 # with the command:
 # eval $(minikube docker-env)
 #
-docker build -t kubetruth . && helm install \
+docker build --release development -t kubetruth . && helm install \
     --set image.repository=kubetruth --set image.pullPolicy=Never --set image.tag=latest \
     --set appSettings.debug=true --set appSettings.apiKey=$CLOUDTRUTH_API_KEY --set appSettings.environment=development \
     kubetruth ./helm/kubetruth/

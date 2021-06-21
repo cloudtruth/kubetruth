@@ -13,21 +13,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/cache@v1
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+
+      - name: Set environment from cloudtruth
+        uses: cloudtruth/configure-action@v1
         with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
+          token: "${{ secrets.CLOUDTRUTH_API_KEY }}"
+          project: "deploy"
+          environment: "production"
 
-      - name: Install Ruby version specified in `.ruby-version`
-        uses: eregon/use-ruby-action@master # this will use by default the .ruby-version file
-
-      - run: ruby -v
-      - run: gem install --no-document bundler
-      - run: bundle config path vendor/bundle
-      - run: bundle install --jobs 4 --retry 3
-      - run: bundle exec rspec
+      - name: Run the tests
+        run: |
+          rake test
 
   deploy:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -36,6 +34,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
 
       - name: Set environment from cloudtruth
         uses: cloudtruth/configure-action@v1
@@ -54,31 +55,18 @@ jobs:
 
       - name: Build the Docker image
         run: |
-          docker build --target release -t kubetruth .
+          rake build_release
 
       - name: Push the Docker image
         run: |
           tag=${GITHUB_REF##*/v}
-          echo "Pushing version '$tag' to docker hub"
           echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-
-          docker tag kubetruth cloudtruth/kubetruth:latest
-          docker push cloudtruth/kubetruth:latest
-          docker tag kubetruth cloudtruth/kubetruth:${tag}
-          docker push cloudtruth/kubetruth:${tag}
+          TAGS="$tag latest" bundle exec rake docker_push
 
       - name: Package helm chart
         run: |
           export HELM_REPO_URL="${PACKAGES_URL}/${PACKAGES_HELM_PATH}"
-          mkdir -p tmp/packaged-chart/
-          (cd tmp/packaged-chart && helm package ../../helm/kubetruth)
-          ./bin/generate-helmv2.sh
-          (cd tmp/packaged-chart && helm package ../../tmp/helmv2/kubetruth)
-          maybe_merge=""
-          if curl -sfL ${HELM_REPO_URL}/index.yaml -o tmp/old-index.yaml; then
-            maybe_merge="--merge tmp/old-index.yaml"
-          fi
-          helm repo index ${maybe_merge} --url ${HELM_REPO_URL} tmp/packaged-chart/
+          bundle exec rake helm_package
 
       - name: Deploy helm chart to S3
         run: |

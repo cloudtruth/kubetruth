@@ -13,39 +13,45 @@ ENV APP_DIR="/srv/app" \
 # values.
 ENV BUNDLE_BIN="${BUNDLE_PATH}/bin" \
     GEM_HOME="${BUNDLE_PATH}"
-ENV PATH="${APP_DIR}:${BUNDLE_BIN}:${PATH}"
+ENV PATH="${APP_DIR}:${APP_DIR}/bin:${BUNDLE_BIN}:${PATH}"
 
 RUN mkdir -p $APP_DIR $BUNDLE_PATH
 WORKDIR $APP_DIR
 
 FROM base as build
 
-COPY Gemfile* *.gemspec $APP_DIR/
-COPY lib/kubetruth/version.rb $APP_DIR/lib/kubetruth/
-
 RUN apk add --no-cache \
     --virtual app \
     $APP_PACKAGES && \
   apk add --no-cache \
     --virtual build_deps \
-    $BUILD_PACKAGES && \
-  bundle install && \
-  apk del build_deps
+    $BUILD_PACKAGES
+
+COPY Gemfile* $APP_DIR/
+RUN bundle config --global without 'development test' && \
+    bundle install --jobs=4
 
 RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing kubectl
 
 COPY . $APP_DIR/
-RUN bundle config set deployment 'true' && \
-    bundle config set without 'development test' && \
+
+
+FROM build as development
+
+RUN bundle config --delete without && \
     bundle install --jobs=4
+
+# Specify the script to use when running the container
+ENTRYPOINT ["entrypoint.sh"]
+# Start the main app process by sending the "app" parameter to the entrypoint
+CMD ["app"]
+
 
 FROM base AS release
 
 RUN apk add --no-cache \
     --virtual app \
     $RELEASE_PACKAGES
-
-RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing kubectl
 
 COPY --from=build $BUNDLE_PATH $BUNDLE_PATH
 COPY --from=build $APP_DIR $APP_DIR

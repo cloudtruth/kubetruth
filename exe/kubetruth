@@ -1,5 +1,0 @@
-#!/usr/bin/env ruby
-
-require_relative "../lib/kubetruth"
-require_relative '../lib/kubetruth/cli'
-Kubetruth::CLI.run

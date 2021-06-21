@@ -1,3 +1,17 @@
+0.5.0 (06/18/2021)
+------------------
+
+* remove conditional update as server-side apply takes care of it [7de290f](../../commit/7de290f)
+* add a signal handler to wake up from polling sleep [c9c3873](../../commit/c9c3873)
+* fix creating namespace [9db00b4](../../commit/9db00b4)
+* add context to projectmappings to allow for small modifications (e.g. name, namespace) without having to replace the entire template Made resource_templates into a map, and made override merging of it (and context) be additive in nature so one can add a new mapping with a template without having to replace the existing ones [5d5646b](../../commit/5d5646b)
+* add a key_safe filter to ensure ConfigMap/Secret keys are converted to something safe to use [6ef09e1](../../commit/6ef09e1)
+* update readme [3249752](../../commit/3249752)
+* update readme [bea9ff1](../../commit/bea9ff1)
+* Use a list of resource_templates instead of specifically named ones for configmaps and secrets [63d961f](../../commit/63d961f)
+* update for new version [353d422](../../commit/353d422)
+* Major refactoring to allow using a template for the entire kuberenetes resources (ConfigMaps/Secrets/others) created for each project. [f76e9d2](../../commit/f76e9d2)
+
 0.4.1 (05/19/2021)
 ------------------
 

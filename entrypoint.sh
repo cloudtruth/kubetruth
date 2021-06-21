@@ -3,29 +3,18 @@
 # fail fast
 set -e
 
-function start_app {
-  echo "Starting app"
-
-  exec kubetruth "$@"
-}
-export -f start_app
-
-function start_console {
-  echo "Starting console"
-  exec bundle exec irb
-}
-export -f start_console
-
 action=$1; shift
 
 case $action in
 
   app)
-    start_app "$@"
+  echo "Starting app"
+  exec bundle exec kubetruth "$@"
   ;;
 
   console)
-    start_console
+    echo "Starting console"
+    exec bundle exec rake console
   ;;
 
   test)

@@ -4,3 +4,10 @@ pkg
 tmp
 packaged-char
 old-index.yaml
+.bundle
+.idea
+.codecov.yml
+coverage
+.dockerignore
+.rspec_status
+local
