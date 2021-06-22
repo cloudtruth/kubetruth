@@ -34,7 +34,7 @@ file "#{HELMV2_DIR}/#{APP[:name]}/Chart.yaml" => [HELMV2_DIR] do
   cp_r "#{ROOT_DIR}/helm/helmv2/.", "#{HELMV2_DIR}/#{APP[:name]}/", preserve: true
   chart = File.read("#{HELMV2_DIR}/#{APP[:name]}/Chart.yaml")
   chart = chart.gsub(/apiVersion: v2/, "apiVersion: v1")
-  chart = chart.gsub(/version: ([0-9.]*)/, "version: \1-helmv2")
+  chart = chart.gsub(/version: ([0-9.]*)/, 'version: \1-helmv2')
   File.write("#{HELMV2_DIR}/#{APP[:name]}/Chart.yaml", chart)
 end
 
