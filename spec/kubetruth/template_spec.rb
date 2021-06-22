@@ -12,6 +12,14 @@ module Kubetruth
 
     end
 
+    describe "#to_yaml" do
+
+      it "produces clean yaml for logging" do
+        expect(Template.new("foo").to_yaml).to eq("--- foo\n")
+      end
+
+    end
+
     describe "CustomLiquidFilters" do
 
       include Kubetruth::Template::CustomLiquidFilters
@@ -160,9 +168,10 @@ module Kubetruth
 
     describe Kubetruth::Template::TemplateHashDrop do
 
-      it "can be inspected" do
-        drop = described_class.new({})
-        expect(drop.inspect).to eq("{:source=>{}, :parsed=>{}}")
+      it "produces clean yaml for logging" do
+        drop = described_class.new({"foo" => "bar"})
+        c = {context: drop}
+        expect(c.to_yaml).to eq("---\n:context:\n  foo: bar\n")
       end
 
       it "fails for missing key" do
@@ -262,6 +271,28 @@ module Kubetruth
         i = 3
         expect(top.render(lambda: ->() { i += 2 } )).to eq("5")
         expect(top.render(lambda: ->() { i += 2 } )).to eq("7")
+      end
+
+      it "masks secrets in logs" do
+        secrets = {"foo" => "sekret"}
+        tmpl = described_class.new("secret: {{secrets.foo}} encoded: {{secrets.foo | encode64}}")
+        expect(tmpl.render(secrets: secrets)).to eq("secret: sekret encoded: #{Base64.strict_encode64("sekret")}")
+        expect(Logging.contents).to_not include("sekret")
+        expect(Logging.contents).to include("<masked:foo>")
+        expect(Logging.contents).to_not include(Base64.strict_encode64("sekret"))
+        expect(Logging.contents).to include("<masked:foo_base64>")
+      end
+
+      it "masks secrets in exception" do
+        secrets = {"foo" => "sekret"}
+        tmpl = described_class.new("{{fail}}")
+        expect { tmpl.render(secrets: secrets) }.to raise_error(Template::Error) do |error|
+          expect(error.message).to_not include("sekret")
+          expect(error.message).to include("<masked:foo>")
+          expect(error.message).to_not include(Base64.strict_encode64("sekret"))
+          expect(error.message).to_not include("<masked:foo_base64>")
+        end
+
       end
 
     end

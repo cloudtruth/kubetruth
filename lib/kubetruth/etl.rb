@@ -122,7 +122,7 @@ module Kubetruth
 
         project.spec.resource_templates.each_with_index do |pair, i|
           template_name, template = *pair
-          logger.debug { "Processing template '#{template_name}' (#{i}/#{project.spec.resource_templates.size})" }
+          logger.debug { "Processing template '#{template_name}' (#{i+1}/#{project.spec.resource_templates.size})" }
           resource_yml = template.render(
             template: template_name,
             project: project.name,

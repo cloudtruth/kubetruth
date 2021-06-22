@@ -33,8 +33,8 @@ module Kubetruth
         end
       end
 
-      def inspect
-        {source: @source, parsed: @parsed}.inspect
+      def encode_with(coder)
+        coder.represent_map(nil, @source)
       end
 
     end
@@ -125,41 +125,51 @@ module Kubetruth
     def render(*args, **kwargs)
       begin
 
+        secrets = kwargs[:secrets] || {}
+
         logger.debug do
           msg = "Evaluating template:\n"
           @source.to_s.lines.collect {|l| msg << (INDENT * 2) << l }
           msg << "\n" << INDENT << "with context:\n"
           kwargs.deep_stringify_keys.to_yaml.lines.collect {|l| msg << (INDENT * 2) << l }
+
+          secrets.each {|k, v| msg.gsub!(v, "<masked:#{k}>") }
           msg
         end
 
         result = @liquid.render!(*args, kwargs.stringify_keys, strict_variables: true, strict_filters: true)
 
         logger.debug do
+          # we only ever have to sub base64 encoded in this debug block
+          both_secrets = secrets.merge(Hash[secrets.collect {|k, v| ["#{k}_base64", Base64.strict_encode64(v)]}])
+
           msg = "Rendered template:\n"
           result.lines.collect {|l| msg << (INDENT * 2) << l }
+          both_secrets.each {|k, v| msg.gsub!(v, "<masked:#{k}>") }
           msg
         end
 
         result
 
       rescue Liquid::Error => e
-        indent = "  "
         msg = "Template failed to render:\n"
-        @source.lines.each {|l| msg << (indent * 2) << l }
-        msg << indent << "with error message:\n" << (indent * 2) << "#{e.message}"
+        @source.lines.each {|l| msg << (INDENT * 2) << l }
+        msg << INDENT << "with error message:\n" << (INDENT * 2) << "#{e.message}"
         if e.is_a?(Liquid::UndefinedVariable)
-          msg << "\n" << indent << "and variable context:\n"
-          msg << (indent * 2) << kwargs.inspect
+          msg << "\n" << INDENT << "and variable context:\n"
+          kwargs.deep_stringify_keys.to_yaml.lines.collect {|l| msg << (INDENT * 2) << l }
         end
+        secrets.each {|k, v| msg.gsub!(v, "<masked:#{k}>") }
         raise Error, msg
-
-        raise Error, "Template failed to render: #{e.message}"
       end
     end
 
     def to_s
       @source
+    end
+
+    def encode_with(coder)
+      coder.represent_scalar(nil, @source)
     end
 
   end
