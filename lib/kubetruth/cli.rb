@@ -1,12 +1,9 @@
-require 'clamp'
+require_relative 'cli_base'
 require_relative 'project'
 require_relative 'etl'
-require_relative 'clamp_help_formatter'
 
 module Kubetruth
-  class CLI < Clamp::Command
-
-    include GemLogger::LoggerSupport
+  class CLI < CLIBase
 
     banner <<~EOF
       Scans cloudtruth parameters for `name-pattern`, using the `name` match as
@@ -44,40 +41,10 @@ module Kubetruth
            :flag, "Perform a dry run",
            default: false
 
-    option ["-q", "--quiet"],
-           :flag, "Suppress output",
-           default: false
-
-    option ["-d", "--debug"],
-           :flag, "Debug output",
-           default: false
-
-    option ["-c", "--[no-]color"],
-           :flag, "colorize output (or not)  (default: $stdout.tty?)",
-            default: true
-
-    option ["-v", "--version"],
-           :flag, "show version",
-           default: false
-
     # TODO: option to map template to configmap?
 
-    # hook into clamp lifecycle to force logging setup even when we are calling
-    # a subcommand
-    def parse(arguments)
-      super
-
-      level = :info
-      level = :debug if debug?
-      level = :error if quiet?
-      Kubetruth::Logging.setup_logging(level: level, color: color?)
-    end
-
     def execute
-      if version?
-        logger.info "Kubetruth Version #{VERSION}"
-        exit(0)
-      end
+      super
 
       ct_context = {
           organization: organization,

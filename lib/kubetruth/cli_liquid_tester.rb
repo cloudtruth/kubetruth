@@ -1,11 +1,13 @@
-require 'clamp'
+require_relative 'cli_base'
 require_relative 'template'
-require_relative 'clamp_help_formatter'
 
 module Kubetruth
-  class CLILiquidTester < Clamp::Command
+  class CLILiquidTester < CLIBase
 
-    include GemLogger::LoggerSupport
+    banner <<~EOF
+      Allows one to experiment with liquid templates by evaluating the given
+      template with the supplied variable context
+    EOF
 
     option ["-v", "--variable"],
            'VAR', "variable=value to be used in evaluating the template",
@@ -17,38 +19,8 @@ module Kubetruth
     option ["-f", "--template-file"],
            'FILE', "A file containing the template. use '-' for stdin"
 
-    option ["-q", "--quiet"],
-           :flag, "Suppress output",
-           default: false
-
-    option ["-d", "--debug"],
-           :flag, "Debug output",
-           default: false
-
-    option ["-c", "--[no-]color"],
-           :flag, "colorize output (or not)  (default: $stdout.tty?)",
-           default: true
-
-    option ["-v", "--version"],
-           :flag, "show version",
-           default: false
-
-    # hook into clamp lifecycle to force logging setup even when we are calling
-    # a subcommand
-    def parse(arguments)
-      super
-
-      level = :info
-      level = :debug if debug?
-      level = :error if quiet?
-      Kubetruth::Logging.setup_logging(level: level, color: color?)
-    end
-
     def execute
-      if version?
-        logger.info "Kubetruth Version #{VERSION}"
-        exit(0)
-      end
+      super
 
       tmpl = template if template.present?
       if template_file.present?

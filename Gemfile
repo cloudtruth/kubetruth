@@ -2,14 +2,14 @@ source "https://rubygems.org"
 
 # development dependencies
 group :development do
-  gem "rake", "~> 12.0"
+  gem "rake"
   gem "pry"
   gem "pry-byebug"
 end
 
 # test dependencies
 group :development, :test do
-  gem "rspec", "~> 3.0"
+  gem "rspec"
   gem "vcr"
   gem "webmock"
   gem 'codecov', require: false, group: 'test'

@@ -64,14 +64,14 @@ GEM
     minitest (5.14.4)
     multi_json (1.15.0)
     netrc (0.11.0)
-    pry (0.14.1)
+    pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    pry-byebug (3.8.0)
+    pry-byebug (3.9.0)
       byebug (~> 11.0)
-      pry (~> 0.10)
+      pry (~> 0.13.0)
     public_suffix (4.0.6)
-    rake (12.3.3)
+    rake (13.0.3)
     recursive-open-struct (1.1.3)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -124,8 +124,8 @@ DEPENDENCIES
   logging
   pry
   pry-byebug
-  rake (~> 12.0)
-  rspec (~> 3.0)
+  rake
+  rspec
   simplecov
   vcr
   webmock

@@ -16,58 +16,6 @@ module Kubetruth
 
     end
 
-    describe "version" do
-
-      it "uses flag to produce version text" do
-        expect { cli.run(['--version']) }.to raise_error(SystemExit)
-        expect(Logging.contents).to include(VERSION)
-      end
-
-    end
-
-    describe "--debug" do
-
-      it "defaults to info log level" do
-        expect(Logging).to receive(:setup_logging).with(hash_including(level: :info))
-        expect { cli.run(['--version']) }.to raise_error(SystemExit)
-      end
-
-      it "sets log level to debug" do
-        expect(Logging).to receive(:setup_logging).with(hash_including(level: :debug))
-        expect { cli.run(['--debug', '--version']) }.to raise_error(SystemExit)
-      end
-
-    end
-
-    describe "--quiet" do
-
-      it "defaults to info log level" do
-        expect(Logging).to receive(:setup_logging).with(hash_including(level: :info))
-        expect { cli.run(['--version']) }.to raise_error(SystemExit)
-      end
-
-      it "sets log level to warn" do
-        expect(Logging).to receive(:setup_logging).with(hash_including(level: :error))
-        expect { cli.run(['--quiet', '--version']) }.to raise_error(SystemExit)
-      end
-
-    end
-
-    describe "--no-color" do
-
-      it "defaults to color" do
-        expect(Logging).to receive(:setup_logging).with(hash_including(color: true))
-        expect { cli.run(['--version']) }.to raise_error(SystemExit)
-      end
-
-      it "outputs plain text" do
-        expect(Logging).to receive(:setup_logging).with(hash_including(color: false))
-        expect { cli.run(['--no-color', '--version']) }.to raise_error(SystemExit)
-      end
-
-    end
-
-
     describe "execute" do
 
       it "passes args to etl" do
