@@ -12,6 +12,7 @@ ENV APP_DIR="/srv/app" \
 # values because Docker will read the values once before it starts setting
 # values.
 ENV BUNDLE_BIN="${BUNDLE_PATH}/bin" \
+    BUNDLE_APP_CONFIG="${BUNDLE_PATH}" \
     GEM_HOME="${BUNDLE_PATH}"
 ENV PATH="${APP_DIR}:${APP_DIR}/bin:${BUNDLE_BIN}:${PATH}"
 
@@ -28,7 +29,7 @@ RUN apk add --no-cache \
     $BUILD_PACKAGES
 
 COPY Gemfile* $APP_DIR/
-RUN bundle config --global without 'development test' && \
+RUN bundle config --local without 'development test' && \
     bundle install --jobs=4
 
 RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing kubectl
@@ -38,7 +39,7 @@ COPY . $APP_DIR/
 
 FROM build as development
 
-RUN bundle config --delete without && \
+RUN bundle config --local --delete without && \
     bundle install --jobs=4
 
 # Specify the script to use when running the container

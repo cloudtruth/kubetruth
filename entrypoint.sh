@@ -9,17 +9,17 @@ case $action in
 
   app)
   echo "Starting app"
-  exec bundle exec kubetruth "$@"
+  exec kubetruth "$@"
   ;;
 
   console)
     echo "Starting console"
-    exec bundle exec rake console
+    exec rake console
   ;;
 
   test)
     echo "Starting tests"
-    exec bundle exec rspec
+    exec rspec
   ;;
 
   bash)
@@ -31,12 +31,7 @@ case $action in
     exec bash "${bash_args[@]}"
   ;;
 
-  exec)
-    exec "$@"
-  ;;
-
   *)
-    echo "Unknown action: '$action', defaulting to exec"
     exec $action "$@"
   ;;
 
