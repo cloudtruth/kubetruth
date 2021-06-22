@@ -47,8 +47,8 @@ Parameterize the helm install with `--set appSettings.**` to control how kubetru
 | projectMappings.root.key_selector | A regexp to limit the keys acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
 | projectMappings.root.skip | Skips the generation of resources for the selected projects | flag | false | no |
 | projectMappings.root.included_projects | Include the parameters from other projects into the selected ones.  This can be recursive in a depth first fashion, so if A imports B and B imports C, then A will get B's and C's parameters.  For key conflicts, if A includes B and B includes C, then the precendence is A overrides B overrides C.  If A includes \[B, C], then the precendence is A overrides C overrides B. | list | [] | no |
-| projectMappings.root.context | Additional variables made available to the resource templates.  Can also be templates | string | [default](helm/kubetruth/values.yaml#L93-L129) | no |
-| projectMappings.root.resource_templates | The templates to use in generating kubernetes resources (ConfigMap/Secrets/other) | string | [default](helm/kubetruth/values.yaml#L93-L129) | no |
+| projectMappings.root.context | Additional variables made available to the resource templates.  Can also be templates | map | [default](helm/kubetruth/values.yaml#L93-L129) | no |
+| projectMappings.root.resource_templates | The templates to use in generating kubernetes resources (ConfigMap/Secrets/other) | map | [default](helm/kubetruth/values.yaml#L93-L129) | no |
 | projectMappings.<override_name>.* | Define override mappings to override settings from the root selector for specific projects. When doing this on the command-line (e.g. for `helm install`), it may be more convenient to use `--values <file>` instead of `--set` for large data sets | map | {} | no |
 
 With the default `resource_templates`, Kubetruth maps the parameters from
@@ -189,15 +189,18 @@ To create kubernetes Resources in namespaces named after each Project:
 ```
 kubectl edit pm kubetruth-root
 ```
-and add the metadata.namespace field to each template in `resource_templates` like so:
-```yaml
-spec:
-  resource_templates:
-    - |
-      apiVersion: v1
-      kind: ConfigMap
-      metadata:
-          namespace: {{ project | dns_safe }}
+and set the `context.resource_namespace` field:
+
+Or to do it with `kubectl patch`:
+
+```
+kubectl patch pm kubetruth-root --type json --patch '[{"op": "replace", "path": "/spec/context/resource_namespace", "value": "{{ project | dns_safe }}"}]'
+```
+
+Or to do it at install time, add the following to the `helm install` command:
+
+```
+--set projectMappings.root.context.resource_namespace="\{\{ project | dns_safe \}\}"
 ```
 
 #### Share common data

@@ -1,6 +1,22 @@
 0.5.0 (06/18/2021)
 ------------------
 
+#### Notes on major changes
+
+* \[breaking change] Kubetruth can now generate any kubernetes resource via the templates supplied `resource_templates` attribute in ProjectMappings.  The default root ProjectMapping contains templates for ConfigMaps and Secrets
+* \[breaking change] Removed these settings from ProjectMapping:
+    * `key_filter` - use `key_selector` instead
+    * `configmap_name_template` - use `context.resource_name` or supply your own `resource_templates`
+    * `secret_name_template` - use `context.resource_name` or supply your own `resource_templates`
+    * `namespace_template` - use `context.resource_namespace` or supply your own `resource_templates`
+    * `key_template` - supply your own `resource_templates`
+    * `skip_secrets` - supply your own `resource_templates`
+* \[breaking change] Regular expression named matches are no longer used to supply template evaluation variables
+
+#### Full changelog
+
+* test ruby directly as running codecov within docker is messy [986b14c](../../commit/986b14c)
+* cleanup repo structure [54096a1](../../commit/54096a1)
 * remove conditional update as server-side apply takes care of it [7de290f](../../commit/7de290f)
 * add a signal handler to wake up from polling sleep [c9c3873](../../commit/c9c3873)
 * fix creating namespace [9db00b4](../../commit/9db00b4)
