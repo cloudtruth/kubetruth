@@ -345,6 +345,7 @@ module Kubetruth
 
         allow(etl).to receive(:kube_apply)
         expect(etl.load_config.root_spec.resource_templates.values.first).to receive(:render) do |*args, **kwargs|
+          expect(kwargs[:template]).to eq("configmap")
           expect(kwargs[:project]).to eq("proj1")
           expect(kwargs[:project_heirarchy]).to eq(Project.all["proj1"].heirarchy)
           expect(kwargs[:debug]).to eq(etl.logger.debug?)

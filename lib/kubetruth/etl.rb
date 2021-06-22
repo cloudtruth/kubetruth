@@ -124,6 +124,7 @@ module Kubetruth
           template_name, template = *pair
           logger.debug { "Processing template '#{template_name}' (#{i}/#{project.spec.resource_templates.size})" }
           resource_yml = template.render(
+            template: template_name,
             project: project.name,
             project_heirarchy: project.heirarchy,
             debug: logger.debug?,
