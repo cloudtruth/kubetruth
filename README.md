@@ -144,6 +144,7 @@ processed using the [Liquid template
 language](https://shopify.github.io/liquid/), and can reference the following
 liquid variables:
 
+ * `template` - The name of the template currently being rendered
  * `project` - The project name
  * `project_heirarchy` - The `included_projects` tree this project includes (useful to debug when using complex `included_projects`)
  * `debug` - Indicates if kubetruth is operating in debug (logging) mode.
@@ -168,7 +169,23 @@ ones:
  * `decode64` - The argument bas64 decoded
  * `sha256` - The sha256 digest of the argument
 
-The default `resource_templates`  add the `parameter_origins` and `project_heirarchy`
+The default `resource_templates` make use of the `context` attribute to allow
+simpler modification of some common fields.  These include:
+
+* `context.resource_name` - set this in a ProjectMapping to supply a different name to the the default templates
+* `context.resource_namespace` - set this in a ProjectMapping to supply a different namespace to the default templates
+* `context.skip_secrets` - set this in a ProjectMapping to prevent output of a Secret resource even when secrets are present
+
+Since the `context` is a freeform map type, you can add custom items to it, as
+well as architect any custom templates to make use of those custom items in the
+same way the default templates do.  If the value of a `context` entry is a
+string, it is treated as a template, and can reference and set variables in the
+resource_template that is evaluating it.  If the value is of some other yaml
+type (e.g. boolean/number/list/map), it will get passed through as that type to
+the template that is referencing it, so you can use it in more complex template
+logic like `{% foreach item in context.my_items %}`
+
+The default `resource_templates` add the `parameter_origins` and `project_heirarchy`
 key as annotations on each kubernetes resource under management.  This can be
 disabled by removing them from the template, or wrapping them in a test for
 `debug`.  The data produced by these help to illustrate how project inclusion
@@ -189,7 +206,7 @@ To create kubernetes Resources in namespaces named after each Project:
 ```
 kubectl edit pm kubetruth-root
 ```
-and set the `context.resource_namespace` field:
+and set the `spec.context.resource_namespace` field:
 
 Or to do it with `kubectl patch`:
 
