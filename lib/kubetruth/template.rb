@@ -21,8 +21,13 @@ module Kubetruth
 
       def liquid_method_missing(key)
         if @source.has_key?(key)
-          @parsed[key] ||= Template.new(@source[key])
-          @parsed[key].render(@context)
+          if @source[key].is_a?(String)
+            @parsed[key] ||= Template.new(@source[key])
+            @parsed[key].render(@context)
+          else
+            @parsed[key] ||= @source[key]
+            @parsed[key]
+          end
         else
           super
         end

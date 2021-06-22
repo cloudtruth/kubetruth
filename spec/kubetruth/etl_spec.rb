@@ -247,24 +247,6 @@ module Kubetruth
         end
       end
 
-      it "sets config and secrets" do
-        expect(Project).to receive(:names).and_return(["proj1"])
-
-        allow(etl).to receive(:kube_apply) do |parsed_yml|
-          if parsed_yml["kind"] == "ConfigMap"
-            expect(parsed_yml["data"]['param1']).to eq("value1")
-            expect(parsed_yml["data"].has_key?('param2')).to be false
-          elsif parsed_yml["kind"] == "Secret"
-            expect(parsed_yml["data"]['param2']).to eq(Base64.strict_encode64('value2'))
-            expect(parsed_yml["data"].has_key?('param1')).to be false
-          else
-            raise "Unexpected kubernetes resource kind"
-          end
-        end
-
-        etl.apply()
-      end
-
       it "renders multiple templates" do
         expect(etl.load_config.root_spec.resource_templates.size).to eq(2)
         expect(Project).to receive(:names).and_return(["proj1"])
@@ -376,6 +358,59 @@ module Kubetruth
 
         etl.apply()
       end
+    end
+
+    describe "default templates" do
+
+      before(:each) do
+        allow(Project).to receive(:create).and_wrap_original do |m, *args|
+          project = m.call(*args)
+          allow(project).to receive(:parameters).and_return([
+                                                              Parameter.new(key: "param1", value: "value1", secret: false),
+                                                              Parameter.new(key: "param2", value: "value2", secret: true)
+                                                            ])
+          project
+        end
+        allow(Project).to receive(:names).and_return(["proj1"])
+        allow(etl).to receive(:kube_apply)
+      end
+
+      it "sets config and secrets in default template" do
+        default_root_spec = YAML.load_file(File.expand_path("../../helm/kubetruth/values.yaml", __dir__)).deep_symbolize_keys
+        root_spec_crd = default_root_spec[:projectMappings][:root]
+        allow(etl).to receive(:load_config).and_return(Kubetruth::Config.new([root_spec_crd]))
+
+        allow(etl).to receive(:kube_apply) do |parsed_yml|
+          if parsed_yml["kind"] == "ConfigMap"
+            expect(parsed_yml["data"]['param1']).to eq("value1")
+            expect(parsed_yml["data"].has_key?('param2')).to be false
+          elsif parsed_yml["kind"] == "Secret"
+            expect(parsed_yml["data"]['param2']).to eq(Base64.strict_encode64('value2'))
+            expect(parsed_yml["data"].has_key?('param1')).to be false
+          else
+            raise "Unexpected kubernetes resource kind"
+          end
+        end.twice
+
+        etl.apply()
+      end
+
+      it "skips secrets when set in context" do
+        default_root_spec = YAML.load_file(File.expand_path("../../helm/kubetruth/values.yaml", __dir__)).deep_symbolize_keys
+        root_spec_crd = default_root_spec[:projectMappings][:root]
+        root_spec_crd = root_spec_crd.deep_merge(context: {skip_secrets: true})
+
+        allow(etl).to receive(:load_config).and_return(Kubetruth::Config.new([root_spec_crd]))
+
+        expect(etl.load_config.root_spec.resource_templates["secret"]).to receive(:render).and_wrap_original do |m, *args, **kwargs|
+          result = m.call(*args, **kwargs)
+          expect(result).to be_blank
+          result
+        end
+
+        etl.apply()
+      end
+
     end
 
   end

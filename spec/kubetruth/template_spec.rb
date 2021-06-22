@@ -203,6 +203,20 @@ module Kubetruth
         expect(top.render(ctx: drop)).to eq("bar")
       end
 
+      it "doesn't make non-strings into a template" do
+        drop = described_class.new(bool: true, list: ["one", "two"], map: {"foo" => "bar"})
+
+        top = Template.new("{% unless ctx.bool %}not{% endunless %}{% if ctx.bool %}out{%endif%}")
+        expect(top.render(ctx: drop)).to eq("out")
+
+        top = Template.new("{% for x in ctx.list %}{{x}}{% endfor %}")
+        expect(top.render(ctx: drop)).to eq("onetwo")
+
+        top = Template.new("{% for x in ctx.map %}{{x[0]}}-{{x[1]}}{% endfor %}")
+        expect(top.render(ctx: drop)).to eq("foo-bar")
+      end
+
+
     end
 
     describe "regexp match" do

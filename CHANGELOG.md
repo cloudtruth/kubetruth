@@ -10,7 +10,7 @@
     * `secret_name_template` - use `context.resource_name` or supply your own `resource_templates`
     * `namespace_template` - use `context.resource_namespace` or supply your own `resource_templates`
     * `key_template` - supply your own `resource_templates`
-    * `skip_secrets` - supply your own `resource_templates`
+    * `skip_secrets` - use `context.skip_secrets` or supply your own `resource_templates`
 * \[breaking change] Regular expression named matches are no longer used to supply template evaluation variables
 
 #### Full changelog

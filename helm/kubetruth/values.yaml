@@ -92,6 +92,7 @@ projectMappings:
     context:
       resource_name: "{{ project | dns_safe }}"
       resource_namespace: ""
+      skip_secrets: false
     resource_templates:
       configmap: |
         {%- if parameters.size > 0 %}
@@ -114,7 +115,7 @@ projectMappings:
         {%- endif %}
 
       secret: |
-        {%- if secrets.size > 0 %}
+        {%- unless context.skip_secrets or secrets.size == 0 %}
         apiVersion: v1
         kind: Secret
         metadata:
@@ -131,4 +132,4 @@ projectMappings:
           {%- for secret in secrets %}
           {{ secret[0] | key_safe | stringify }}: {{ secret[1] | encode64 | stringify }}
           {%- endfor %}
-        {%- endif %}
+        {%- endunless %}
