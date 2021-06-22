@@ -133,6 +133,27 @@ RSpec::Matchers.define :be_line_width_for_cli do |name|
   end
 end
 
+module CLITestHelpers
+
+  def all_usage(clazz, path=[])
+    Enumerator.new do |y|
+      obj = clazz.new("")
+      path << clazz.name.split(":").last if path.empty?
+      cmd_path = path.join(" -> ")
+      y << {name: cmd_path, usage: obj.help}
+
+      clazz.recognised_subcommands.each do |sc|
+        sc_clazz = sc.subcommand_class
+        sc_name = sc.names.first
+        all_usage(sc_clazz, path + [sc_name]).each {|sy| y << sy}
+      end
+    end
+  end
+
+end
+
+include CLITestHelpers
+
 require 'stringio'
 
 module IoTestHelpers
