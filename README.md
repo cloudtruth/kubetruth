@@ -4,7 +4,7 @@
 
 # Kubetruth
 
-The CloudTruth integration for kubernetes that pushes parameter updates into
+The [CloudTruth integration for kubernetes](https://docs.cloudtruth.com/integrations/kubernetes) that pushes parameter updates into
 kubernetes resources - usually ConfigMaps and Secrets, but any resource is
 allowed.  The goal is to provide you a mechanism that is as hands off as
 possible, using naming conventions to automate the delivery of configuration so
@@ -145,7 +145,7 @@ processed using the [Liquid template
 language](https://shopify.github.io/liquid/), and can reference the following
 liquid variables:
 
-| Liquid Variable | Description |
+| Liquid Variables | Description |
 |-----------------|-------------|
 | `template` | The name of the template currently being rendered. |
 | `project` | The project name. |
@@ -215,7 +215,7 @@ and set the `context.resource_namespace` field:
 ```
 spec:
     context:
-      resource_namespace: '{{ project | dns_safe }}'
+        resource_namespace: '{{ project | dns_safe }}'
 ```
 
 Or to do it with `kubectl patch`:
