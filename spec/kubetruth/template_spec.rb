@@ -292,8 +292,26 @@ module Kubetruth
           expect(error.message).to_not include(Base64.strict_encode64("sekret"))
           expect(error.message).to_not include("<masked:foo_base64>")
         end
-
       end
+
+      it "masks multiline secrets in logs" do
+        secrets = {"foo" => "sekret\nsosekret"}
+        tmpl = described_class.new("secret: {{secrets.foo}} encoded: {{secrets.foo | encode64}}")
+        expect(tmpl.render(secrets: secrets)).to eq("secret: sekret\nsosekret encoded: #{Base64.strict_encode64("sekret\nsosekret")}")
+        expect(Logging.contents).to_not include("sekret")
+        expect(Logging.contents).to include("<masked:foo>")
+        expect(Logging.contents).to_not include(Base64.strict_encode64("sekret\nsosekret"))
+        expect(Logging.contents).to include("<masked:foo_base64>")
+
+        tmpl = described_class.new("{{fail}}")
+        expect { tmpl.render(secrets: secrets) }.to raise_error(Template::Error) do |error|
+          expect(error.message).to_not include("sekret")
+          expect(error.message).to include("<masked:foo>")
+          expect(error.message).to_not include(Base64.strict_encode64("sekret\nsosekret"))
+          expect(error.message).to_not include("<masked:foo_base64>")
+        end
+      end
+
 
     end
 

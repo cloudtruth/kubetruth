@@ -125,27 +125,31 @@ module Kubetruth
     def render(*args, **kwargs)
       begin
 
+        # TODO: fix secrets hardcoding here
         secrets = kwargs[:secrets] || {}
+        debug_kwargs = nil
 
         logger.debug do
+          # TODO: fix secrets hardcoding here
+          debug_kwargs ||= kwargs.merge(secrets: Hash[secrets.collect {|k, v| [k, "<masked:#{k}>"] }])
           msg = "Evaluating template:\n"
           @source.to_s.lines.collect {|l| msg << (INDENT * 2) << l }
           msg << "\n" << INDENT << "with context:\n"
-          kwargs.deep_stringify_keys.to_yaml.lines.collect {|l| msg << (INDENT * 2) << l }
-
-          secrets.each {|k, v| msg.gsub!(v, "<masked:#{k}>") }
+          debug_kwargs.deep_stringify_keys.to_yaml.lines.collect {|l| msg << (INDENT * 2) << l }
           msg
         end
 
         result = @liquid.render!(*args, kwargs.stringify_keys, strict_variables: true, strict_filters: true)
 
         logger.debug do
+          debug_kwargs ||= kwargs.merge(secrets: Hash[secrets.collect {|k, v| [k, "<masked:#{k}>"] }])
           # we only ever have to sub base64 encoded in this debug block
           both_secrets = secrets.merge(Hash[secrets.collect {|k, v| ["#{k}_base64", Base64.strict_encode64(v)]}])
 
           msg = "Rendered template:\n"
-          result.lines.collect {|l| msg << (INDENT * 2) << l }
-          both_secrets.each {|k, v| msg.gsub!(v, "<masked:#{k}>") }
+          r = result.dup
+          both_secrets.each {|k, v| r = r.gsub!(v, "<masked:#{k}>") }
+          r.lines.collect {|l| msg << (INDENT * 2) << l }
           msg
         end
 
@@ -157,9 +161,9 @@ module Kubetruth
         msg << INDENT << "with error message:\n" << (INDENT * 2) << "#{e.message}"
         if e.is_a?(Liquid::UndefinedVariable)
           msg << "\n" << INDENT << "and variable context:\n"
-          kwargs.deep_stringify_keys.to_yaml.lines.collect {|l| msg << (INDENT * 2) << l }
+          debug_kwargs ||= kwargs.merge(secrets: Hash[secrets.collect {|k, v| [k, "<masked:#{k}>"] }])
+          debug_kwargs.deep_stringify_keys.to_yaml.lines.collect {|l| msg << (INDENT * 2) << l }
         end
-        secrets.each {|k, v| msg.gsub!(v, "<masked:#{k}>") }
         raise Error, msg
       end
     end
