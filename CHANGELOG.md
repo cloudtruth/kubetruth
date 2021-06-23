@@ -3,6 +3,7 @@
 
 #### Notes on major changes
 
+* Kubetruth's polling sleep can be woken up with `kubectl exec deployment/kubetruth -- wakeup`
 * \[breaking change] Kubetruth can now generate any kubernetes resource via the templates supplied `resource_templates` attribute in ProjectMappings.  The default root ProjectMapping contains templates for ConfigMaps and Secrets
 * \[breaking change] Removed these settings from ProjectMapping:
   * `key_filter` - use `key_selector` instead
@@ -15,6 +16,15 @@
 
 #### Full changelog
 
+* fix masking of multiline secrets [88c8676](../../commit/88c8676)
+* mask secrets in template debug logging [bf4bf81](../../commit/bf4bf81)
+* Update readme [7c3e53c](../../commit/7c3e53c)
+* add template name to render variables [89938ca](../../commit/89938ca)
+* refactor cli [a24edbb](../../commit/a24edbb)
+* fix bundler for multi-target dockerfile [5a8f7d0](../../commit/5a8f7d0)
+* allow non-string types as values of context in ProjectMapping [26b410c](../../commit/26b410c)
+* add script for testing simple liquid templates [c41609a](../../commit/c41609a)
+* fix versioning task [3247e08](../../commit/3247e08)
 * restore skip_secrets, modify TemplateHash to allow data structures as well as String (templates) [b1b5196](../../commit/b1b5196)
 * README updates [5eccb20](../../commit/5eccb20)
 * test ruby directly as running codecov within docker is messy [986b14c](../../commit/986b14c)
