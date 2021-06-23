@@ -136,6 +136,7 @@ Note that Kubetruth watches for changes to ProjectMappings, so touching any of
 them wakes it up from a polling sleep.  This makes it quick and easy to test out
 configuration changes without having a short polling interval.  You can also
 force a wakeup by execing the wakeup script in the running container:
+
 `kubectl exec deployment/kubetruth -- wakeup`
 
 To customize how the kubernetes resources are generated, edit the
@@ -144,37 +145,41 @@ processed using the [Liquid template
 language](https://shopify.github.io/liquid/), and can reference the following
 liquid variables:
 
- * `template` - The name of the template currently being rendered
- * `project` - The project name
- * `project_heirarchy` - The `included_projects` tree this project includes (useful to debug when using complex `included_projects`)
- * `debug` - Indicates if kubetruth is operating in debug (logging) mode.
- * `parameters` - The CloudTruth parameters from the project
- * `parameter_origins` - The projects each parameter originates from (useful to debug when using complex `included_projects`)
- * `secrets` - The CloudTruth secrets from the project
- * `secret_origins` - The projects each secret originates from (useful to debug when using complex `included_projects`)
- * `context` - A hash of context variables supplied from ProjectMappings (useful to override portions of templates without having to replace them completely in an override)
+| Liquid Variable | Description |
+|-----------------|-------------|
+| `template` | The name of the template currently being rendered. |
+| `project` | The project name. |
+| `project_heirarchy` | The `included_projects` tree that this project includes. (useful to debug when using complex `included_projects`) |
+| `debug` | Indicates if kubetruth is operating in debug (logging) mode. |
+| `parameters` | The CloudTruth parameters from the project.|
+| `parameter_origins` | The projects each parameter originates from. (useful to debug when using complex `included_projects`) |
+| `secrets` | The CloudTruth secrets from the project. |
+| `secret_origins` | The projects each secret originates from. (useful to debug when using complex `included_projects`)
+| `context` | A hash of context variables supplied from ProjectMappings. (useful to override portions of templates without having to replace them completely in an override) |
 
 In addition to the built in liquid filters, kubetruth also define a few custom
 ones:
-
- * `dns_safe` - Ensures the string is safe for use as a kubernetes resource name (i.e. Namespace/ConfigMap/Secret names)
- * `env_safe` - Ensures the string is safe for setting as a shell environment variable
- * `key_safe` - Ensures the string is safe for use as a key inside a ConfigMap/Secret data hash
- * `indent: count` - Indents each line in the argument by count spaces
- * `nindent: count` - Adds a leading newline, then indents each line in the argument by count spaces
- * `stringify` - Converts argument to a staring safe to use in yaml (escapes quotes and surrounds with the quote character)
- * `to_yaml` - Converts argument to a yaml representation
- * `to_json` - Converts argument to a json representation
- * `encode64` - The argument bas64 encoded
- * `decode64` - The argument bas64 decoded
- * `sha256` - The sha256 digest of the argument
+| Custom Filters  | Description |
+|-----------------|-------------|
+| `dns_safe` |  Ensures the string is safe for use as a kubernetes resource name (i.e. Namespace/ConfigMap/Secret names) | 
+| `env_safe` |  Ensures the string is safe for setting as a shell environment variable | 
+| `key_safe` |  Ensures the string is safe for use as a key inside a ConfigMap/Secret data hash | 
+| `indent: count` |  Indents each line in the argument by count spaces | 
+| `nindent: count` |  Adds a leading newline, then indents each line in the argument by count spaces | 
+| `stringify` |  Converts argument to a staring safe to use in yaml (escapes quotes and surrounds with the quote character) | 
+| `to_yaml` |  Converts argument to a yaml representation | 
+| `to_json` |  Converts argument to a json representation | 
+| `encode64` |  The argument bas64 encoded | 
+| `decode64` |  The argument bas64 decoded | 
+| `sha256` |  The sha256 digest of the argument | 
 
 The default `resource_templates` make use of the `context` attribute to allow
 simpler modification of some common fields.  These include:
-
-* `context.resource_name` - set this in a ProjectMapping to supply a different name to the the default templates
-* `context.resource_namespace` - set this in a ProjectMapping to supply a different namespace to the default templates
-* `context.skip_secrets` - set this in a ProjectMapping to prevent output of a Secret resource even when secrets are present
+| Context Variables | Description |
+|-------------------|-------------|
+| `context.resource_name` | set this in a ProjectMapping to supply a different name to the the default templates |
+| `context.resource_namespace` | set this in a ProjectMapping to supply a different namespace to the default templates |
+| `context.skip_secrets` | set this in a ProjectMapping to prevent output of a Secret resource even when secrets are present |
 
 Since the `context` is a freeform map type, you can add custom items to it, as
 well as architect any custom templates to make use of those custom items in the
@@ -206,7 +211,12 @@ To create kubernetes Resources in namespaces named after each Project:
 ```
 kubectl edit pm kubetruth-root
 ```
-and set the `spec.context.resource_namespace` field:
+and set the `context.resource_namespace` field:
+```
+spec:
+    context:
+      resource_namespace: '{{ project | dns_safe }}'
+```
 
 Or to do it with `kubectl patch`:
 
