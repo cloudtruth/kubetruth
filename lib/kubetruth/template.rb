@@ -148,7 +148,7 @@ module Kubetruth
 
           msg = "Rendered template:\n"
           r = result.dup
-          both_secrets.each {|k, v| r = r.gsub!(v, "<masked:#{k}>") }
+          both_secrets.each {|k, v| r.gsub!(v, "<masked:#{k}>") }
           r.lines.collect {|l| msg << (INDENT * 2) << l }
           msg
         end

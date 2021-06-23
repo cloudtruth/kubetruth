@@ -69,12 +69,12 @@ jobs:
         run: |
           tag=${GITHUB_REF##*/v}
           echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-          TAGS="$tag latest" bundle exec rake docker_push
+          TAGS="$tag latest" rake docker_push
 
       - name: Package helm chart
         run: |
           export HELM_REPO_URL="${PACKAGES_URL}/${PACKAGES_HELM_PATH}"
-          bundle exec rake helm_package
+          rake helm_package
 
       - name: Deploy helm chart to S3
         run: |
