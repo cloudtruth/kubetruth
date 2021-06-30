@@ -9,8 +9,10 @@ module Kubetruth
 
     ProjectSpec = Struct.new(
       :scope,
+      :name,
       :project_selector,
       :key_selector,
+      :environment,
       :skip,
       :included_projects,
       :context,
@@ -45,8 +47,10 @@ module Kubetruth
 
     DEFAULT_SPEC = {
       scope: 'override',
+      name: '',
       project_selector: '',
       key_selector: '',
+      environment: 'default',
       skip: false,
       included_projects: [],
       context: {},
@@ -99,9 +103,9 @@ module Kubetruth
           logger.debug {"Using root spec for project '#{project_name}'"}
         when 1
           spec = specs.first
-          logger.debug {"Using override spec '#{spec.project_selector.source}' for project '#{project_name}'"}
+          logger.debug {"Using override spec '#{spec.name}:#{spec.project_selector.source}' for project '#{project_name}'"}
         else
-          dupes = specs.collect {|s| "'#{s.project_selector}'" }
+          dupes = specs.collect {|s| "'#{s.name}:#{s.project_selector.source}'" }
           raise DuplicateSelection, "Multiple configuration specs (#{dupes.inspect}) match the project '#{project_name}': }"
       end
 

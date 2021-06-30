@@ -1,5 +1,6 @@
 require 'rspec'
 require 'kubetruth/etl'
+require 'kubetruth/project_collection'
 
 module Kubetruth
   describe ETL do
@@ -141,11 +142,78 @@ module Kubetruth
 
     describe "#load_config" do
 
-      it "loads config" do
-        expect(@kubeapi).to receive(:get_project_mappings).and_return([])
+      it "raises if no primary" do
+        allow(@kubeapi).to receive(:namespace).and_return("primary-ns")
+        expect(@kubeapi).to receive(:get_project_mappings).and_return({})
         etl = described_class.new(init_args)
-        config = etl.load_config
-        expect(config).to be_an_instance_of(Kubetruth::Config)
+        expect { etl.load_config }.to raise_error(Kubetruth::Error, /A default set of mappings is required/)
+      end
+
+      it "loads config for a single instance" do
+        allow(@kubeapi).to receive(:namespace).and_return("primary-ns")
+        expect(@kubeapi).to receive(:get_project_mappings).and_return(
+          {
+            "primary-ns" => {
+              "myroot" => Config::DEFAULT_SPEC.merge(scope: "root", name: "myroot"),
+              "override1" => Config::DEFAULT_SPEC.merge(scope: "override", name: "override1"),
+              "override2" => Config::DEFAULT_SPEC.merge(scope: "override", name: "override2")
+            }
+          })
+        etl = described_class.new(init_args)
+        configs = etl.load_config
+        expect(configs.size).to eq(1)
+        expect(configs.first).to be_an_instance_of(Kubetruth::Config)
+        expect(configs.first.root_spec.name).to eq("myroot")
+        expect(configs.first.override_specs.collect(&:name)).to eq(["override1","override2"])
+      end
+
+      it "loads config for multiple instances" do
+        allow(@kubeapi).to receive(:namespace).and_return("primary-ns")
+        expect(@kubeapi).to receive(:get_project_mappings).and_return(
+          {
+            "primary-ns" => {
+              "myroot" => Config::DEFAULT_SPEC.merge(scope: "root", name: "myroot"),
+              "override1" => Config::DEFAULT_SPEC.merge(scope: "override", name: "override1")
+            },
+            "other-ns" => {
+              "myroot" => Config::DEFAULT_SPEC.merge(scope: "root", name: "myroot", environment: "otherenv"),
+              "override1" => Config::DEFAULT_SPEC.merge(scope: "override", name: "override1")
+            }
+          })
+        etl = described_class.new(init_args)
+        configs = etl.load_config
+        expect(configs.size).to eq(2)
+        expect(configs.first).to be_an_instance_of(Kubetruth::Config)
+        expect(configs.first.root_spec.name).to eq("myroot")
+        expect(configs.first.override_specs.collect(&:name)).to eq(["override1"])
+        expect(configs.last).to be_an_instance_of(Kubetruth::Config)
+        expect(configs.last.root_spec.name).to eq("myroot")
+        expect(configs.last.root_spec.environment).to eq("otherenv")
+        expect(configs.last.override_specs.collect(&:name)).to eq(["override1"])
+      end
+
+      it "yields config for multiple instances" do
+        allow(@kubeapi).to receive(:namespace).and_return("primary-ns")
+        expect(@kubeapi).to receive(:get_project_mappings).and_return(
+          {
+            "primary-ns" => {
+              "myroot" => Config::DEFAULT_SPEC.merge(scope: "root", name: "myroot"),
+            },
+            "other-ns" => {
+              "myroot" => Config::DEFAULT_SPEC.merge(scope: "root", name: "myroot", environment: "otherenv"),
+            },
+            "yetanother-ns" => {
+              "myroot" => Config::DEFAULT_SPEC.merge(scope: "root", name: "myroot", environment: "env3"),
+            }
+          })
+        etl = described_class.new(init_args)
+
+        nses = ["primary-ns", "other-ns", "yetanother-ns"]
+        envs = ["default", "otherenv",  "env3"]
+        etl.load_config do |ns, config|
+          expect(ns).to eq(nses.shift)
+          expect(config.root_spec.environment).to eq(envs.shift)
+        end
       end
 
     end
@@ -232,12 +300,20 @@ module Kubetruth
     end
 
     describe "#apply" do
+      let(:collection) { ProjectCollection.new }
+      let(:root_spec_crd) {
+        default_root_spec = YAML.load_file(File.expand_path("../../helm/kubetruth/values.yaml", __dir__)).deep_symbolize_keys
+        default_root_spec[:projectMappings][:root]
+      }
+      let(:config) {
+        Kubetruth::Config.new([root_spec_crd])
+      }
 
       before(:each) do
-        default_root_spec = YAML.load_file(File.expand_path("../../helm/kubetruth/values.yaml", __dir__)).deep_symbolize_keys
-        @root_spec_crd = default_root_spec[:projectMappings][:root]
-        allow(etl).to receive(:load_config).and_return(Kubetruth::Config.new([@root_spec_crd]))
-        allow(Project).to receive(:create).and_wrap_original do |m, *args|
+        @ns = "primary-ns"
+        allow(@kubeapi).to receive(:namespace).and_return(@ns)
+        allow(ProjectCollection).to receive(:new).and_return(collection)
+        allow(collection).to receive(:create_project).and_wrap_original do |m, *args|
           project = m.call(*args)
           allow(project).to receive(:parameters).and_return([
                                                               Parameter.new(key: "param1", value: "value1", secret: false),
@@ -248,24 +324,22 @@ module Kubetruth
       end
 
       it "renders multiple templates" do
-        expect(etl.load_config.root_spec.resource_templates.size).to eq(2)
-        expect(Project).to receive(:names).and_return(["proj1"])
+        allow(etl).to receive(:load_config).and_yield(@ns, config)
 
-        etl.load_config.root_spec.resource_templates.each do |name, tmpl|
-          yml = YAML.dump({"key_#{name}" => "value_#{name}"})
-          expect(tmpl).to receive(:render).and_return(yml)
-          expect(etl).to receive(:kube_apply).with(YAML.safe_load(yml))
-        end
+        expect(collection).to receive(:names).and_return(["proj1"])
+
+        expect(etl).to receive(:kube_apply).with(hash_including("kind" => "ConfigMap"))
+        expect(etl).to receive(:kube_apply).with(hash_including("kind" => "Secret"))
 
         etl.apply()
       end
 
       it "skips empty templates" do
-        etl.load_config.root_spec.resource_templates = {"name1" => Template.new("\n\n   \n")}
-        expect(Project).to receive(:names).and_return(["proj1"])
+        config.root_spec.resource_templates = {"name1" => Template.new("\n\n   \n")}
+        allow(etl).to receive(:load_config).and_yield(@ns, config)
 
-        tmpl = etl.load_config.root_spec.resource_templates.values.first
-        expect(tmpl).to receive(:render).and_call_original
+        expect(collection).to receive(:names).and_return(["proj1"])
+
         expect(etl).to_not receive(:kube_apply)
 
         etl.apply()
@@ -274,7 +348,8 @@ module Kubetruth
 
       it "allows dryrun" do
         etl.instance_variable_set(:@dry_run, true)
-        expect(Project).to receive(:names).and_return(["proj1"])
+        allow(etl).to receive(:load_config).and_yield(@ns, config)
+        expect(collection).to receive(:names).and_return(["proj1"])
 
         expect(@kubeapi).to_not receive(:ensure_namespace)
         expect(@kubeapi).to_not receive(:apply_resource)
@@ -284,35 +359,37 @@ module Kubetruth
       end
 
       it "skips projects when selector fails" do
-        etl.load_config.root_spec.project_selector = /oo/
-        expect(Project).to receive(:names).and_return(["proj1", "foo", "bar"])
+        config.root_spec.project_selector = /oo/
+        allow(etl).to receive(:load_config).and_yield(@ns, config)
+        expect(collection).to receive(:names).and_return(["proj1", "foo", "bar"])
 
-        allow(etl).to receive(:kube_apply) do |parsed_yml|
-          expect(parsed_yml["metadata"]["name"]).to eq("foo")
-        end
+        expect(etl).to receive(:kube_apply).with(hash_including("metadata" => hash_including("name" => "foo"))).twice
 
         etl.apply()
       end
 
       it "skips projects if flag is set" do
-        allow(etl).to receive(:load_config).
-          and_return(Kubetruth::Config.new([@root_spec_crd, {scope: "override", project_selector: "foo", skip: true}]))
-        expect(Project).to receive(:names).and_return(["proj1", "foo", "bar"])
+        conf = Kubetruth::Config.new([root_spec_crd, {scope: "override", project_selector: "foo", skip: true}])
+        allow(etl).to receive(:load_config).and_yield(@ns, conf)
 
-        allow(etl).to receive(:kube_apply) do |parsed_yml|
-          expect(parsed_yml["metadata"]["name"]).to match(/(proj1)|(bar)/)
-        end
+        expect(collection).to receive(:names).and_return(["proj1", "foo", "bar"])
+
+        expect(etl).to receive(:kube_apply).with(hash_including("metadata" => hash_including("name" => "foo"))).never
+        expect(etl).to receive(:kube_apply).with(hash_including("metadata" => hash_including("name" => "proj1"))).twice
+        expect(etl).to receive(:kube_apply).with(hash_including("metadata" => hash_including("name" => "bar"))).twice
 
         etl.apply()
       end
 
       it "allows included projects not selected by selector" do
-        etl.load_config.root_spec.project_selector = /proj1/
-        etl.load_config.root_spec.included_projects = ["proj2"]
-        expect(Project).to receive(:names).and_return(["proj1", "proj2", "proj3"])
+        config.root_spec.project_selector = /proj1/
+        config.root_spec.included_projects = ["proj2"]
+        allow(etl).to receive(:load_config).and_yield(@ns, config)
+
+        expect(collection).to receive(:names).and_return(["proj1", "proj2", "proj3"])
 
         allow(etl).to receive(:kube_apply)
-        expect(etl.load_config.root_spec.resource_templates.values.first).to receive(:render) do |*args, **kwargs|
+        expect(config.root_spec.resource_templates.values.first).to receive(:render) do |*args, **kwargs|
           expect(kwargs[:project]).to eq("proj1")
           expect(kwargs[:project_heirarchy]).to eq({"proj1"=>{"proj2"=>{}}})
           expect(kwargs[:parameter_origins]).to eq({"param1"=>"proj1 (proj2)"})
@@ -323,31 +400,28 @@ module Kubetruth
       end
 
       it "allows projects not selected by root selector" do
-        allow(etl).to receive(:load_config).
-          and_return(Kubetruth::Config.new([
-                                             @root_spec_crd,
-                                             {scope: "override", project_selector: "proj2"}
-                                           ]
-          ))
-        etl.load_config.root_spec.project_selector = /proj1/
-        expect(Project).to receive(:names).and_return(["proj2"])
+        conf = Kubetruth::Config.new([root_spec_crd, {scope: "override", project_selector: "proj2"}])
+        conf.root_spec.project_selector = /proj1/
+        allow(etl).to receive(:load_config).and_yield(@ns, conf)
 
-        allow(etl).to receive(:kube_apply) do |parsed_yml|
-          expect(parsed_yml["metadata"]["name"]).to eq("proj2")
-        end
+        expect(collection).to receive(:names).and_return(["proj2"])
+
+        expect(etl).to receive(:kube_apply).with(hash_including("metadata" => hash_including("name" => "proj2"))).twice
 
         etl.apply()
       end
 
-
       it "renders templates with variables" do
-        expect(Project).to receive(:names).and_return(["proj1"])
+        allow(etl).to receive(:load_config).and_yield(@ns, config)
+        expect(collection).to receive(:names).and_return(["proj1"])
 
         allow(etl).to receive(:kube_apply)
-        expect(etl.load_config.root_spec.resource_templates.values.first).to receive(:render) do |*args, **kwargs|
+        expect(config.root_spec.resource_templates.values.first).to receive(:render) do |*args, **kwargs|
           expect(kwargs[:template]).to eq("configmap")
+          expect(kwargs[:kubetruth_namespace]).to eq(@ns)
+          expect(kwargs[:mapping_namespace]).to eq(@ns)
           expect(kwargs[:project]).to eq("proj1")
-          expect(kwargs[:project_heirarchy]).to eq(Project.all["proj1"].heirarchy)
+          expect(kwargs[:project_heirarchy]).to eq(collection.projects["proj1"].heirarchy)
           expect(kwargs[:debug]).to eq(etl.logger.debug?)
           expect(kwargs[:parameters]).to eq({"param1"=>"value1"})
           expect(kwargs[:parameter_origins]).to eq({"param1"=>"proj1"})
@@ -363,8 +437,20 @@ module Kubetruth
 
     describe "default templates" do
 
+      let(:collection) { ProjectCollection.new }
+      let(:root_spec_crd) {
+        default_root_spec = YAML.load_file(File.expand_path("../../helm/kubetruth/values.yaml", __dir__)).deep_symbolize_keys
+        default_root_spec[:projectMappings][:root]
+      }
+      let(:config) {
+        Kubetruth::Config.new([root_spec_crd])
+      }
+
       before(:each) do
-        allow(Project).to receive(:create).and_wrap_original do |m, *args|
+        @ns = "primary-ns"
+        allow(@kubeapi).to receive(:namespace).and_return(@ns)
+        allow(ProjectCollection).to receive(:new).and_return(collection)
+        allow(collection).to receive(:create_project).and_wrap_original do |m, *args|
           project = m.call(*args)
           allow(project).to receive(:parameters).and_return([
                                                               Parameter.new(key: "param1", value: "value1", secret: false),
@@ -372,14 +458,12 @@ module Kubetruth
                                                             ])
           project
         end
-        allow(Project).to receive(:names).and_return(["proj1"])
+        expect(collection).to receive(:names).and_return(["proj1"])
         allow(etl).to receive(:kube_apply)
       end
 
       it "sets config and secrets in default template" do
-        default_root_spec = YAML.load_file(File.expand_path("../../helm/kubetruth/values.yaml", __dir__)).deep_symbolize_keys
-        root_spec_crd = default_root_spec[:projectMappings][:root]
-        allow(etl).to receive(:load_config).and_return(Kubetruth::Config.new([root_spec_crd]))
+        allow(etl).to receive(:load_config).and_yield(@ns, config)
 
         allow(etl).to receive(:kube_apply) do |parsed_yml|
           if parsed_yml["kind"] == "ConfigMap"
@@ -397,13 +481,11 @@ module Kubetruth
       end
 
       it "skips secrets when set in context" do
-        default_root_spec = YAML.load_file(File.expand_path("../../helm/kubetruth/values.yaml", __dir__)).deep_symbolize_keys
-        root_spec_crd = default_root_spec[:projectMappings][:root]
-        root_spec_crd = root_spec_crd.deep_merge(context: {skip_secrets: true})
+        root_spec_crd[:context][:skip_secrets] = true
+        conf = Kubetruth::Config.new([root_spec_crd])
+        allow(etl).to receive(:load_config).and_yield(@ns, conf)
 
-        allow(etl).to receive(:load_config).and_return(Kubetruth::Config.new([root_spec_crd]))
-
-        expect(etl.load_config.root_spec.resource_templates["secret"]).to receive(:render).and_wrap_original do |m, *args, **kwargs|
+        expect(conf.root_spec.resource_templates["secret"]).to receive(:render).and_wrap_original do |m, *args, **kwargs|
           result = m.call(*args, **kwargs)
           expect(result).to be_blank
           result

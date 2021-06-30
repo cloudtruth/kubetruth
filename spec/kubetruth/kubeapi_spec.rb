@@ -239,7 +239,11 @@ module Kubetruth
       it "can get project mappings" do
         crds = kubeapi.get_project_mappings
         expect(crds.size).to eq(1) # from helm install
-        expect(crds.first.keys.sort).to eq(Kubetruth::Config::ProjectSpec.new.to_h.keys.sort)
+        # {namespace => {name => mapping_data}}
+        expect(crds.keys.first).to eq(kubeapi.namespace)
+        expect(crds.values.first).to match(hash_including("#{helm_name}-root"))
+        expect(crds.values.first["#{helm_name}-root"][:name]).to eq("#{helm_name}-root")
+        expect(crds.values.first["#{helm_name}-root"].keys.sort).to eq(Kubetruth::Config::ProjectSpec.new.to_h.keys.sort)
       end
 
       it "can watch project mappings" do

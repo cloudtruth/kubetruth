@@ -1,5 +1,5 @@
 require_relative 'cli_base'
-require_relative 'project'
+require_relative 'ctapi'
 require_relative 'etl'
 
 module Kubetruth
@@ -10,14 +10,6 @@ module Kubetruth
       the name of the kubernetes config_map/secrets resource to apply those
       values to
     EOF
-
-    option "--environment",
-           'ENV', "The cloudtruth environment",
-           environment_variable: 'CT_ENV',
-           default: "default"
-
-    option "--organization",
-           'ORG', "The cloudtruth organization"
 
     option "--api-key",
            'APIKEY', "The cloudtruth api key",
@@ -46,18 +38,14 @@ module Kubetruth
     def execute
       super
 
-      ct_context = {
-          organization: organization,
-          environment: environment,
-          api_key: api_key
-      }
       kube_context = {
           namespace: kube_namespace,
           token: kube_token,
           api_url: kube_url
       }
 
-      Project.ctapi_context = ct_context
+      Kubetruth.ctapi_setup(api_key: api_key)
+
       etl = ETL.new(kube_context: kube_context, dry_run: dry_run?)
 
       Signal.trap("HUP") do

@@ -15,19 +15,23 @@ module Kubetruth
       it "converts types" do
         spec = described_class::ProjectSpec.new(
           scope: "root",
+          name: "myroot",
           project_selector: "foo",
           context: {"name1" => "template1"},
           resource_templates: {"name1" => "template1"},
+          environment: "myenv",
           skip: true
         )
         expect(spec.scope).to be_an_instance_of(String)
         expect(spec.scope).to eq("root")
+        expect(spec.name).to eq("myroot")
         expect(spec.project_selector).to be_an_instance_of(Regexp)
         expect(spec.project_selector).to eq(/foo/)
         expect(spec.context).to be_an_instance_of(Template::TemplateHashDrop)
         expect(spec.context.liquid_method_missing("name1")).to eq("template1")
         expect(spec.resource_templates["name1"]).to be_an_instance_of(Template)
         expect(spec.resource_templates["name1"].source).to eq("template1")
+        expect(spec.environment).to eq("myenv")
         expect(spec.skip).to equal(true)
       end
 

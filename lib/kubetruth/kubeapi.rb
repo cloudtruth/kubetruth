@@ -84,13 +84,23 @@ module Kubetruth
     end
 
     def get_project_mappings
-      crdclient.get_project_mappings(namespace: namespace).collect(&:spec).collect(&:to_h)
+      mappings = crdclient.get_project_mappings
+      grouped_mappings = {}
+      mappings.each do |r|
+        ns = r.metadata.namespace
+        name = r.metadata.name
+        mapping = r.spec.to_h
+        mapping[:name] = name
+        grouped_mappings[ns] ||= {}
+        grouped_mappings[ns][name] = mapping
+      end
+      grouped_mappings
     end
 
     def watch_project_mappings(&block)
-      existing = crdclient.get_project_mappings(namespace: namespace)
+      existing = crdclient.get_project_mappings
       collection_version = existing.resourceVersion
-      crdclient.watch_project_mappings(namespace: namespace, resource_version: collection_version, &block)
+      crdclient.watch_project_mappings(resource_version: collection_version, &block)
     end
 
   end

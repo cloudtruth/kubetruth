@@ -24,6 +24,9 @@ spec:
         key_selector:
           type: string
           description: A regexp to limit the keys acted against
+        environment:
+          type: string
+          description: A environment to use to determine parameter values
         skip:
           type: boolean
           description: Skips the generation of resources for the selected projects.  Useful for excluding projects that should only be included into others.
