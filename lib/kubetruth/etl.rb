@@ -1,5 +1,8 @@
 require 'benchmark'
 require 'yaml'
+require 'yaml/safe_load_stream'
+using YAMLSafeLoadStream
+
 require_relative 'config'
 require_relative 'ctapi'
 require_relative 'kubeapi'
@@ -153,12 +156,14 @@ module Kubetruth
               secret_origins: secret_origins,
               context: project.spec.context
             )
-            parsed_yml = YAML.safe_load(resource_yml)
-            if parsed_yml
+
+            template_id = "mapping: #{project.spec.name}, mapping_namespace: #{namespace}, project: #{project.name}, template: #{template_name}"
+            parsed_ymls = YAML.safe_load_stream(resource_yml, template_id)
+            logger.debug {"Skipping empty template"} if parsed_ymls.empty?
+            parsed_ymls.each do |parsed_yml|
               kube_apply(parsed_yml)
-            else
-              logger.debug {"Skipping empty template"}
             end
+
           end
         end
       end

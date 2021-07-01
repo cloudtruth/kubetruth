@@ -300,6 +300,7 @@ module Kubetruth
     end
 
     describe "#apply" do
+
       let(:collection) { ProjectCollection.new }
       let(:root_spec_crd) {
         default_root_spec = YAML.load_file(File.expand_path("../../helm/kubetruth/values.yaml", __dir__)).deep_symbolize_keys
@@ -330,6 +331,18 @@ module Kubetruth
 
         expect(etl).to receive(:kube_apply).with(hash_including("kind" => "ConfigMap"))
         expect(etl).to receive(:kube_apply).with(hash_including("kind" => "Secret"))
+
+        etl.apply()
+      end
+
+      it "renders a stream of templates" do
+        config.root_spec.resource_templates = {"name1" => Template.new("stream_item: one\n---\nstream_item: two\n")}
+        allow(etl).to receive(:load_config).and_yield(@ns, config)
+
+        expect(collection).to receive(:names).and_return(["proj1"])
+
+        expect(etl).to receive(:kube_apply).with(hash_including("stream_item" => "one"))
+        expect(etl).to receive(:kube_apply).with(hash_including("stream_item" => "two"))
 
         etl.apply()
       end
