@@ -178,6 +178,7 @@ module Kubetruth
       kind = parsed_yml["kind"]
       name = parsed_yml["metadata"]["name"]
       namespace = parsed_yml["metadata"]["namespace"]
+      apiVersion = parsed_yml["apiVersion"]
       if namespace.blank?
         namespace = parsed_yml["metadata"]["namespace"] = kubeapi.namespace
       end
@@ -190,7 +191,7 @@ module Kubetruth
       kubeapi.ensure_namespace(namespace) unless @dry_run
 
       begin
-        resource = kubeapi.get_resource(kind.downcase.pluralize, name, namespace)
+        resource = kubeapi.get_resource(kind.downcase.pluralize, name, namespace: namespace, apiVersion: apiVersion)
         if ! kubeapi.under_management?(resource)
           logger.warn "Skipping #{ident} as it doesn't have a label indicating it is under kubetruth management"
         else

@@ -231,7 +231,7 @@ module Kubetruth
         EOF
         parsed_yml = YAML.load(resource_yml)
         expect(@kubeapi).to receive(:ensure_namespace).with(@kubeapi.namespace)
-        expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", @kubeapi.namespace).and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
+        expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", namespace: @kubeapi.namespace, apiVersion: "v1").and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
         expect(@kubeapi).to receive(:set_managed)
         expect(@kubeapi).to_not receive(:under_management?)
         expect(@kubeapi).to receive(:apply_resource).with(parsed_yml)
@@ -250,7 +250,7 @@ module Kubetruth
         EOF
         parsed_yml = YAML.load(resource_yml)
         resource = Kubeclient::Resource.new(parsed_yml.merge(data: {param1: "oldvalue"}))
-        expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", @kubeapi.namespace).and_return(resource)
+        expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", namespace: @kubeapi.namespace, apiVersion: "v1").and_return(resource)
         expect(@kubeapi).to receive(:set_managed)
         expect(@kubeapi).to receive(:under_management?).and_return(true)
         expect(@kubeapi).to receive(:apply_resource).with(parsed_yml)
@@ -269,7 +269,7 @@ module Kubetruth
         EOF
         parsed_yml = YAML.load(resource_yml)
         resource = Kubeclient::Resource.new(parsed_yml)
-        expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", @kubeapi.namespace).and_return(resource)
+        expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", namespace: @kubeapi.namespace, apiVersion: "v1").and_return(resource)
         expect(@kubeapi).to receive(:set_managed)
         expect(@kubeapi).to receive(:under_management?).and_return(false)
         expect(@kubeapi).to_not receive(:apply_resource)
@@ -289,7 +289,25 @@ module Kubetruth
         EOF
         parsed_yml = YAML.load(resource_yml)
         expect(@kubeapi).to receive(:ensure_namespace).with("ns1")
-        expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", "ns1").and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
+        expect(@kubeapi).to receive(:get_resource).with("configmaps", "group1", namespace: "ns1", apiVersion: "v1").and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
+        expect(@kubeapi).to receive(:set_managed)
+        expect(@kubeapi).to_not receive(:under_management?)
+        expect(@kubeapi).to receive(:apply_resource).with(parsed_yml)
+        etl.kube_apply(parsed_yml)
+        expect(Logging.contents).to match(/Creating kubernetes resource/)
+      end
+
+      it "uses apiVersion for kube when supplied" do
+        resource_yml = <<~EOF
+          apiVersion: kubetruth.cloudtruth.com/v1
+          kind: ProjectMapping
+          metadata:
+            name: "group1"
+          spec:
+            skip: true
+        EOF
+        parsed_yml = YAML.load(resource_yml)
+        expect(@kubeapi).to receive(:get_resource).with("projectmappings", "group1", namespace: @kubeapi.namespace, apiVersion: "kubetruth.cloudtruth.com/v1").and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
         expect(@kubeapi).to receive(:set_managed)
         expect(@kubeapi).to_not receive(:under_management?)
         expect(@kubeapi).to receive(:apply_resource).with(parsed_yml)

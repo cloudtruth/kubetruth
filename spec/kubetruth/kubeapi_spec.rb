@@ -96,6 +96,97 @@ module Kubetruth
 
     end
 
+    describe "#api_url" do
+
+      it "generates api url" do
+        base_api_url = kubeapi.instance_variable_get(:@api_url)
+        expect(kubeapi.api_url(nil)).to eq(base_api_url)
+        expect(kubeapi.api_url("")).to eq(base_api_url)
+        expect(kubeapi.api_url("   ")).to eq(base_api_url)
+        expect(kubeapi.api_url("kubetruth.cloudtruth.com")).to eq("#{base_api_url}/apis/kubetruth.cloudtruth.com")
+      end
+
+    end
+
+    describe "#api_client" do
+
+      it "generates api client" do
+        expect(kubeapi.instance_variable_get(:@api_clients)).to eq({})
+
+        client = kubeapi.api_client(api: nil)
+        expect(client).to be_an_instance_of(Kubeclient::Client)
+        expect(kubeapi.instance_variable_get(:@api_clients).size).to eq(1)
+      end
+
+      it "memoizes api client" do
+        expect(kubeapi.api_client(api: nil)).to equal(kubeapi.api_client(api: nil))
+        expect(kubeapi.instance_variable_get(:@api_clients).size).to eq(1)
+      end
+
+      it "generates multiple api clients for differing apis" do
+        expect(kubeapi.instance_variable_get(:@api_clients)).to eq({})
+
+        expect(kubeapi.api_client(api: nil)).to_not equal(kubeapi.api_client(api: "kubetruth.cloudtruth.com"))
+        expect(kubeapi.instance_variable_get(:@api_clients).size).to eq(2)
+      end
+
+      it "generates multiple api clients for differing versions" do
+        expect(kubeapi.instance_variable_get(:@api_clients)).to eq({})
+
+        expect(kubeapi.api_client(api: nil)).to_not equal(kubeapi.api_client(api: nil, version: "v2"))
+        expect(kubeapi.instance_variable_get(:@api_clients).size).to eq(2)
+      end
+
+    end
+
+    describe "#client" do
+
+      it "generates kube client" do
+        expect(kubeapi.instance_variable_get(:@api_clients)).to eq({})
+
+        expect(kubeapi.client).to be_an_instance_of(Kubeclient::Client)
+        expect(kubeapi.client).to equal(kubeapi.client)
+        expect(kubeapi.client.api_endpoint.path).to eq("/api")
+      end
+
+    end
+
+    describe "#crd_client" do
+
+      it "generates crd client" do
+        expect(kubeapi.instance_variable_get(:@api_clients)).to eq({})
+
+        expect(kubeapi.crd_client).to be_an_instance_of(Kubeclient::Client)
+        expect(kubeapi.crd_client).to equal(kubeapi.crd_client)
+        expect(kubeapi.crd_client.api_endpoint.path).to eq("/apis/kubetruth.cloudtruth.com")
+      end
+
+    end
+
+    describe "#apiVersion_client" do
+
+      it "generates client" do
+        expect(kubeapi.instance_variable_get(:@api_clients)).to eq({})
+        apiVersion = "kubetruth.cloudtruth.com/v1"
+        expect(kubeapi.apiVersion_client(apiVersion)).to be_an_instance_of(Kubeclient::Client)
+        expect(kubeapi.apiVersion_client(apiVersion)).to equal(kubeapi.apiVersion_client(apiVersion))
+        expect(kubeapi.apiVersion_client(apiVersion).api_endpoint.path).to eq("/apis/kubetruth.cloudtruth.com")
+      end
+
+      it "generates client without version" do
+        expect(kubeapi.apiVersion_client("v1")).to equal(kubeapi.apiVersion_client(nil))
+      end
+
+      it "handles empty apiVersion" do
+        expect(kubeapi.instance_variable_get(:@api_clients)).to eq({})
+        apiVersion = nil
+        expect(kubeapi.apiVersion_client(apiVersion)).to be_an_instance_of(Kubeclient::Client)
+        expect(kubeapi.apiVersion_client(apiVersion)).to equal(kubeapi.apiVersion_client(apiVersion))
+        expect(kubeapi.apiVersion_client(apiVersion).api_endpoint.path).to eq("/api")
+      end
+
+    end
+
     describe "ensure_namespace" do
 
       it "creates namespace if not present" do
@@ -189,6 +280,12 @@ module Kubetruth
         expect(fetched_resource.metadata.name).to eq(@spec_name)
       end
 
+      it "gets api resource" do
+        pm_name = "#{helm_name}-root"
+        fetched_resource = kubeapi.get_resource("projectmappings", pm_name, apiVersion: "kubetruth.cloudtruth.com/v1")
+        expect(fetched_resource.metadata.name).to eq(pm_name)
+      end
+
     end
 
     describe "apply_resource" do
@@ -198,12 +295,12 @@ module Kubetruth
         kapi.ensure_namespace
         ns = kapi.namespace
 
-        expect { kubeapi.get_resource("configmaps", @spec_name, ns) }.to raise_error(Kubeclient::ResourceNotFoundError)
+        expect { kubeapi.get_resource("configmaps", @spec_name, namespace: ns) }.to raise_error(Kubeclient::ResourceNotFoundError)
 
         resource = Kubeclient::Resource.new(apiVersion: "v1", kind: "ConfigMap", metadata: {namespace: ns, name: @spec_name}, data: {bar: "baz"})
         kubeapi.apply_resource(resource)
 
-        fetched_resource = kubeapi.get_resource("configmaps", @spec_name, ns)
+        fetched_resource = kubeapi.get_resource("configmaps", @spec_name, namespace: ns)
         expect(fetched_resource.metadata.namespace).to eq(ns)
         expect(fetched_resource.metadata.name).to eq(@spec_name)
       end
@@ -230,6 +327,22 @@ module Kubetruth
         expect(fetched_resource.kind).to eq("Secret")
         expect(fetched_resource.metadata.namespace).to eq(kubeapi.namespace)
         expect(fetched_resource.metadata.name).to eq(@spec_name)
+      end
+
+      it "creates resources in other apis" do
+        pm_name = "#{helm_name}-override"
+        api = "kubetruth.cloudtruth.com/v1"
+
+        expect { kubeapi.get_resource("projectmappings", pm_name, apiVersion: api) }.to raise_error(Kubeclient::ResourceNotFoundError)
+
+        resource = Kubeclient::Resource.new(apiVersion: api, kind: "ProjectMapping", metadata: {namespace: kubeapi.namespace, name: pm_name}, spec: {skip: true})
+        kubeapi.apply_resource(resource)
+
+        fetched_resource = kubeapi.get_resource("projectmappings", pm_name, apiVersion: api)
+        expect(fetched_resource.apiVersion).to eq(api)
+        expect(fetched_resource.kind).to eq("ProjectMapping")
+        expect(fetched_resource.metadata.namespace).to eq(kubeapi.namespace)
+        expect(fetched_resource.metadata.name).to eq(pm_name)
       end
 
     end

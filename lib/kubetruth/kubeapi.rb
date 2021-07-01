@@ -29,25 +29,36 @@ module Kubetruth
       end
 
       @api_url = api_url || 'https://kubernetes.default.svc'
-      @crd_api_url = "#{@api_url}/apis/kubetruth.cloudtruth.com"
+      @api_clients = {}
     end
 
-    def client
-      @client ||= Kubeclient::Client.new(
-          @api_url,
-          'v1',
-          auth_options: @auth_options,
-          ssl_options:  @ssl_options
-      )
+    def api_url(api)
+      api.present? ? "#{@api_url}/apis/#{api}" : @api_url
     end
 
-    def crdclient
-      @crdclient ||= Kubeclient::Client.new(
-        @crd_api_url,
-        'v1',
+    def api_client(api: nil, version: nil)
+      key = {api: api_url(api), version: version.blank? ? "v1" : version}
+      @api_clients[key] ||= Kubeclient::Client.new(
+        key[:api],
+        key[:version],
         auth_options: @auth_options,
         ssl_options:  @ssl_options
       )
+    end
+
+    def client
+      api_client(api: nil, version: "v1")
+    end
+
+    def crd_client
+      api_client(api: "kubetruth.cloudtruth.com", version: "v1")
+    end
+
+    def apiVersion_client(apiVersion)
+      apiVersion ||= "v1"
+      api_details = apiVersion.split("/")
+      api_details.insert(0, nil) if api_details.size == 1
+      api_client(api: api_details[0], version: api_details[1])
     end
 
     def ensure_namespace(ns = namespace)
@@ -73,18 +84,18 @@ module Kubetruth
       resource["metadata"]["labels"][MANAGED_LABEL_KEY] = MANAGED_LABEL_VALUE
     end
 
-    def get_resource(resource_name, name, namespace=nil)
-      client.get_entity(resource_name, name, namespace || self.namespace)
+    def get_resource(resource_name, name, namespace: nil, apiVersion: nil)
+      apiVersion_client(apiVersion).get_entity(resource_name, name, namespace || self.namespace)
     end
 
     def apply_resource(resource)
       resource = Kubeclient::Resource.new(resource) if resource.is_a? Hash
       resource_name = resource.kind.downcase.pluralize
-      client.apply_entity(resource_name, resource, field_manager: "kubetruth")
+      apiVersion_client(resource.apiVersion).apply_entity(resource_name, resource, field_manager: "kubetruth")
     end
 
     def get_project_mappings
-      mappings = crdclient.get_project_mappings
+      mappings = crd_client.get_project_mappings
       grouped_mappings = {}
       mappings.each do |r|
         ns = r.metadata.namespace
@@ -98,9 +109,9 @@ module Kubetruth
     end
 
     def watch_project_mappings(&block)
-      existing = crdclient.get_project_mappings
+      existing = crd_client.get_project_mappings
       collection_version = existing.resourceVersion
-      crdclient.watch_project_mappings(resource_version: collection_version, &block)
+      crd_client.watch_project_mappings(resource_version: collection_version, &block)
     end
 
   end
