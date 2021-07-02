@@ -17,7 +17,7 @@ you would like to configure with CloudTruth
 helm repo add cloudtruth https://packages.cloudtruth.com/charts/
 helm install \
     --set appSettings.apiKey=<api_key> \
-    --set appSettings.environment=<environment> \
+    --set projectMappings.root.environment=<environment> \
     kubetruth cloudtruth/kubetruth
 ```
 
