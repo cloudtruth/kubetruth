@@ -8,7 +8,7 @@ module Kubetruth
     let(:init_args) {{
       kube_context: {}
     }}
-    let(:etl) { described_class.new(init_args) }
+    let(:etl) { described_class.new(**init_args) }
 
     def kubeapi
       kapi = double(Kubetruth::KubeApi)
@@ -36,7 +36,7 @@ module Kubetruth
       end
 
       it "is memoized" do
-        etl = described_class.new(init_args)
+        etl = described_class.new(**init_args)
         allow(Kubetruth::KubeApi).to receive(:new)
         expect(etl.kubeapi).to equal(etl.kubeapi)
       end
@@ -46,14 +46,14 @@ module Kubetruth
     describe "#interruptible_sleep" do
 
       it "runs for interval without interruption" do
-        etl = described_class.new(init_args)
+        etl = described_class.new(**init_args)
         t = Time.now.to_f
         etl.interruptible_sleep(0.2)
         expect(Time.now.to_f - t).to be >= 0.2
       end
 
       it "can be interrupted" do
-        etl = described_class.new(init_args)
+        etl = described_class.new(**init_args)
         Thread.new do
           sleep 0.1
           etl.interrupt_sleep
@@ -70,7 +70,7 @@ module Kubetruth
       class ForceExit < Exception; end
 
       it "runs with an interval" do
-        etl = described_class.new(init_args)
+        etl = described_class.new(**init_args)
 
         watcher = double()
         expect(@kubeapi).to receive(:watch_project_mappings).and_return(watcher).twice
@@ -93,7 +93,7 @@ module Kubetruth
       end
 
       it "isolates run loop from block failures" do
-        etl = described_class.new(init_args)
+        etl = described_class.new(**init_args)
 
         watcher = double()
         expect(@kubeapi).to receive(:watch_project_mappings).and_return(watcher).twice
@@ -116,7 +116,7 @@ module Kubetruth
       end
 
       it "interrupts sleep on watch event" do
-        etl = described_class.new(init_args)
+        etl = described_class.new(**init_args)
 
         watcher = double()
         notice = double("notice", type: "UPDATED", object: double("kube_resource"))
@@ -145,7 +145,7 @@ module Kubetruth
       it "raises if no primary" do
         allow(@kubeapi).to receive(:namespace).and_return("primary-ns")
         expect(@kubeapi).to receive(:get_project_mappings).and_return({})
-        etl = described_class.new(init_args)
+        etl = described_class.new(**init_args)
         expect { etl.load_config }.to raise_error(Kubetruth::Error, /A default set of mappings is required/)
       end
 
@@ -159,7 +159,7 @@ module Kubetruth
               "override2" => Config::DEFAULT_SPEC.merge(scope: "override", name: "override2")
             }
           })
-        etl = described_class.new(init_args)
+        etl = described_class.new(**init_args)
         configs = etl.load_config
         expect(configs.size).to eq(1)
         expect(configs.first).to be_an_instance_of(Kubetruth::Config)
@@ -180,7 +180,7 @@ module Kubetruth
               "override1" => Config::DEFAULT_SPEC.merge(scope: "override", name: "override1")
             }
           })
-        etl = described_class.new(init_args)
+        etl = described_class.new(**init_args)
         configs = etl.load_config
         expect(configs.size).to eq(2)
         expect(configs.first).to be_an_instance_of(Kubetruth::Config)
@@ -206,7 +206,7 @@ module Kubetruth
               "myroot" => Config::DEFAULT_SPEC.merge(scope: "root", name: "myroot", environment: "env3"),
             }
           })
-        etl = described_class.new(init_args)
+        etl = described_class.new(**init_args)
 
         nses = ["primary-ns", "other-ns", "yetanother-ns"]
         envs = ["default", "otherenv",  "env3"]

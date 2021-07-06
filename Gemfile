@@ -24,4 +24,5 @@ gem 'clamp'
 gem 'graphql-client'
 gem 'kubeclient'
 gem 'liquid'
-gem 'yaml-safe_load_stream'
+gem 'yaml-safe_load_stream', git: "https://github.com/wr0ngway/yaml-safe_load_stream.git", branch: "ruby_3"
+gem 'async'
