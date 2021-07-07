@@ -27,6 +27,17 @@ def gsub_file(file, pattern, replace)
   File.write(file, File.read(file).gsub(pattern, replace))
 end
 
+def confirm_execute(*cmds)
+  puts "Will execute:"
+  cmds.each {|c| puts c}
+  print "\nProceed (y/n)? "
+  if $stdin.gets =~ /^y/i
+    cmds.each { |c| sh c }
+  else
+    puts "Aborted"
+  end
+end
+
 directory HELMV2_DIR
 
 file "#{HELMV2_DIR}/#{APP[:name]}/Chart.yaml" => [HELMV2_DIR] do
@@ -108,34 +119,15 @@ task :set_version do
             /version:.*/, "version: #{version}")
 end
 
-task :release do
-  if `git diff --stat`.present?
-    raise "The git tree is dirty, a clean tree is required to release"
-  end
+task :tag_version do
+  raise "The git tree is dirty, a clean tree is required to tag version" unless `git diff --stat`.empty?
 
-  current_branch=`git branch --show-current`
-  default_branch="master"
-  if current_branch != default_branch
-    raise "Can only release from the default branch"
-  end
-
-  Rake::Task[:set_version].invoke
-  bundle
-  Rake::Task[:changelog].invoke
+  version = get_var('VERSION')
 
   cmds = []
-  cmds << 'git ci -m\"Updated changelog\" .'
-  cmds << 'git push'
   cmds << "git tag -f \"v#{version}\""
   cmds << 'git push -f --tags'
-  puts "Will execute:"
-  cmds.each {|c| puts c}
-  print "\nProceed (y/n)? "
-  if $stdin.gets =~ /^y/i
-    cmds.each { |c| sh c }
-  else
-    puts "Aborted"
-  end
+  confirm_execute(*cmds)
 end
 
 task :changelog do
