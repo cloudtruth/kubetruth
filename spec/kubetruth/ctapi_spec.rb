@@ -6,30 +6,29 @@ module Kubetruth
 
   describe "CtApi", :vcr do
 
-    let(:ctapi) { ::Kubetruth::CtApi(api_key: ENV['CLOUDTRUTH_API_KEY']) }
+    let(:ctapi) { ::Kubetruth::ctapi_setup(api_key: ENV['CLOUDTRUTH_API_KEY']); ::Kubetruth::CtApi }
 
     describe "class definition", :vcr do
 
-      it "names the anonymous class" do
-        expect(ctapi.name).to match(/Kubetruth::CtApi_\d+/)
-        ctapi.logger.debug "Hello"
-        expect(Logging.contents).to match(/DEBUG\s*CtApi_\d+/)
+      around(:each) do |ex|
+        if defined? ::Kubetruth::CtApi
+          oldconst = ::Kubetruth::CtApi
+          ::Kubetruth.remove_const(:CtApi)
+        end
+        ex.run
+        ::Kubetruth.const_set(:CtApi, oldconst) if oldconst
       end
 
-      it "defines class with key/schema" do
-        expect(ctapi.client).to_not be_nil
-        instance = ctapi.new()
-        expect(instance.environment).to eq("default")
-      end
+      it "defines class" do
+        expect(defined? ::Kubetruth::CtApi).to be_falsey
+        ::Kubetruth.ctapi_setup(api_key: ENV['CLOUDTRUTH_API_KEY'])
+        expect(defined? ::Kubetruth::CtApi).to be_truthy
+        expect(::Kubetruth::CtApi).to be_a(Class)
 
-    end
-
-    describe "#organizations" do
-
-      it "gets organizations" do
-        api = ctapi.new
-        expect(api.organizations).to match hash_including("CloudTruth Demo")
-        expect(api.organization_names).to match array_including("CloudTruth Demo")
+        instance = ::Kubetruth::CtApi.new
+        expect(instance).to be_an_instance_of(::Kubetruth::CtApi)
+        instance.logger.debug "Hello"
+        expect(Logging.contents).to match(/DEBUG\s*CtApi Hello/)
       end
 
     end
@@ -38,18 +37,6 @@ module Kubetruth
 
       it "gets environments" do
         api = ctapi.new
-        expect(api).to_not receive(:organizations)
-        expect(api.environments).to match hash_including("default")
-        expect(api.environment_names).to match array_including("default")
-      end
-
-      it "uses organization to get environments" do
-        api = ctapi.new(organization: "CloudTruth Demo")
-        expect(api).to receive(:organizations).and_call_original
-        allow(ctapi.client).to receive(:query).and_call_original
-        expect(ctapi::client).to receive(:query).
-            with(ctapi.queries[:EnvironmentsQuery],
-                 variables: hash_including(:organizationId)).and_call_original
         expect(api.environments).to match hash_including("default")
         expect(api.environment_names).to match array_including("default")
       end
@@ -60,7 +47,6 @@ module Kubetruth
 
       it "gets projects" do
         api = ctapi.new
-        expect(api).to_not receive(:organizations)
         expect(api.projects).to match hash_including("default")
         expect(api.project_names).to match array_including("default")
       end
@@ -71,23 +57,12 @@ module Kubetruth
         expect(api.project_names).to_not equal(api.project_names)
       end
 
-      it "uses organization to get projects" do
-        api = ctapi.new(organization: "CloudTruth Demo")
-        expect(api).to receive(:organizations).and_call_original
-        allow(ctapi.client).to receive(:query).and_call_original
-        expect(ctapi::client).to receive(:query).
-          with(ctapi.queries[:ProjectsQuery],
-               variables: hash_including(:organizationId)).and_call_original
-        expect(api.projects).to match hash_including("default")
-      end
-
     end
 
     describe "#parameters" do
 
       it "gets parameters without a search" do
         api = ctapi.new
-        expect(api).to_not receive(:organizations)
         expect(api.parameters).to match array_including(Parameter)
       end
 
@@ -99,30 +74,19 @@ module Kubetruth
         expect(Logging.contents).to include("<masked>")
       end
 
-      it "uses organization to get values" do
-        api = ctapi.new(organization: "CloudTruth Demo")
-        expect(api).to receive(:organizations).at_least(:once).and_call_original
-        allow(ctapi.client).to receive(:query).and_call_original
-        expect(ctapi.client).to receive(:query).
-            with(ctapi.queries[:ParametersQuery],
-                 variables: hash_including(:organizationId)).and_call_original
-        expect(api.parameters).to match array_including(Parameter)
-      end
-
       it "uses project to get values" do
         api = ctapi.new
-        expect(api).to_not receive(:organizations)
         expect(api.parameters(project: "default")).to match array_including(Parameter)
       end
 
       it "uses environment to get values" do
-        api = ctapi.new(environment: "development")
+        api = ctapi.new
         dev_id = api.environments["development"]
         allow(ctapi.client).to receive(:query).and_call_original
         expect(ctapi.client).to receive(:query).
             with(ctapi.queries[:ParametersQuery],
                  variables: hash_including(:environmentId => dev_id)).and_call_original
-        expect(api.parameters).to match array_including(Parameter)
+        expect(api.parameters(environment: "development")).to match array_including(Parameter)
       end
 
       it "uses searchTerm to get parameters" do
@@ -133,10 +97,10 @@ module Kubetruth
 
         expect(api.parameters(searchTerm: "nothingtoseehere")).to eq([])
 
-        some = api.parameters(searchTerm: "services")
+        some = api.parameters(searchTerm: "aParam")
         expect(some.size).to be > 0
         expect(some.size).to be < all.size
-        some.each {|p| expect(p.key).to include("services") }
+        some.each {|p| expect(p.key).to include("aParam") }
       end
 
     end

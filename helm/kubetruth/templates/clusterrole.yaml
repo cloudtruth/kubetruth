@@ -13,4 +13,7 @@ rules:
   - apiGroups: [""]
     resources: ["namespaces"]
     verbs: ["get", "list", "create"]
+  - apiGroups: ["kubetruth.cloudtruth.com"]
+    resources: ["projectmappings"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 {{- end -}}

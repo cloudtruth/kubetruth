@@ -68,7 +68,6 @@ affinity: {}
 
 appSettings:
   apiKey:
-  environment:
   pollingInterval:
   debug: false
 
@@ -85,13 +84,14 @@ appSettings:
 projectMappings:
   root:
     scope: "root"
+    environment: "default"
     project_selector: ""
     key_selector: ""
     skip: false
     included_projects: []
     context:
       resource_name: "{{ project | dns_safe }}"
-      resource_namespace: ""
+      resource_namespace: "{{ mapping_namespace }}"
       skip_secrets: false
     resource_templates:
       configmap: |

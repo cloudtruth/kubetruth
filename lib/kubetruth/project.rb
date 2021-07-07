@@ -1,38 +1,7 @@
 module Kubetruth
-  Project = Struct.new(:name, :spec, keyword_init: true) do
+  Project = Struct.new(:name, :spec, :collection, keyword_init: true) do
 
     include GemLogger::LoggerSupport
-
-    cattr_accessor :ctapi_context
-
-    def self.ctapi
-      @ctapi ||= begin
-        ctx = ctapi_context.dup
-        @ctapi_class = Kubetruth::CtApi(api_key: ctx.delete(:api_key), api_url: ctx.delete(:api_url))
-        @ctapi_class.new(**ctx)
-      end
-    end
-
-    def ctapi
-      self.class.ctapi
-    end
-
-    def self.names
-      ctapi.project_names
-    end
-
-    def self.reset
-      @all = nil
-    end
-
-    def self.all
-      @all ||= {}
-    end
-
-    def self.create(*args, **kwargs)
-      project = new(*args, **kwargs)
-      all[project.name] = project
-    end
 
     def parameters
       @parameters ||= begin
@@ -48,7 +17,7 @@ module Kubetruth
           logger.debug {"Complex key_selector '#{spec.key_selector.source}', using as client-side regexp match against parameters"}
         end
 
-        params = ctapi.parameters(searchTerm: searchTerm, project: name)
+        params = collection.ctapi.parameters(searchTerm: searchTerm, project: name, environment: spec.environment)
         logger.debug do
           cleaned = params.deep_dup
           cleaned.each {|p| p.value = "<masked>" if p.secret}
@@ -85,7 +54,7 @@ module Kubetruth
           next
         end
 
-        project = self.class.all[included_project_name]
+        project = collection.projects[included_project_name]
         if project.nil?
           # should never get here as ETL preloads all referenced projects
           logger.warn "Skipping unknown project '#{included_project_name}' included by project '#{name}'"

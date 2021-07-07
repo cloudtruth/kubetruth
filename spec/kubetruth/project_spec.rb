@@ -1,99 +1,44 @@
 require 'rspec'
 require 'kubetruth/project'
+require 'kubetruth/project_collection'
 require 'kubetruth/parameter'
 require 'kubetruth/config'
 
 module Kubetruth
   describe Project do
 
+    let(:collection) { ProjectCollection.new }
+
     before(:each) do
-      described_class.ctapi_context = {}
-      described_class.instance_variable_set(:@ctapi, nil)
-      @ctapi_class = Class.new
       @ctapi = double()
-      allow(Kubetruth).to receive(:CtApi).and_return(@ctapi_class)
-      allow(@ctapi_class).to receive(:new).and_return(@ctapi)
-      described_class.reset
+      allow(collection).to receive(:ctapi).and_return(@ctapi)
     end
 
     describe "#initialize" do
 
       it "creates from kwargs" do
-        data = {name: "name1", spec: Kubetruth::Config::ProjectSpec.new}
+        data = {name: "name1", spec: Kubetruth::Config::ProjectSpec.new, collection: collection}
         proj = described_class.new(**data)
         expect(proj.to_h).to eq(data)
       end
 
     end
 
-    describe "#ctapi" do
-
-      it "is memoized" do
-        expect(described_class.ctapi).to equal(described_class.ctapi)
-        expect(described_class.new.ctapi).to equal(described_class.ctapi)
-      end
-
-    end
-
-    describe "#names" do
-
-      it "gets project names from ctapi" do
-        expect(described_class.ctapi).to receive(:project_names).and_return(["proj1", "proj2"])
-        expect(described_class.names).to eq(["proj1", "proj2"])
-      end
-
-    end
-
-    describe "#all" do
-
-      it "returns all projects created via create" do
-        projects = {}
-        projects["proj1"] = described_class.create(name: "proj1", spec: Kubetruth::Config::ProjectSpec.new)
-        projects["proj2"] = described_class.create(name: "proj2", spec: Kubetruth::Config::ProjectSpec.new)
-        expect(described_class.all).to eq(projects)
-      end
-
-    end
-
-    describe "#reset" do
-
-      it "resets all projects created via create" do
-        projects = {}
-        projects["proj1"] = described_class.create(name: "proj1", spec: Kubetruth::Config::ProjectSpec.new)
-        projects["proj2"] = described_class.create(name: "proj2", spec: Kubetruth::Config::ProjectSpec.new)
-        expect(described_class.all).to eq(projects)
-        described_class.reset
-        expect(described_class.all).to eq({})
-      end
-
-    end
-
-    describe "#create" do
-
-      it "creates a project and adds to all" do
-        spec = Kubetruth::Config::ProjectSpec.new
-        proj = described_class.create(name: "proj1", spec: spec)
-        expect(proj).to be_an_instance_of(described_class)
-        expect(proj.name).to eq("proj1")
-        expect(proj.spec).to eq(spec)
-        expect(described_class.all).to eq({"proj1" => proj})
-      end
-
-    end
-
     describe "#parameters" do
 
-      let(:project) { described_class.create(name: "proj1", spec: Kubetruth::Config::ProjectSpec.new(**Kubetruth::Config::DEFAULT_SPEC)) }
+      let(:project) { described_class.new(name: "proj1",
+                                             spec: Kubetruth::Config::ProjectSpec.new(**Kubetruth::Config::DEFAULT_SPEC),
+                                             collection: collection) }
 
       it "handles empty" do
-        expect(@ctapi).to receive(:parameters).with(searchTerm: "", project: project.name).and_return([])
+        expect(@ctapi).to receive(:parameters).with(searchTerm: "", project: project.name, environment: "default").and_return([])
         params = project.parameters
         expect(params).to eq([])
       end
 
       it "uses simple key_selector as search parameter" do
         project.spec.key_selector = /svc/
-        expect(@ctapi).to receive(:parameters).with(searchTerm: "svc", project: project.name).and_return([
+        expect(@ctapi).to receive(:parameters).with(searchTerm: "svc", project: project.name, environment: "default").and_return([
           Parameter.new(key: "svc.param1", value: "value1", secret: false),
           Parameter.new(key: "svc.param2", value: "value2", secret: false),
         ])
@@ -104,7 +49,7 @@ module Kubetruth
 
       it "uses complex key_selector client-side" do
         project.spec.key_selector = /foo$/
-        expect(@ctapi).to receive(:parameters).with(searchTerm: "", project: project.name).and_return([
+        expect(@ctapi).to receive(:parameters).with(searchTerm: "", project: project.name, environment: "default").and_return([
           Parameter.new(key: "svc.param1", value: "value1", secret: false),
           Parameter.new(key: "svc.param2.foo", value: "value2", secret: false),
         ])
@@ -117,7 +62,7 @@ module Kubetruth
       it "doesn't expose secret in debug log" do
         Logging.setup_logging(level: :debug, color: false)
 
-        expect(@ctapi).to receive(:parameters).with(searchTerm: "", project: project.name).and_return([
+        expect(@ctapi).to receive(:parameters).with(searchTerm: "", project: project.name, environment: "default").and_return([
                                                               Parameter.new(key: "param1", value: "value1", secret: false),
                                                               Parameter.new(key: "param2", value: "sekret", secret: true),
                                                               Parameter.new(key: "param3", value: "alsosekret", secret: true),
@@ -142,9 +87,9 @@ module Kubetruth
                                 Kubetruth::Config::DEFAULT_SPEC.merge(project_selector: "proj3")
                               ])
       }
-      let(:proj1) { described_class.create(name: "proj1", spec: config.spec_for_project("proj1")) }
-      let(:proj2) { described_class.create(name: "proj2", spec: config.spec_for_project("proj2")) }
-      let(:proj3) { described_class.create(name: "proj3", spec: config.spec_for_project("proj3")) }
+      let(:proj1) { collection.create_project(name: "proj1", spec: config.spec_for_project("proj1")) }
+      let(:proj2) { collection.create_project(name: "proj2", spec: config.spec_for_project("proj2")) }
+      let(:proj3) { collection.create_project(name: "proj3", spec: config.spec_for_project("proj3")) }
 
       before(:each) do
         # make sure they are loaded in Project.all

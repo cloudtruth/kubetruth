@@ -17,7 +17,7 @@ you would like to configure with CloudTruth
 helm repo add cloudtruth https://packages.cloudtruth.com/charts/
 helm install \
     --set appSettings.apiKey=<api_key> \
-    --set appSettings.environment=<environment> \
+    --set projectMappings.root.environment=<environment> \
     kubetruth cloudtruth/kubetruth
 ```
 
@@ -35,14 +35,14 @@ helm repo remove cloudtruth
 
 ## Usage
 
-Parameterize the helm install with `--set appSettings.**` to control how kubetruth matches against your organization's naming conventions:
+Parameterize the helm install with `--set *` or `--values yourConfig.yaml` to control how kubetruth matches against your organization's naming conventions:
 
 | Parameter | Description | Type | Default | Required |
 |-----------|-------------|------|---------|:--------:|
 | appSettings.apiKey | The CloudTruth api key.  Read only access is sufficient | string | n/a | yes |
-| appSettings.environment | The CloudTruth environment to lookup parameter values for.  Use a separate helm install for each environment | string | `default` | yes |
 | appSettings.pollingInterval | Interval to poll CloudTruth api for changes | integer | 300 | no |
 | appSettings.debug | Debug logging and behavior | flag | false | no |
+| projectMappings.root.environment | The CloudTruth environment to lookup parameter values for. | string | `default` | yes |
 | projectMappings.root.project_selector | A regexp to limit the projects acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
 | projectMappings.root.key_selector | A regexp to limit the keys acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
 | projectMappings.root.skip | Skips the generation of resources for the selected projects | flag | false | no |
@@ -126,9 +126,10 @@ Kubetruth uses a CustomResourceDefinition called
 [ProjectMapping(.kubetruth.cloudtruth.com)](helm/kubetruth/crds/projectmapping.yaml)
 for additional configuration.  The ProjectMapping CRD has two types identified
 by the `scope` property, the `root` scope and the `override` scope.  The `root`
-scope is required, and there can be only one.  It sets up the global behavior
-for mapping the CloudTruth projects to kubernetes resources.  You can edit it in
-the standard ways, e.g. `kubectl edit projectmapping kubetruth-root`.  The
+scope is required, and there can be only one per namespace (see
+[below](#multi-instance-config)).  It sets up the global behavior for mapping
+the CloudTruth projects to kubernetes resources.  You can edit it in the
+standard ways, e.g. `kubectl edit projectmapping kubetruth-root`.  The
 `override` scope allows you to override the root scope's behavior for those
 CloudTruth projects whose names match its `project_selector` pattern.
 
@@ -148,6 +149,8 @@ liquid variables:
 | Liquid Variables | Description |
 |-----------------|-------------|
 | `template` | The name of the template currently being rendered. |
+| `kubetruth_namespace` | The namespace kubetruth is installed in. |
+| `mapping_namespace` | The namespace that the current set of mappings exist in. |
 | `project` | The project name. |
 | `project_heirarchy` | The `included_projects` tree that this project includes. (useful to debug when using complex `included_projects`) |
 | `debug` | Indicates if kubetruth is operating in debug (logging) mode. |
@@ -200,6 +203,23 @@ entry like `timeout: myService (commonService -> common)` indicates that the
 timeout parameter is getting its value from the `myService` project, and if you
 removed it from there, it would then get it from the `commonService` project,
 and if you removed that, it would then get it from the `common` project.
+
+### Multi Instance Config
+
+By default, Kubetruth is setup with a single set of ProjectMapping CRDs
+installed into the same namespace it was installed to.  These are the `primary`
+CRDs.  For systems that use independent kubernetes clusters per environment,
+this is all that you need.  If, however, you'd like to be able to run multiple
+`environments` in the same cluster, you can make use of the multi-instance
+feature of kubetruth.
+
+To do so, one simply needs to create ProjectMapping CRDs in namespaces other
+than the primary.  These CRDs will automatically inherit the contents of the CRD
+of the same name from the primary namespace, and you can then selectively
+override the attributes you need to change for the supplemental instance.  This
+allows you to reuse all the templates/logic/etc that you setup in the primary,
+and only have to change the differing dimension.  See the `environment` [example
+below](#environment-per-namespace)
 
 ### Example Config
 
@@ -266,6 +286,26 @@ spec:
     context:
         resource_name: notSoFunkyConfigMap
         resource_namespace: notSoFunkyNamespace
+EOF
+```
+
+#### Environment per namespace
+
+To setup an environment per namespace:
+```
+# Disable output from the primary (optional)
+kubectl patch pm kubetruth-root --type json --patch '[{"op": "replace", "path": "/spec/skip", "value": "true"}]'
+
+# Tag each namespace that you'd like to have its own environment
+kubectl --namespace <your_namespace> apply -f - <<EOF
+apiVersion: kubetruth.cloudtruth.com/v1
+kind: ProjectMapping
+metadata:
+  name: kubetruth-root
+spec:
+  scope: root
+  environment: loadtest
+  skip: false
 EOF
 ```
 

@@ -20,8 +20,6 @@ module Kubetruth
 
       it "passes args to etl" do
         args = %w[
-            --environment production
-            --organization acme
             --api-key abc123
             --kube-namespace kn
             --kube-token kt
@@ -30,9 +28,7 @@ module Kubetruth
             --polling-interval 27
         ]
 
-        expect(Project).to receive(:ctapi_context=).with({
-          organization: "acme",
-          environment: "production",
+        expect(Kubetruth).to receive(:ctapi_setup).with({
           api_key: "abc123"
         })
 
@@ -56,6 +52,7 @@ module Kubetruth
             Kubetruth::Logging.setup_logging(level: :debug, color: false)
 
 
+            allow(Kubetruth).to receive(:ctapi_setup)
             etl = ETL.new(kube_context: {namespace: 'ns', token: 'xyz'}, dry_run: true)
             allow(ETL).to receive(:new).and_return(etl)
 
