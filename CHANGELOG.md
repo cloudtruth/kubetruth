@@ -1,3 +1,28 @@
+0.6.0 (07/07/2021)
+------------------
+
+#### Notes on major changes
+
+* \[breaking change] Setting environment at install time is now done through the CRD: `--set projectMappings.root.environment=<env>` instead of `--set appSettings.environment=<env>`
+* \[breaking change] Selecting organization at install time is no longer allowed
+* Kubetruth is now able to run for multiple environments in the same cluster by creating ProjectMapping CRDs in additional namespaces
+* Upgraded to ruby v3 and using async to improve concurrency (event loop runtime shows a 2-3X improvement)
+* Templates can now contain multiple YAML documents with use of the `---` YAML directive to separate them
+
+#### Full changelog
+
+* Merge pull request #10 from cloudtruth/async [3bf2048](../../commit/3bf2048)
+* Merge pull request #9 from cloudtruth/environments_in_pms [913833a](../../commit/913833a)
+* upgrade to ruby 3 to use async Use async for concurrency during IO [1b82bad](../../commit/1b82bad)
+* cleanup appSettings.environment from deployment template [f72bbd7](../../commit/f72bbd7)
+* watch for crd changes during sleep instead of during all of the apply so that CRDs that get written by kubetruth don't trigger a watch event [3fac73e](../../commit/3fac73e)
+* update install command [6adb365](../../commit/6adb365)
+* allow resources to be created for different api groups (crds) [e5458fc](../../commit/e5458fc)
+* allow multiple yml docs in templates [aa78857](../../commit/aa78857)
+* update readme for multi instance [19180c0](../../commit/19180c0)
+* Move setting of environment to CRD Remove organization as the multiple org feature is no longer available Scan all namespaces for CRDs CRDs in namespaces other than the one kubetruth is installed in (the primary) are merged with those in the primary and trigger kubetruth to run them as a separate instance.  This makes it easy to run kubetruth for multiple environments in the same cluster by allowing full reuse of a single set templates/crds/etc across environments. [d0ef48c](../../commit/d0ef48c)
+* Updated README formats (#8) [37daf2b](../../commit/37daf2b)
+
 0.5.0 (06/22/2021)
 ------------------
 
