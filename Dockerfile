@@ -1,4 +1,4 @@
-FROM ruby:2.7-alpine AS base
+FROM ruby:3.0-alpine AS base
 
 ENV APP_DIR="/srv/app" \
     BUNDLE_PATH="/srv/bundler" \
