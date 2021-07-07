@@ -70,11 +70,11 @@ end
 task :helm_package => [:helm_index]
 
 task :build_development do
-  sh "docker build --target development -t kubetruth-development ."
+  sh "docker build --target development -t #{APP[:name]}-development ."
 end
 
 task :test => [:build_development] do
-  sh "docker run -e CI -e CODECOV_TOKEN kubetruth-development test"
+  sh "docker run -e CI -e CODECOV_TOKEN #{APP[:name]}-development test"
 end
 
 task :rspec do
@@ -84,7 +84,7 @@ task :rspec do
 end
 
 task :build_release do
-  sh "docker build --target release -t kubetruth ."
+  sh "docker build --target release -t #{APP[:name]} ."
 end
 
 task :docker_push do

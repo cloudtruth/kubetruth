@@ -20,13 +20,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gems-
 
-      - name: Set environment from cloudtruth
-        uses: cloudtruth/configure-action@v1
-        with:
-          token: "${{ secrets.CLOUDTRUTH_API_KEY }}"
-          project: "deploy"
-          environment: "production"
-
       - name: Install Ruby version specified in `.ruby-version`
         uses: eregon/use-ruby-action@master
 
