@@ -1,29 +1,26 @@
 require 'rspec'
 require 'kubetruth/ctapi'
 
-
 module Kubetruth
 
   describe "CtApi", :vcr do
 
-    let(:ctapi) { ::Kubetruth::ctapi_setup(api_key: ENV['CLOUDTRUTH_API_KEY']); ::Kubetruth::CtApi }
+    before(:each) do |ex|
+      # Do this so that tests perform the same http requests whether they get
+      # run individually or as part of the entire file
+      ::Kubetruth.send(:remove_const, :CtApi) if defined? ::Kubetruth::CtApi
+    end
+
+    let(:ctapi) { ::Kubetruth::ctapi_setup(api_key: ENV['CLOUDTRUTH_API_KEY']) }
 
     describe "class definition", :vcr do
 
-      around(:each) do |ex|
-        if defined? ::Kubetruth::CtApi
-          oldconst = ::Kubetruth::CtApi
-          ::Kubetruth.remove_const(:CtApi)
-        end
-        ex.run
-        ::Kubetruth.const_set(:CtApi, oldconst) if oldconst
-      end
-
       it "defines class" do
-        expect(defined? ::Kubetruth::CtApi).to be_falsey
-        ::Kubetruth.ctapi_setup(api_key: ENV['CLOUDTRUTH_API_KEY'])
-        expect(defined? ::Kubetruth::CtApi).to be_truthy
+        expect(::Kubetruth.const_defined?(:CtApi)).to be_falsey
+        clazz = ctapi
+        expect(::Kubetruth.const_defined?(:CtApi)).to be_truthy
         expect(::Kubetruth::CtApi).to be_a(Class)
+        expect(clazz).to eq(::Kubetruth::CtApi)
 
         instance = ::Kubetruth::CtApi.new
         expect(instance).to be_an_instance_of(::Kubetruth::CtApi)
@@ -39,6 +36,34 @@ module Kubetruth
         api = ctapi.new
         expect(api.environments).to match hash_including("default")
         expect(api.environment_names).to match array_including("default")
+      end
+
+      it "memoizes environments" do
+        api = ctapi.new
+        expect(api.environments).to equal(api.environments)
+      end
+
+    end
+
+    describe "#environment_id" do
+
+      it "gets id" do
+        api = ctapi.new
+        expect(api.environments).to match hash_including("default")
+        expect(api.environment_id("default")).to be_present
+        expect(Logging.contents).to_not match(/Unknown environment, retrying/)
+      end
+
+      it "raises if environment doesn't exist" do
+        api = ctapi.new
+        expect { api.environment_id("badenv") }.to raise_error(Kubetruth::Error, /Unknown environment/)
+      end
+
+      it "retries if environment doesn't exist" do
+        api = ctapi.new
+        expect(api).to receive(:environments).and_call_original.twice
+        expect { api.environment_id("badenv") }.to raise_error(Kubetruth::Error, /Unknown environment/)
+        expect(Logging.contents).to match(/Unknown environment, retrying/)
       end
 
     end

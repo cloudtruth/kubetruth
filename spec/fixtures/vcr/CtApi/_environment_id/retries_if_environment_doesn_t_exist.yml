@@ -36,7 +36,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 07 Jul 2021 16:59:23 GMT
+      - Wed, 07 Jul 2021 16:59:19 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -62,9 +62,9 @@ http_interactions:
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - 0ce8dfd6-0c7e-4fb2-b8b9-bbb2e61ce3ed
+      - 4f0f884c-f03b-463d-9c64-1e4167194d48
       X-Runtime:
-      - '1.076709'
+      - '1.387614'
     body:
       encoding: UTF-8
       string: '{"data":{"__schema":{"queryType":{"name":"Query"},"mutationType":{"name":"Mutation"},"subscriptionType":null,"types":[{"kind":"OBJECT","name":"AuditLogSnapshot","description":null,"fields":[{"name":"createdAt","description":null,"args":[],"type":{"kind":"NON_NULL","name":null,"ofType":{"kind":"SCALAR","name":"ISO8601DateTime","ofType":null}},"isDeprecated":false,"deprecationReason":null},{"name":"fileUrl","description":null,"args":[],"type":{"kind":"SCALAR","name":"String","ofType":null},"isDeprecated":false,"deprecationReason":null},{"name":"id","description":null,"args":[],"type":{"kind":"NON_NULL","name":null,"ofType":{"kind":"SCALAR","name":"ID","ofType":null}},"isDeprecated":false,"deprecationReason":null},{"name":"policy","description":null,"args":[],"type":{"kind":"NON_NULL","name":null,"ofType":{"kind":"OBJECT","name":"NodePolicy","ofType":null}},"isDeprecated":false,"deprecationReason":null},{"name":"status","description":null,"args":[],"type":{"kind":"NON_NULL","name":null,"ofType":{"kind":"ENUM","name":"SnapshotStatusEnum","ofType":null}},"isDeprecated":false,"deprecationReason":null}],"inputFields":null,"interfaces":[{"kind":"INTERFACE","name":"Node","ofType":null},{"kind":"INTERFACE","name":"HasPolicy","ofType":null}],"enumValues":null,"possibleTypes":null},{"kind":"OBJECT","name":"AuditLogSnapshotConnection","description":"The
@@ -542,14 +542,14 @@ http_interactions:
         why this element was deprecated, usually also including a suggestion for how
         to access supported similar data. Formatted in [Markdown](https://daringfireball.net/projects/markdown/).","type":{"kind":"SCALAR","name":"String","ofType":null},"defaultValue":"\"No
         longer supported\""}]}]}}}'
-  recorded_at: Wed, 07 Jul 2021 16:59:23 GMT
+  recorded_at: Wed, 07 Jul 2021 16:59:19 GMT
 - request:
     method: post
     uri: https://api.cloudtruth.com/graphql
     body:
       encoding: UTF-8
-      string: '{"query":"query GraphQL__Client__OperationDefinition_150180 {\n  viewer
-        {\n    organization {\n      projects {\n        nodes {\n          id\n          name\n        }\n      }\n    }\n  }\n}","operationName":"GraphQL__Client__OperationDefinition_150180"}'
+      string: '{"query":"query GraphQL__Client__OperationDefinition_112140 {\n  viewer
+        {\n    organization {\n      environments {\n        nodes {\n          id\n          name\n        }\n      }\n    }\n  }\n}","operationName":"GraphQL__Client__OperationDefinition_112140"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -567,7 +567,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 07 Jul 2021 16:59:23 GMT
+      - Wed, 07 Jul 2021 16:59:19 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -589,24 +589,24 @@ http_interactions:
       Vary:
       - Accept, Origin
       Etag:
-      - W/"1912df5ea7f5445323273dddf0b748e3"
+      - W/"4067dfe382ecaff3b64ab307fb568df4"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - cd478b37-51e7-40bf-93da-ce2dc064e0c1
+      - 6ab5d9cc-79ba-4ded-b16a-2d501ffdffee
       X-Runtime:
-      - '0.026668'
+      - '0.032344'
     body:
       encoding: UTF-8
-      string: '{"data":{"viewer":{"organization":{"projects":{"nodes":[{"id":"UHJvamVjdC1hMmUzMjgyYi0wMWE5LTRiMjEtOGJlMy04MDcyNzBiZWQ1MzQ=","name":"default"},{"id":"UHJvamVjdC01ZDFmNjUwNC0wNTkzLTQ5ZGEtYjlkNi00ZTQ4YmUwMDExNmQ=","name":"web"},{"id":"UHJvamVjdC0yYmYyZTE1OC1kZTIyLTQyZjktYTkyMC1kYWM3MTAxMzYxYzM=","name":"service"},{"id":"UHJvamVjdC1hMWRlNDZhMS0yNjA1LTQ5NjYtOTVjMC0wYWRmZDgxNDBhMzA=","name":"service-demo1"},{"id":"UHJvamVjdC1mYjY3MjRlOC1jM2NkLTQwYjUtYTUxNi1hNzgxYmU1M2ZjZGQ=","name":"service-demo3"},{"id":"UHJvamVjdC04NWQ2ZGI4Yi03YjNjLTQzODAtYTE0Ny01YTk0NmEzNmNkY2E=","name":"service-demo2"},{"id":"UHJvamVjdC01YjY3YTcyYy0xYjAxLTQ2ZTEtYWMwOC1iYzM5YWIyYWMzZDQ=","name":"common"},{"id":"UHJvamVjdC04NjhiZDJmMC1hMjIwLTQyN2YtYTIyZi02MGMyM2NhYWJlOTE=","name":"common-service"},{"id":"UHJvamVjdC04ZDdmZjlkZi0wZTNkLTQzNmYtYmVlZS1lNTlmYjZiNWE4MzE=","name":"deploy"},{"id":"UHJvamVjdC04ODM3NGUyZi1lMTMwLTRiZGUtODVjMy0zMGE4ODMzNmQyMGM=","name":"cfdemo"},{"id":"UHJvamVjdC05YjU0NTMxZi0zYzMzLTQxZTMtYjMzMC0yMWMyOTZmOTYyMDg=","name":"kubetruth"}]}}}}}'
-  recorded_at: Wed, 07 Jul 2021 16:59:23 GMT
+      string: '{"data":{"viewer":{"organization":{"environments":{"nodes":[{"id":"RW52aXJvbm1lbnQtZjk3MDI1NGEtNGQ0NS00YTA1LWJiYjctOTRjZTdhOGRmODky","name":"default"},{"id":"RW52aXJvbm1lbnQtOGRmMTVjMjYtN2FhZi00ODE5LWJlNzYtMTVmMzU2YzQ5YTg1","name":"production"},{"id":"RW52aXJvbm1lbnQtNmI5M2NlMWEtMTVkMS00MzRiLTg1NTAtODhjZDZhY2ZjYzU4","name":"development"},{"id":"RW52aXJvbm1lbnQtY2EyMDA0YzctZjQ3Mi00MzFlLWIyODgtNzg0NmYzMTBmMGZj","name":"ops"},{"id":"RW52aXJvbm1lbnQtMzY4MWRkMjctZDY2YS00NjdlLWI1NzMtYmI2YzU0ZmFjZDM1","name":"staging"},{"id":"RW52aXJvbm1lbnQtZDE4NGQ1ODctYjA2Yi00OWU2LThhMGItNjU1YTM2NDQwYjRj","name":"dev-matt"},{"id":"RW52aXJvbm1lbnQtODlkYjg0NGEtOTlmMy00ODk1LWIyNWYtYjEwZjAwNGM4NTJk","name":"usa"},{"id":"RW52aXJvbm1lbnQtYjVkM2Y0MDgtMTVlZi00M2E4LWFlOWUtMjY0OTQ4OGFlZDcw","name":"europe"},{"id":"RW52aXJvbm1lbnQtN2ZlYTc5ZWQtY2MxZi00ZDY5LTkzOGYtNzM4MGE5MGI4ZDVl","name":"local"}]}}}}}'
+  recorded_at: Wed, 07 Jul 2021 16:59:19 GMT
 - request:
     method: post
     uri: https://api.cloudtruth.com/graphql
     body:
       encoding: UTF-8
-      string: '{"query":"query GraphQL__Client__OperationDefinition_150180 {\n  viewer
-        {\n    organization {\n      projects {\n        nodes {\n          id\n          name\n        }\n      }\n    }\n  }\n}","operationName":"GraphQL__Client__OperationDefinition_150180"}'
+      string: '{"query":"query GraphQL__Client__OperationDefinition_112140 {\n  viewer
+        {\n    organization {\n      environments {\n        nodes {\n          id\n          name\n        }\n      }\n    }\n  }\n}","operationName":"GraphQL__Client__OperationDefinition_112140"}'
     headers:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
@@ -624,7 +624,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Wed, 07 Jul 2021 16:59:23 GMT
+      - Wed, 07 Jul 2021 16:59:20 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -646,129 +646,15 @@ http_interactions:
       Vary:
       - Accept, Origin
       Etag:
-      - W/"1912df5ea7f5445323273dddf0b748e3"
+      - W/"4067dfe382ecaff3b64ab307fb568df4"
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - d43c45c6-f730-4189-933d-19058f7833a7
+      - a4947524-93c1-41ad-94f4-f010e0d41472
       X-Runtime:
-      - '0.043577'
+      - '0.052531'
     body:
       encoding: UTF-8
-      string: '{"data":{"viewer":{"organization":{"projects":{"nodes":[{"id":"UHJvamVjdC1hMmUzMjgyYi0wMWE5LTRiMjEtOGJlMy04MDcyNzBiZWQ1MzQ=","name":"default"},{"id":"UHJvamVjdC01ZDFmNjUwNC0wNTkzLTQ5ZGEtYjlkNi00ZTQ4YmUwMDExNmQ=","name":"web"},{"id":"UHJvamVjdC0yYmYyZTE1OC1kZTIyLTQyZjktYTkyMC1kYWM3MTAxMzYxYzM=","name":"service"},{"id":"UHJvamVjdC1hMWRlNDZhMS0yNjA1LTQ5NjYtOTVjMC0wYWRmZDgxNDBhMzA=","name":"service-demo1"},{"id":"UHJvamVjdC1mYjY3MjRlOC1jM2NkLTQwYjUtYTUxNi1hNzgxYmU1M2ZjZGQ=","name":"service-demo3"},{"id":"UHJvamVjdC04NWQ2ZGI4Yi03YjNjLTQzODAtYTE0Ny01YTk0NmEzNmNkY2E=","name":"service-demo2"},{"id":"UHJvamVjdC01YjY3YTcyYy0xYjAxLTQ2ZTEtYWMwOC1iYzM5YWIyYWMzZDQ=","name":"common"},{"id":"UHJvamVjdC04NjhiZDJmMC1hMjIwLTQyN2YtYTIyZi02MGMyM2NhYWJlOTE=","name":"common-service"},{"id":"UHJvamVjdC04ZDdmZjlkZi0wZTNkLTQzNmYtYmVlZS1lNTlmYjZiNWE4MzE=","name":"deploy"},{"id":"UHJvamVjdC04ODM3NGUyZi1lMTMwLTRiZGUtODVjMy0zMGE4ODMzNmQyMGM=","name":"cfdemo"},{"id":"UHJvamVjdC05YjU0NTMxZi0zYzMzLTQxZTMtYjMzMC0yMWMyOTZmOTYyMDg=","name":"kubetruth"}]}}}}}'
-  recorded_at: Wed, 07 Jul 2021 16:59:23 GMT
-- request:
-    method: post
-    uri: https://api.cloudtruth.com/graphql
-    body:
-      encoding: UTF-8
-      string: '{"query":"query GraphQL__Client__OperationDefinition_150180 {\n  viewer
-        {\n    organization {\n      projects {\n        nodes {\n          id\n          name\n        }\n      }\n    }\n  }\n}","operationName":"GraphQL__Client__OperationDefinition_150180"}'
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - application/json
-      User-Agent:
-      - kubetruth/0.6.0
-      Content-Type:
-      - application/json
-      Authorization:
-      - Bearer <BEARER_TOKEN>
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Wed, 07 Jul 2021 16:59:24 GMT
-      Content-Type:
-      - application/json; charset=utf-8
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - 1; mode=block
-      X-Content-Type-Options:
-      - nosniff
-      X-Download-Options:
-      - noopen
-      X-Permitted-Cross-Domain-Policies:
-      - none
-      Referrer-Policy:
-      - strict-origin-when-cross-origin
-      Vary:
-      - Accept, Origin
-      Etag:
-      - W/"1912df5ea7f5445323273dddf0b748e3"
-      Cache-Control:
-      - max-age=0, private, must-revalidate
-      X-Request-Id:
-      - 1fe213bb-51df-4d96-ab90-561b06f85fa9
-      X-Runtime:
-      - '0.025482'
-    body:
-      encoding: UTF-8
-      string: '{"data":{"viewer":{"organization":{"projects":{"nodes":[{"id":"UHJvamVjdC1hMmUzMjgyYi0wMWE5LTRiMjEtOGJlMy04MDcyNzBiZWQ1MzQ=","name":"default"},{"id":"UHJvamVjdC01ZDFmNjUwNC0wNTkzLTQ5ZGEtYjlkNi00ZTQ4YmUwMDExNmQ=","name":"web"},{"id":"UHJvamVjdC0yYmYyZTE1OC1kZTIyLTQyZjktYTkyMC1kYWM3MTAxMzYxYzM=","name":"service"},{"id":"UHJvamVjdC1hMWRlNDZhMS0yNjA1LTQ5NjYtOTVjMC0wYWRmZDgxNDBhMzA=","name":"service-demo1"},{"id":"UHJvamVjdC1mYjY3MjRlOC1jM2NkLTQwYjUtYTUxNi1hNzgxYmU1M2ZjZGQ=","name":"service-demo3"},{"id":"UHJvamVjdC04NWQ2ZGI4Yi03YjNjLTQzODAtYTE0Ny01YTk0NmEzNmNkY2E=","name":"service-demo2"},{"id":"UHJvamVjdC01YjY3YTcyYy0xYjAxLTQ2ZTEtYWMwOC1iYzM5YWIyYWMzZDQ=","name":"common"},{"id":"UHJvamVjdC04NjhiZDJmMC1hMjIwLTQyN2YtYTIyZi02MGMyM2NhYWJlOTE=","name":"common-service"},{"id":"UHJvamVjdC04ZDdmZjlkZi0wZTNkLTQzNmYtYmVlZS1lNTlmYjZiNWE4MzE=","name":"deploy"},{"id":"UHJvamVjdC04ODM3NGUyZi1lMTMwLTRiZGUtODVjMy0zMGE4ODMzNmQyMGM=","name":"cfdemo"},{"id":"UHJvamVjdC05YjU0NTMxZi0zYzMzLTQxZTMtYjMzMC0yMWMyOTZmOTYyMDg=","name":"kubetruth"}]}}}}}'
-  recorded_at: Wed, 07 Jul 2021 16:59:24 GMT
-- request:
-    method: post
-    uri: https://api.cloudtruth.com/graphql
-    body:
-      encoding: UTF-8
-      string: '{"query":"query GraphQL__Client__OperationDefinition_150180 {\n  viewer
-        {\n    organization {\n      projects {\n        nodes {\n          id\n          name\n        }\n      }\n    }\n  }\n}","operationName":"GraphQL__Client__OperationDefinition_150180"}'
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - application/json
-      User-Agent:
-      - kubetruth/0.6.0
-      Content-Type:
-      - application/json
-      Authorization:
-      - Bearer <BEARER_TOKEN>
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Date:
-      - Wed, 07 Jul 2021 16:59:24 GMT
-      Content-Type:
-      - application/json; charset=utf-8
-      Transfer-Encoding:
-      - chunked
-      Connection:
-      - keep-alive
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Xss-Protection:
-      - 1; mode=block
-      X-Content-Type-Options:
-      - nosniff
-      X-Download-Options:
-      - noopen
-      X-Permitted-Cross-Domain-Policies:
-      - none
-      Referrer-Policy:
-      - strict-origin-when-cross-origin
-      Vary:
-      - Accept, Origin
-      Etag:
-      - W/"1912df5ea7f5445323273dddf0b748e3"
-      Cache-Control:
-      - max-age=0, private, must-revalidate
-      X-Request-Id:
-      - 4281a034-4443-46bb-9fee-1cf77a9e8cdd
-      X-Runtime:
-      - '0.019089'
-    body:
-      encoding: UTF-8
-      string: '{"data":{"viewer":{"organization":{"projects":{"nodes":[{"id":"UHJvamVjdC1hMmUzMjgyYi0wMWE5LTRiMjEtOGJlMy04MDcyNzBiZWQ1MzQ=","name":"default"},{"id":"UHJvamVjdC01ZDFmNjUwNC0wNTkzLTQ5ZGEtYjlkNi00ZTQ4YmUwMDExNmQ=","name":"web"},{"id":"UHJvamVjdC0yYmYyZTE1OC1kZTIyLTQyZjktYTkyMC1kYWM3MTAxMzYxYzM=","name":"service"},{"id":"UHJvamVjdC1hMWRlNDZhMS0yNjA1LTQ5NjYtOTVjMC0wYWRmZDgxNDBhMzA=","name":"service-demo1"},{"id":"UHJvamVjdC1mYjY3MjRlOC1jM2NkLTQwYjUtYTUxNi1hNzgxYmU1M2ZjZGQ=","name":"service-demo3"},{"id":"UHJvamVjdC04NWQ2ZGI4Yi03YjNjLTQzODAtYTE0Ny01YTk0NmEzNmNkY2E=","name":"service-demo2"},{"id":"UHJvamVjdC01YjY3YTcyYy0xYjAxLTQ2ZTEtYWMwOC1iYzM5YWIyYWMzZDQ=","name":"common"},{"id":"UHJvamVjdC04NjhiZDJmMC1hMjIwLTQyN2YtYTIyZi02MGMyM2NhYWJlOTE=","name":"common-service"},{"id":"UHJvamVjdC04ZDdmZjlkZi0wZTNkLTQzNmYtYmVlZS1lNTlmYjZiNWE4MzE=","name":"deploy"},{"id":"UHJvamVjdC04ODM3NGUyZi1lMTMwLTRiZGUtODVjMy0zMGE4ODMzNmQyMGM=","name":"cfdemo"},{"id":"UHJvamVjdC05YjU0NTMxZi0zYzMzLTQxZTMtYjMzMC0yMWMyOTZmOTYyMDg=","name":"kubetruth"}]}}}}}'
-  recorded_at: Wed, 07 Jul 2021 16:59:24 GMT
+      string: '{"data":{"viewer":{"organization":{"environments":{"nodes":[{"id":"RW52aXJvbm1lbnQtZjk3MDI1NGEtNGQ0NS00YTA1LWJiYjctOTRjZTdhOGRmODky","name":"default"},{"id":"RW52aXJvbm1lbnQtOGRmMTVjMjYtN2FhZi00ODE5LWJlNzYtMTVmMzU2YzQ5YTg1","name":"production"},{"id":"RW52aXJvbm1lbnQtNmI5M2NlMWEtMTVkMS00MzRiLTg1NTAtODhjZDZhY2ZjYzU4","name":"development"},{"id":"RW52aXJvbm1lbnQtY2EyMDA0YzctZjQ3Mi00MzFlLWIyODgtNzg0NmYzMTBmMGZj","name":"ops"},{"id":"RW52aXJvbm1lbnQtMzY4MWRkMjctZDY2YS00NjdlLWI1NzMtYmI2YzU0ZmFjZDM1","name":"staging"},{"id":"RW52aXJvbm1lbnQtZDE4NGQ1ODctYjA2Yi00OWU2LThhMGItNjU1YTM2NDQwYjRj","name":"dev-matt"},{"id":"RW52aXJvbm1lbnQtODlkYjg0NGEtOTlmMy00ODk1LWIyNWYtYjEwZjAwNGM4NTJk","name":"usa"},{"id":"RW52aXJvbm1lbnQtYjVkM2Y0MDgtMTVlZi00M2E4LWFlOWUtMjY0OTQ4OGFlZDcw","name":"europe"},{"id":"RW52aXJvbm1lbnQtN2ZlYTc5ZWQtY2MxZi00ZDY5LTkzOGYtNzM4MGE5MGI4ZDVl","name":"local"}]}}}}}'
+  recorded_at: Wed, 07 Jul 2021 16:59:20 GMT
 recorded_with: VCR 6.0.0

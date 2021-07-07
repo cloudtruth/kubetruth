@@ -4,14 +4,26 @@ require "kubetruth"
 
 require "open3"
 
+codecov = ENV['CI'] && ENV['CODECOV_TOKEN']
+require 'codecov' if codecov
+
 require 'simplecov'
+SimpleCov.formatter (codecov ? SimpleCov::Formatter::Codecov : SimpleCov::Formatter::HTMLFormatter)
+SimpleCov.enable_for_subprocesses true
+SimpleCov.at_fork do |pid|
+  # This needs a unique name so it won't be ovewritten
+  SimpleCov.command_name "#{SimpleCov.command_name} (subprocess: #{pid})"
+  # be quiet, the parent process will be in charge of output and checking coverage totals
+  SimpleCov.print_error_status = false
+  SimpleCov.formatter (codecov ? SimpleCov::Formatter::Codecov : SimpleCov::Formatter::HTMLFormatter)
+  SimpleCov.minimum_coverage 0
+  # start
+  SimpleCov.start do
+    add_filter 'spec'
+  end
+end
 SimpleCov.start do
   add_filter 'spec'
-end
-
-if ENV['CI'] && ENV['CODECOV_TOKEN']
-  require 'codecov'
-  SimpleCov.formatter = SimpleCov::Formatter::Codecov
 end
 
 require 'vcr'

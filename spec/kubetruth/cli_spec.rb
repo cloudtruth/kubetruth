@@ -46,11 +46,10 @@ module Kubetruth
 
       it "wakes up on signal" do
         expect {
-          pid = fork do
+          pid = Process.fork do
             $stdout.sync = $stderr.sync = true
             Kubetruth::Logging.testing = false
             Kubetruth::Logging.setup_logging(level: :debug, color: false)
-
 
             allow(Kubetruth).to receive(:ctapi_setup)
             etl = ETL.new(kube_context: {namespace: 'ns', token: 'xyz'}, dry_run: true)
@@ -65,7 +64,7 @@ module Kubetruth
             allow(etl).to receive(:apply) do
               puts "FakeApply #{count}"
               count += 1
-              exit! if count > 1
+              exit if count > 1
             end
             cli.run(%w[--api-key xyz --polling-interval 1])
           end

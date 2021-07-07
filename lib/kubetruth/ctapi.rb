@@ -6,6 +6,7 @@ module Kubetruth
 
   def self.ctapi_setup(api_key:, api_url: nil)
     unless Kubetruth.const_defined?(:CtApi)
+      ::Logging.logger.root.debug {"Setting up CtApi"}
       api_url ||= "https://api.cloudtruth.com/graphql"
 
       clazz = Class.new do
@@ -93,13 +94,13 @@ module Kubetruth
 
           # retry in case environments have been updated upstream since we cached
           # them
-          if env_id.nil? && ! @environments.nil?
+          if env_id.nil?
             logger.debug {"Unknown environment, retrying after clearing cache"}
             @environments = nil
             env_id = self.environments[environment]
           end
 
-          raise("Unknown environment: #{environment}") unless env_id
+          raise Kubetruth::Error.new("Unknown environment: #{environment}") unless env_id
           env_id.to_s
         end
 

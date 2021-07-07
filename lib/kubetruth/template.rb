@@ -7,7 +7,7 @@ module Kubetruth
 
     include GemLogger::LoggerSupport
 
-    class Error < ::StandardError
+    class Error < ::Kubetruth::Error
     end
 
     class TemplateHashDrop < Liquid::Drop
@@ -158,7 +158,7 @@ module Kubetruth
       rescue Liquid::Error => e
         msg = "Template failed to render:\n"
         @source.lines.each {|l| msg << (INDENT * 2) << l }
-        msg << INDENT << "with error message:\n" << (INDENT * 2) << "#{e.message}"
+        msg << "\n" << INDENT << "with error message:\n" << (INDENT * 2) << "#{e.message}"
         if e.is_a?(Liquid::UndefinedVariable)
           msg << "\n" << INDENT << "and variable context:\n"
           debug_kwargs ||= kwargs.merge(secrets: Hash[secrets.collect {|k, v| [k, "<masked:#{k}>"] }])

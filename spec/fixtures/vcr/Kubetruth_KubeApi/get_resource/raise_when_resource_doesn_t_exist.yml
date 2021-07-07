@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://127.0.0.1:57313/api/v1/namespaces/kubetruth-test-ns/configmaps/rspec-examplegroups-kubetruthkubeapi-getresourceraise-when-resource-doesn-t-exist
+    uri: https://127.0.0.1:57877/api/v1/namespaces/kubetruth-test-ns/configmaps/rspec-examplegroups-kubetruthkubeapi-getresourceraise-when-resource-doesn-t-exist
     body:
       encoding: US-ASCII
       string: ''
@@ -10,13 +10,13 @@ http_interactions:
       Accept:
       - "*/*"
       User-Agent:
-      - rest-client/2.1.0 (darwin20 x86_64) ruby/2.7.3p183
+      - rest-client/2.1.0 (darwin20 x86_64) ruby/3.0.1p64
       Authorization:
       - Bearer <BEARER_TOKEN>
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
-      - 127.0.0.1:57313
+      - 127.0.0.1:57877
   response:
     status:
       code: 404
@@ -27,11 +27,11 @@ http_interactions:
       Content-Type:
       - application/json
       X-Kubernetes-Pf-Flowschema-Uid:
-      - 9b5afc59-7ea0-4501-9072-3f23db423e39
+      - 02427be4-f002-4970-8ee0-0fa5f4944f2a
       X-Kubernetes-Pf-Prioritylevel-Uid:
-      - 124510d1-44c7-4f57-9dc3-35b94270e951
+      - db8c2099-cf3b-463e-95f2-3f2c6044fc34
       Date:
-      - Thu, 01 Jul 2021 17:42:18 GMT
+      - Wed, 07 Jul 2021 19:48:59 GMT
       Content-Length:
       - '342'
     body:
@@ -41,5 +41,5 @@ http_interactions:
         not found","reason":"NotFound","details":{"name":"rspec-examplegroups-kubetruthkubeapi-getresourceraise-when-resource-doesn-t-exist","kind":"configmaps"},"code":404}
 
         '
-  recorded_at: Thu, 01 Jul 2021 17:42:18 GMT
+  recorded_at: Wed, 07 Jul 2021 19:48:59 GMT
 recorded_with: VCR 6.0.0

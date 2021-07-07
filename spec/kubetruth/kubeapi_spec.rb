@@ -94,6 +94,15 @@ module Kubetruth
         expect(described_class.new(namespace: "foo").namespace).to eq("foo")
       end
 
+      it "adds options when running in kube" do
+        expect(File).to receive(:read).with(KubeApi::NAMESPACE_PATH).and_return("foo\n")
+        expect(File).to receive(:exist?).with(KubeApi::TOKEN_PATH).and_return(true)
+        expect(File).to receive(:exist?).with(KubeApi::CA_PATH).and_return(true)
+        instance = described_class.new
+        expect(instance.namespace).to eq("foo")
+        expect(instance.instance_variable_get(:@auth_options)[:bearer_token_file]).to eq(KubeApi::TOKEN_PATH)
+        expect(instance.instance_variable_get(:@ssl_options)[:ca_file]).to eq(KubeApi::CA_PATH)
+      end
     end
 
     describe "#api_url" do
@@ -207,7 +216,7 @@ module Kubetruth
       end
 
       it "sets labels when creating namespace" do
-        kapi = described_class.new(namespace: "#{namespace}-newns2", token: token, api_url: apiserver)
+        kapi = described_class.new(namespace: "#{namespace}-newns3", token: token, api_url: apiserver)
         expect { kapi.client.get_namespace(kapi.namespace) }.to raise_error(Kubeclient::ResourceNotFoundError, /namespaces.*not found/)
         ns = kapi.ensure_namespace
         expect(ns.metadata.labels.to_h).to match(hash_including(KubeApi::MANAGED_LABEL_KEY.to_sym => KubeApi::MANAGED_LABEL_VALUE))
@@ -360,52 +369,10 @@ module Kubetruth
       end
 
       it "can watch project mappings" do
-        skip("only works when vcr/webmock disabled")
-
-        test_mapping_name = "test-mapping-watch"
-        mapping_data = <<~EOF
-          apiVersion: kubetruth.cloudtruth.com/v1
-          kind: ProjectMapping
-          metadata:
-              name: #{test_mapping_name}
-          spec:
-              scope: override
-              project_selector: "^notme$"
-        EOF
-
-        # p kubeapi.crdclient.get_project_mappings(namespace: namespace).resourceVersion
-        # p kubeapi.crdclient.get_project_mappings(namespace: namespace).collect {|r| r.metadata.name }
-        # p kubeapi.get_project_mappings
-
-        watcher = kubeapi.watch_project_mappings
-        begin
-          Thread.new do
-            watcher.each do |notice|
-              # p notice.type
-              # p notice.object.metadata.name
-              # p notice.object
-              expect(notice.object.metadata.name).to eq(test_mapping_name)
-              break
-            end
-          end
-
-          sleep(1)
-
-          # need an admin token for this to work or temporarily add to
-          # projectmappings permissions on installed role
-          resource = Kubeclient::Resource.new
-          resource.metadata = {}
-          resource.metadata.name = test_mapping_name
-          resource.metadata.namespace = namespace
-          resource.spec = {scope: "override", project_selector: "^notme$"}
-          kubeapi.crdclient.create_project_mapping(resource)
-
-          # sysrun(%Q[minikube kubectl -- --namespace #{namespace} patch pm kubetruth-test-app-root --type json --patch '[{"op": "replace", "path": "/spec/included_projects", "value": ["Base"]}]'])
-          # sysrun(%Q[minikube kubectl -- --namespace #{namespace} apply -f -], stdin_data: mapping_data)
-          sleep(1)
-        ensure
-          watcher.finish
-        end
+        existing_ver = kubeapi.crd_client.get_project_mappings.resourceVersion
+        block = Proc.new {}
+        expect(kubeapi.crd_client).to receive(:watch_project_mappings).with(resource_version: existing_ver, &block)
+        kubeapi.watch_project_mappings(&block)
       end
 
     end

@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://127.0.0.1:60761/api/v1/namespaces/kubetruth-test-ns/secrets/rspec-examplegroups-kubetruthkubeapi-applyresourcecreates-other-types-of-resources
+    uri: https://127.0.0.1:57877/api/v1/namespaces/kubetruth-test-ns/secrets/rspec-examplegroups-kubetruthkubeapi-applyresourcecreates-other-types-of-resources
     body:
       encoding: US-ASCII
       string: ''
@@ -10,13 +10,13 @@ http_interactions:
       Accept:
       - "*/*"
       User-Agent:
-      - rest-client/2.1.0 (darwin20 x86_64) ruby/2.7.3p183
+      - rest-client/2.1.0 (darwin20 x86_64) ruby/3.0.1p64
       Authorization:
       - Bearer <BEARER_TOKEN>
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
-      - 127.0.0.1:60761
+      - 127.0.0.1:57877
   response:
     status:
       code: 404
@@ -27,11 +27,11 @@ http_interactions:
       Content-Type:
       - application/json
       X-Kubernetes-Pf-Flowschema-Uid:
-      - c6d9dbd7-dd7c-4844-9970-a2c737a707e7
+      - 02427be4-f002-4970-8ee0-0fa5f4944f2a
       X-Kubernetes-Pf-Prioritylevel-Uid:
-      - 3bc95a2c-9c78-4c16-8ee2-9c0b68ead8f6
+      - db8c2099-cf3b-463e-95f2-3f2c6044fc34
       Date:
-      - Wed, 16 Jun 2021 15:28:48 GMT
+      - Wed, 07 Jul 2021 19:49:02 GMT
       Content-Length:
       - '338'
     body:
@@ -41,28 +41,28 @@ http_interactions:
         not found","reason":"NotFound","details":{"name":"rspec-examplegroups-kubetruthkubeapi-applyresourcecreates-other-types-of-resources","kind":"secrets"},"code":404}
 
         '
-  recorded_at: Wed, 16 Jun 2021 15:28:48 GMT
+  recorded_at: Wed, 07 Jul 2021 19:49:02 GMT
 - request:
     method: patch
-    uri: https://127.0.0.1:60761/api/v1/namespaces/kubetruth-test-ns/secrets/rspec-examplegroups-kubetruthkubeapi-applyresourcecreates-other-types-of-resources?fieldManager=kubetruth&force=true
+    uri: https://127.0.0.1:57877/api/v1/namespaces/kubetruth-test-ns/secrets/rspec-examplegroups-kubetruthkubeapi-applyresourcecreates-other-types-of-resources?fieldManager=kubetruth&force=true
     body:
       encoding: UTF-8
-      string: '{"apiVersion":"v1","kind":"Secret","metadata":{"name":"rspec-examplegroups-kubetruthkubeapi-applyresourcecreates-other-types-of-resources","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"namespace":"kubetruth-test-ns"},"data":{"bar":"YmF6"}}'
+      string: '{"apiVersion":"v1","kind":"Secret","metadata":{"namespace":"kubetruth-test-ns","name":"rspec-examplegroups-kubetruthkubeapi-applyresourcecreates-other-types-of-resources"},"data":{"bar":"YmF6"}}'
     headers:
       Accept:
       - "*/*"
       User-Agent:
-      - rest-client/2.1.0 (darwin20 x86_64) ruby/2.7.3p183
+      - rest-client/2.1.0 (darwin20 x86_64) ruby/3.0.1p64
       Content-Type:
       - application/apply-patch+yaml
       Authorization:
       - Bearer <BEARER_TOKEN>
       Content-Length:
-      - '248'
+      - '194'
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
-      - 127.0.0.1:60761
+      - 127.0.0.1:57877
   response:
     status:
       code: 201
@@ -73,22 +73,22 @@ http_interactions:
       Content-Type:
       - application/json
       X-Kubernetes-Pf-Flowschema-Uid:
-      - c6d9dbd7-dd7c-4844-9970-a2c737a707e7
+      - 02427be4-f002-4970-8ee0-0fa5f4944f2a
       X-Kubernetes-Pf-Prioritylevel-Uid:
-      - 3bc95a2c-9c78-4c16-8ee2-9c0b68ead8f6
+      - db8c2099-cf3b-463e-95f2-3f2c6044fc34
       Date:
-      - Wed, 16 Jun 2021 15:28:48 GMT
+      - Wed, 07 Jul 2021 19:49:02 GMT
       Content-Length:
-      - '612'
+      - '494'
     body:
       encoding: UTF-8
-      string: '{"kind":"Secret","apiVersion":"v1","metadata":{"name":"rspec-examplegroups-kubetruthkubeapi-applyresourcecreates-other-types-of-resources","namespace":"kubetruth-test-ns","uid":"c11e95db-3d86-442e-9e9b-14390ccb8500","resourceVersion":"45396","creationTimestamp":"2021-06-16T15:28:48Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"kubetruth","operation":"Apply","apiVersion":"v1","time":"2021-06-16T15:28:48Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{"f:bar":{}},"f:metadata":{"f:labels":{"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"YmF6"},"type":"Opaque"}
+      string: '{"kind":"Secret","apiVersion":"v1","metadata":{"name":"rspec-examplegroups-kubetruthkubeapi-applyresourcecreates-other-types-of-resources","namespace":"kubetruth-test-ns","uid":"b81aa263-d31a-4d64-95a9-2cc7da8f2002","resourceVersion":"14341","creationTimestamp":"2021-07-07T19:49:02Z","managedFields":[{"manager":"kubetruth","operation":"Apply","apiVersion":"v1","time":"2021-07-07T19:49:02Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{"f:bar":{}}}}]},"data":{"bar":"YmF6"},"type":"Opaque"}
 
         '
-  recorded_at: Wed, 16 Jun 2021 15:28:48 GMT
+  recorded_at: Wed, 07 Jul 2021 19:49:02 GMT
 - request:
     method: get
-    uri: https://127.0.0.1:60761/api/v1/namespaces/kubetruth-test-ns/secrets/rspec-examplegroups-kubetruthkubeapi-applyresourcecreates-other-types-of-resources
+    uri: https://127.0.0.1:57877/api/v1/namespaces/kubetruth-test-ns/secrets/rspec-examplegroups-kubetruthkubeapi-applyresourcecreates-other-types-of-resources
     body:
       encoding: US-ASCII
       string: ''
@@ -96,13 +96,13 @@ http_interactions:
       Accept:
       - "*/*"
       User-Agent:
-      - rest-client/2.1.0 (darwin20 x86_64) ruby/2.7.3p183
+      - rest-client/2.1.0 (darwin20 x86_64) ruby/3.0.1p64
       Authorization:
       - Bearer <BEARER_TOKEN>
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
-      - 127.0.0.1:60761
+      - 127.0.0.1:57877
   response:
     status:
       code: 200
@@ -113,17 +113,17 @@ http_interactions:
       Content-Type:
       - application/json
       X-Kubernetes-Pf-Flowschema-Uid:
-      - c6d9dbd7-dd7c-4844-9970-a2c737a707e7
+      - 02427be4-f002-4970-8ee0-0fa5f4944f2a
       X-Kubernetes-Pf-Prioritylevel-Uid:
-      - 3bc95a2c-9c78-4c16-8ee2-9c0b68ead8f6
+      - db8c2099-cf3b-463e-95f2-3f2c6044fc34
       Date:
-      - Wed, 16 Jun 2021 15:28:48 GMT
+      - Wed, 07 Jul 2021 19:49:02 GMT
       Content-Length:
-      - '612'
+      - '494'
     body:
       encoding: UTF-8
-      string: '{"kind":"Secret","apiVersion":"v1","metadata":{"name":"rspec-examplegroups-kubetruthkubeapi-applyresourcecreates-other-types-of-resources","namespace":"kubetruth-test-ns","uid":"c11e95db-3d86-442e-9e9b-14390ccb8500","resourceVersion":"45396","creationTimestamp":"2021-06-16T15:28:48Z","labels":{"app.kubernetes.io/managed-by":"kubetruth"},"managedFields":[{"manager":"kubetruth","operation":"Apply","apiVersion":"v1","time":"2021-06-16T15:28:48Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{"f:bar":{}},"f:metadata":{"f:labels":{"f:app.kubernetes.io/managed-by":{}}}}}]},"data":{"bar":"YmF6"},"type":"Opaque"}
+      string: '{"kind":"Secret","apiVersion":"v1","metadata":{"name":"rspec-examplegroups-kubetruthkubeapi-applyresourcecreates-other-types-of-resources","namespace":"kubetruth-test-ns","uid":"b81aa263-d31a-4d64-95a9-2cc7da8f2002","resourceVersion":"14341","creationTimestamp":"2021-07-07T19:49:02Z","managedFields":[{"manager":"kubetruth","operation":"Apply","apiVersion":"v1","time":"2021-07-07T19:49:02Z","fieldsType":"FieldsV1","fieldsV1":{"f:data":{"f:bar":{}}}}]},"data":{"bar":"YmF6"},"type":"Opaque"}
 
         '
-  recorded_at: Wed, 16 Jun 2021 15:28:48 GMT
+  recorded_at: Wed, 07 Jul 2021 19:49:02 GMT
 recorded_with: VCR 6.0.0

@@ -115,6 +115,32 @@ module Kubetruth
 
       end
 
+      it "treats Kubetruth::Error differently in block failures" do
+        etl = described_class.new(**init_args)
+
+        watcher = double()
+        expect(@kubeapi).to receive(:watch_project_mappings).and_return(watcher).twice
+        expect(watcher).to receive(:each).twice
+        expect(watcher).to receive(:finish).twice
+        expect(etl).to receive(:apply) do
+          Kubetruth::Template.new("{{bad}}").render
+        end.twice
+
+        count = 0
+        expect(etl).to receive(:interruptible_sleep).
+          with(0.2).twice { |m, *args| count += 1; raise ForceExit if count > 1 }
+
+        begin
+          etl.with_polling(0.2) do
+            etl.apply
+          end
+        rescue ForceExit
+        end
+        expect(count).to eq(2)
+        expect(Logging.contents).to_not match(/Failure while applying config transforms/)
+        expect(Logging.contents).to match(/Template failed to render/)
+      end
+
       it "interrupts sleep on watch event" do
         etl = described_class.new(**init_args)
 

@@ -25,7 +25,7 @@ http_interactions:
       Accept:
       - application/json
       User-Agent:
-      - kubetruth/0.5.0
+      - kubetruth/0.6.0
       Content-Type:
       - application/json
       Authorization:
@@ -36,7 +36,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 29 Jun 2021 15:09:33 GMT
+      - Wed, 07 Jul 2021 16:59:10 GMT
       Content-Type:
       - application/json; charset=utf-8
       Transfer-Encoding:
@@ -62,9 +62,9 @@ http_interactions:
       Cache-Control:
       - max-age=0, private, must-revalidate
       X-Request-Id:
-      - 73ce223f-21bb-4218-933f-4c881099392b
+      - a0b7c9de-4bcf-4f4a-b209-7084e0d96dc7
       X-Runtime:
-      - '1.165427'
+      - '1.298296'
     body:
       encoding: UTF-8
       string: '{"data":{"__schema":{"queryType":{"name":"Query"},"mutationType":{"name":"Mutation"},"subscriptionType":null,"types":[{"kind":"OBJECT","name":"AuditLogSnapshot","description":null,"fields":[{"name":"createdAt","description":null,"args":[],"type":{"kind":"NON_NULL","name":null,"ofType":{"kind":"SCALAR","name":"ISO8601DateTime","ofType":null}},"isDeprecated":false,"deprecationReason":null},{"name":"fileUrl","description":null,"args":[],"type":{"kind":"SCALAR","name":"String","ofType":null},"isDeprecated":false,"deprecationReason":null},{"name":"id","description":null,"args":[],"type":{"kind":"NON_NULL","name":null,"ofType":{"kind":"SCALAR","name":"ID","ofType":null}},"isDeprecated":false,"deprecationReason":null},{"name":"policy","description":null,"args":[],"type":{"kind":"NON_NULL","name":null,"ofType":{"kind":"OBJECT","name":"NodePolicy","ofType":null}},"isDeprecated":false,"deprecationReason":null},{"name":"status","description":null,"args":[],"type":{"kind":"NON_NULL","name":null,"ofType":{"kind":"ENUM","name":"SnapshotStatusEnum","ofType":null}},"isDeprecated":false,"deprecationReason":null}],"inputFields":null,"interfaces":[{"kind":"INTERFACE","name":"Node","ofType":null},{"kind":"INTERFACE","name":"HasPolicy","ofType":null}],"enumValues":null,"possibleTypes":null},{"kind":"OBJECT","name":"AuditLogSnapshotConnection","description":"The
@@ -542,5 +542,5 @@ http_interactions:
         why this element was deprecated, usually also including a suggestion for how
         to access supported similar data. Formatted in [Markdown](https://daringfireball.net/projects/markdown/).","type":{"kind":"SCALAR","name":"String","ofType":null},"defaultValue":"\"No
         longer supported\""}]}]}}}'
-  recorded_at: Tue, 29 Jun 2021 15:09:33 GMT
+  recorded_at: Wed, 07 Jul 2021 16:59:10 GMT
 recorded_with: VCR 6.0.0

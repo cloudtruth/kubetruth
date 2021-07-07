@@ -26,13 +26,10 @@ module Kubetruth
 
       def convert_types(hash)
         selector_key_pattern = /_selector$/
-        template_key_pattern = /_template$/
         hash.merge(hash) do |k, v|
           case k
             when selector_key_pattern
               Regexp.new(v)
-            when template_key_pattern
-              Kubetruth::Template.new(v)
             when /^resource_templates$/
               Hash[v.collect {|k, t| [k.to_s, Kubetruth::Template.new(t)] }]
             when /^context$/

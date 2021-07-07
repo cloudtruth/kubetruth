@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://127.0.0.1:53509/apis/kubetruth.cloudtruth.com/v1/namespaces/kubetruth-test-ns/projectmappings/kubetruth-test-app-override
+    uri: https://127.0.0.1:57877/apis/kubetruth.cloudtruth.com/v1/namespaces/kubetruth-test-ns/projectmappings/kubetruth-test-app-override
     body:
       encoding: US-ASCII
       string: ''
@@ -10,13 +10,13 @@ http_interactions:
       Accept:
       - "*/*"
       User-Agent:
-      - rest-client/2.1.0 (darwin20 x86_64) ruby/2.7.3p183
+      - rest-client/2.1.0 (darwin20 x86_64) ruby/3.0.1p64
       Authorization:
       - Bearer <BEARER_TOKEN>
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
-      - 127.0.0.1:53509
+      - 127.0.0.1:57877
   response:
     status:
       code: 404
@@ -27,11 +27,11 @@ http_interactions:
       Content-Type:
       - application/json
       X-Kubernetes-Pf-Flowschema-Uid:
-      - 1910b9ce-bb4c-4ead-954b-b2f92b3f1189
+      - 02427be4-f002-4970-8ee0-0fa5f4944f2a
       X-Kubernetes-Pf-Prioritylevel-Uid:
-      - 5dde809a-f2ca-4e57-bb08-7efb121729d9
+      - db8c2099-cf3b-463e-95f2-3f2c6044fc34
       Date:
-      - Thu, 01 Jul 2021 20:31:11 GMT
+      - Wed, 07 Jul 2021 19:49:03 GMT
       Content-Length:
       - '304'
     body:
@@ -40,10 +40,10 @@ http_interactions:
         \"kubetruth-test-app-override\" not found","reason":"NotFound","details":{"name":"kubetruth-test-app-override","group":"kubetruth.cloudtruth.com","kind":"projectmappings"},"code":404}
 
         '
-  recorded_at: Thu, 01 Jul 2021 20:31:11 GMT
+  recorded_at: Wed, 07 Jul 2021 19:49:03 GMT
 - request:
     method: patch
-    uri: https://127.0.0.1:53509/apis/kubetruth.cloudtruth.com/v1/namespaces/kubetruth-test-ns/projectmappings/kubetruth-test-app-override?fieldManager=kubetruth&force=true
+    uri: https://127.0.0.1:57877/apis/kubetruth.cloudtruth.com/v1/namespaces/kubetruth-test-ns/projectmappings/kubetruth-test-app-override?fieldManager=kubetruth&force=true
     body:
       encoding: UTF-8
       string: '{"apiVersion":"kubetruth.cloudtruth.com/v1","kind":"ProjectMapping","metadata":{"namespace":"kubetruth-test-ns","name":"kubetruth-test-app-override"},"spec":{"skip":true}}'
@@ -51,7 +51,7 @@ http_interactions:
       Accept:
       - "*/*"
       User-Agent:
-      - rest-client/2.1.0 (darwin20 x86_64) ruby/2.7.3p183
+      - rest-client/2.1.0 (darwin20 x86_64) ruby/3.0.1p64
       Content-Type:
       - application/apply-patch+yaml
       Authorization:
@@ -61,7 +61,7 @@ http_interactions:
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
-      - 127.0.0.1:53509
+      - 127.0.0.1:57877
   response:
     status:
       code: 201
@@ -72,22 +72,22 @@ http_interactions:
       Content-Type:
       - application/json
       X-Kubernetes-Pf-Flowschema-Uid:
-      - 1910b9ce-bb4c-4ead-954b-b2f92b3f1189
+      - 02427be4-f002-4970-8ee0-0fa5f4944f2a
       X-Kubernetes-Pf-Prioritylevel-Uid:
-      - 5dde809a-f2ca-4e57-bb08-7efb121729d9
+      - db8c2099-cf3b-463e-95f2-3f2c6044fc34
       Date:
-      - Thu, 01 Jul 2021 20:31:11 GMT
+      - Wed, 07 Jul 2021 19:49:03 GMT
       Content-Length:
-      - '514'
+      - '515'
     body:
       encoding: UTF-8
-      string: '{"apiVersion":"kubetruth.cloudtruth.com/v1","kind":"ProjectMapping","metadata":{"creationTimestamp":"2021-07-01T20:31:11Z","generation":1,"managedFields":[{"apiVersion":"kubetruth.cloudtruth.com/v1","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:skip":{}}},"manager":"kubetruth","operation":"Apply","time":"2021-07-01T20:31:11Z"}],"name":"kubetruth-test-app-override","namespace":"kubetruth-test-ns","resourceVersion":"2280","uid":"4e962267-82f2-4d66-a19d-8a2033c37493"},"spec":{"scope":"override","skip":true}}
+      string: '{"apiVersion":"kubetruth.cloudtruth.com/v1","kind":"ProjectMapping","metadata":{"creationTimestamp":"2021-07-07T19:49:03Z","generation":1,"managedFields":[{"apiVersion":"kubetruth.cloudtruth.com/v1","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:skip":{}}},"manager":"kubetruth","operation":"Apply","time":"2021-07-07T19:49:03Z"}],"name":"kubetruth-test-app-override","namespace":"kubetruth-test-ns","resourceVersion":"14342","uid":"b34f04f2-7678-47f3-8d09-6be3e02c9d75"},"spec":{"scope":"override","skip":true}}
 
         '
-  recorded_at: Thu, 01 Jul 2021 20:31:11 GMT
+  recorded_at: Wed, 07 Jul 2021 19:49:03 GMT
 - request:
     method: get
-    uri: https://127.0.0.1:53509/apis/kubetruth.cloudtruth.com/v1/namespaces/kubetruth-test-ns/projectmappings/kubetruth-test-app-override
+    uri: https://127.0.0.1:57877/apis/kubetruth.cloudtruth.com/v1/namespaces/kubetruth-test-ns/projectmappings/kubetruth-test-app-override
     body:
       encoding: US-ASCII
       string: ''
@@ -95,13 +95,13 @@ http_interactions:
       Accept:
       - "*/*"
       User-Agent:
-      - rest-client/2.1.0 (darwin20 x86_64) ruby/2.7.3p183
+      - rest-client/2.1.0 (darwin20 x86_64) ruby/3.0.1p64
       Authorization:
       - Bearer <BEARER_TOKEN>
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
       Host:
-      - 127.0.0.1:53509
+      - 127.0.0.1:57877
   response:
     status:
       code: 200
@@ -112,17 +112,17 @@ http_interactions:
       Content-Type:
       - application/json
       X-Kubernetes-Pf-Flowschema-Uid:
-      - 1910b9ce-bb4c-4ead-954b-b2f92b3f1189
+      - 02427be4-f002-4970-8ee0-0fa5f4944f2a
       X-Kubernetes-Pf-Prioritylevel-Uid:
-      - 5dde809a-f2ca-4e57-bb08-7efb121729d9
+      - db8c2099-cf3b-463e-95f2-3f2c6044fc34
       Date:
-      - Thu, 01 Jul 2021 20:31:11 GMT
+      - Wed, 07 Jul 2021 19:49:03 GMT
       Content-Length:
-      - '514'
+      - '515'
     body:
       encoding: UTF-8
-      string: '{"apiVersion":"kubetruth.cloudtruth.com/v1","kind":"ProjectMapping","metadata":{"creationTimestamp":"2021-07-01T20:31:11Z","generation":1,"managedFields":[{"apiVersion":"kubetruth.cloudtruth.com/v1","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:skip":{}}},"manager":"kubetruth","operation":"Apply","time":"2021-07-01T20:31:11Z"}],"name":"kubetruth-test-app-override","namespace":"kubetruth-test-ns","resourceVersion":"2280","uid":"4e962267-82f2-4d66-a19d-8a2033c37493"},"spec":{"scope":"override","skip":true}}
+      string: '{"apiVersion":"kubetruth.cloudtruth.com/v1","kind":"ProjectMapping","metadata":{"creationTimestamp":"2021-07-07T19:49:03Z","generation":1,"managedFields":[{"apiVersion":"kubetruth.cloudtruth.com/v1","fieldsType":"FieldsV1","fieldsV1":{"f:spec":{"f:skip":{}}},"manager":"kubetruth","operation":"Apply","time":"2021-07-07T19:49:03Z"}],"name":"kubetruth-test-app-override","namespace":"kubetruth-test-ns","resourceVersion":"14342","uid":"b34f04f2-7678-47f3-8d09-6be3e02c9d75"},"spec":{"scope":"override","skip":true}}
 
         '
-  recorded_at: Thu, 01 Jul 2021 20:31:11 GMT
+  recorded_at: Wed, 07 Jul 2021 19:49:03 GMT
 recorded_with: VCR 6.0.0

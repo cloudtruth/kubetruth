@@ -62,7 +62,7 @@ module Kubetruth
         run_time = Benchmark.measure do
           begin
             block.call
-          rescue Kubetruth::Template::Error => e
+          rescue ::Kubetruth::Error => e
             logger.error e.message
           rescue => e
             logger.log_exception(e, "Failure while applying config transforms")

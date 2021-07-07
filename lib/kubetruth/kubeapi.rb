@@ -7,25 +7,27 @@ module Kubetruth
 
     attr_accessor :namespace
 
+    NAMESPACE_PATH = '/var/run/secrets/kubernetes.io/serviceaccount/namespace'
+    CA_PATH = '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt'
+    TOKEN_PATH = '/var/run/secrets/kubernetes.io/serviceaccount/token'
+
     MANAGED_LABEL_KEY = "app.kubernetes.io/managed-by"
     MANAGED_LABEL_VALUE = "kubetruth"
-    def initialize(namespace: nil, token: nil, api_url: nil)
-      namespace_path = '/var/run/secrets/kubernetes.io/serviceaccount/namespace'
-      ca_path = '/var/run/secrets/kubernetes.io/serviceaccount/ca.crt'
-      token_path = '/var/run/secrets/kubernetes.io/serviceaccount/token'
 
-      @namespace = namespace.present? ? namespace : File.read(namespace_path).chomp
+    def initialize(namespace: nil, token: nil, api_url: nil)
+
+      @namespace = namespace.present? ? namespace : File.read(NAMESPACE_PATH).chomp
 
       @auth_options = {}
       if token
         @auth_options[:bearer_token] = token
-      elsif File.exist?(token_path)
-        @auth_options[:bearer_token_file] = token_path
+      elsif File.exist?(TOKEN_PATH)
+        @auth_options[:bearer_token_file] = TOKEN_PATH
       end
 
       @ssl_options = {}
-      if File.exist?(ca_path)
-        @ssl_options[:ca_file] = ca_path
+      if File.exist?(CA_PATH)
+        @ssl_options[:ca_file] = CA_PATH
       end
 
       @api_url = api_url || 'https://kubernetes.default.svc'
