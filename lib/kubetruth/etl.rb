@@ -5,7 +5,6 @@ require 'yaml/safe_load_stream'
 using YAMLSafeLoadStream
 
 require_relative 'config'
-require_relative 'ctapi'
 require_relative 'kubeapi'
 require_relative 'project_collection'
 
@@ -13,13 +12,12 @@ module Kubetruth
   class ETL
     include GemLogger::LoggerSupport
 
-    def initialize(kube_context:, dry_run: false)
-      @kube_context = kube_context
+    def initialize(dry_run: false)
       @dry_run = dry_run
     end
 
     def kubeapi
-      @kubeapi ||= KubeApi.new(**@kube_context)
+      KubeApi.instance
     end
 
     def interruptible_sleep(interval)

@@ -3,29 +3,31 @@ require 'kubetruth/ctapi'
 
 module Kubetruth
 
-  describe "CtApi", :vcr do
+  describe CtApi, :vcr do
 
-    before(:each) do |ex|
-      # Do this so that tests perform the same http requests whether they get
-      # run individually or as part of the entire file
-      ::Kubetruth.send(:remove_const, :CtApi) if defined? ::Kubetruth::CtApi
-    end
+    let(:ctapi) {
+      # Spin up a local dev server and create a user with an api key to use
+      # here, or use cloudtruth actual
+      key = 'QINuBCMG.5p9I9xZgyirtlYHZ5E3G3j0tCZW34EE6' || ENV['CLOUDTRUTH_API_KEY']
+      url = ENV['CLOUDTRUTH_API_URL'] || "https://localhost:8000"
+      instance = ::Kubetruth::CtApi.new(api_key: key, api_url: url)
+      instance.client.config.debugging = false # ssl debug logging is messy, so only turn this on as desired
+      instance.client.config.verify_ssl = false
+      instance
+    }
 
-    let(:ctapi) { ::Kubetruth::ctapi_setup(api_key: ENV['CLOUDTRUTH_API_KEY']) }
+    describe "instance" do
 
-    describe "class definition", :vcr do
+      it "fails if not configured" do
+        expect { described_class.instance }.to raise_error(ArgumentError, /has not been configured/)
+      end
 
-      it "defines class" do
-        expect(::Kubetruth.const_defined?(:CtApi)).to be_falsey
-        clazz = ctapi
-        expect(::Kubetruth.const_defined?(:CtApi)).to be_truthy
-        expect(::Kubetruth::CtApi).to be_a(Class)
-        expect(clazz).to eq(::Kubetruth::CtApi)
-
-        instance = ::Kubetruth::CtApi.new
-        expect(instance).to be_an_instance_of(::Kubetruth::CtApi)
-        instance.logger.debug "Hello"
-        expect(Logging.contents).to match(/DEBUG\s*CtApi Hello/)
+      it "succeeds when configured" do
+        described_class.configure(api_key: "sekret", api_url: "http://localhost")
+        expect(described_class.instance).to be_an_instance_of(described_class)
+        expect(described_class.instance).to equal(described_class.instance)
+        expect(described_class.instance.instance_variable_get(:@api_key)).to eq("sekret")
+        expect(described_class.instance.instance_variable_get(:@api_url)).to eq("http://localhost")
       end
 
     end
@@ -33,14 +35,13 @@ module Kubetruth
     describe "#environments" do
 
       it "gets environments" do
-        api = ctapi.new
-        expect(api.environments).to match hash_including("default")
-        expect(api.environment_names).to match array_including("default")
+        expect(ctapi.environments).to match hash_including("default")
+        expect(ctapi.environment_names).to match array_including("default")
       end
 
       it "memoizes environments" do
-        api = ctapi.new
-        expect(api.environments).to equal(api.environments)
+        expect(ctapi.environments).to equal(ctapi.environments)
+        expect(ctapi.environment_names).to eq(ctapi.environment_names) # Hash#keys creates new object
       end
 
     end
@@ -48,21 +49,18 @@ module Kubetruth
     describe "#environment_id" do
 
       it "gets id" do
-        api = ctapi.new
-        expect(api.environments).to match hash_including("default")
-        expect(api.environment_id("default")).to be_present
+        expect(ctapi.environments).to match hash_including("default")
+        expect(ctapi.environment_id("default")).to be_present
         expect(Logging.contents).to_not match(/Unknown environment, retrying/)
       end
 
       it "raises if environment doesn't exist" do
-        api = ctapi.new
-        expect { api.environment_id("badenv") }.to raise_error(Kubetruth::Error, /Unknown environment/)
+        expect { ctapi.environment_id("badenv") }.to raise_error(Kubetruth::Error, /Unknown environment/)
       end
 
       it "retries if environment doesn't exist" do
-        api = ctapi.new
-        expect(api).to receive(:environments).and_call_original.twice
-        expect { api.environment_id("badenv") }.to raise_error(Kubetruth::Error, /Unknown environment/)
+        expect(ctapi).to receive(:environments).and_call_original.twice
+        expect { ctapi.environment_id("badenv") }.to raise_error(Kubetruth::Error, /Unknown environment/)
         expect(Logging.contents).to match(/Unknown environment, retrying/)
       end
 
@@ -71,61 +69,60 @@ module Kubetruth
     describe "#projects" do
 
       it "gets projects" do
-        api = ctapi.new
-        expect(api.projects).to match hash_including("default")
-        expect(api.project_names).to match array_including("default")
+        expect(ctapi.projects).to match hash_including("MyFirstProject")
+        expect(ctapi.project_names).to match array_including("MyFirstProject")
       end
 
-      it "doesn't cache projects " do
-        api = ctapi.new
-        expect(api.projects).to_not equal(api.projects)
-        expect(api.project_names).to_not equal(api.project_names)
+      it "doesn't memoize projects " do
+        expect(ctapi.projects).to_not equal(ctapi.projects)
+        expect(ctapi.project_names).to_not equal(ctapi.project_names)
       end
 
     end
 
     describe "#parameters" do
 
-      it "gets parameters without a search" do
-        api = ctapi.new
-        expect(api.parameters).to match array_including(Parameter)
+      before(:each) do
+        @project_name = "TestProject"
+        existing = ctapi.apis[:projects].projects_list.results
+        existing.each do |proj|
+          if  proj.name == @project_name
+            ctapi.apis[:projects].projects_destroy(proj.id)
+          end
+        end
+
+        ctapi.apis[:projects].projects_create(CloudtruthClient::ProjectCreate.new(name: @project_name))
+        @project_id = ctapi.projects[@project_name]
+        @one_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "one"))
+        @two_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "two"))
+      end
+
+      it "gets parameters" do
+        params = ctapi.parameters(project: @project_name)
+        expect(params).to match array_including(Parameter)
+        expect(params.collect(&:key)).to eq(["one", "two"])
       end
 
       it "doesn't expose secret in debug log" do
-        api = ctapi.new
-        params = api.parameters
+        three_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "three", secret: true))
+        ctapi.apis[:projects].projects_parameters_values_create(three_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), dynamic: false, static_value: "defaultthree"))
+        params = ctapi.parameters(project: @project_name)
         secrets = params.find {|p| p.secret }
         expect(secrets.size).to_not eq(0)
         expect(Logging.contents).to include("<masked>")
-      end
-
-      it "uses project to get values" do
-        api = ctapi.new
-        expect(api.parameters(project: "default")).to match array_including(Parameter)
+        expect(Logging.contents).to_not include("defaultthree")
       end
 
       it "uses environment to get values" do
-        api = ctapi.new
-        dev_id = api.environments["development"]
-        allow(ctapi.client).to receive(:query).and_call_original
-        expect(ctapi.client).to receive(:query).
-            with(ctapi.queries[:ParametersQuery],
-                 variables: hash_including(:environmentId => dev_id)).and_call_original
-        expect(api.parameters(environment: "development")).to match array_including(Parameter)
-      end
+        ctapi.apis[:projects].projects_parameters_values_create(@one_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), dynamic: false, static_value: "defaultone"))
+        ctapi.apis[:projects].projects_parameters_values_create(@one_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("development"), dynamic: false, static_value: "developmentone"))
+        ctapi.apis[:projects].projects_parameters_values_create(@two_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), dynamic: false, static_value: "defaulttwo"))
+        ctapi.apis[:projects].projects_parameters_values_create(@two_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("development"), dynamic: false, static_value: "developmenttwo"))
 
-      it "uses searchTerm to get parameters" do
-        api = ctapi.new
-
-        all = api.parameters
-        expect(all.size).to be > 0
-
-        expect(api.parameters(searchTerm: "nothingtoseehere")).to eq([])
-
-        some = api.parameters(searchTerm: "aParam")
-        expect(some.size).to be > 0
-        expect(some.size).to be < all.size
-        some.each {|p| expect(p.key).to include("aParam") }
+        params = ctapi.parameters(project: @project_name, environment: "default")
+        expect(params.collect(&:value)).to eq(["defaultone", "defaulttwo"])
+        params = ctapi.parameters(project: @project_name, environment: "development")
+        expect(params.collect(&:value)).to eq(["developmentone", "developmenttwo"])
       end
 
     end

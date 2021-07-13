@@ -1,14 +1,14 @@
 require 'yaml'
 require 'open-uri'
 
-ROOT_DIR = File.expand_path(__dir__)
-APP = YAML.load(File.read("#{ROOT_DIR}/.app.yml"), filename: "#{ROOT_DIR}/.app.yml", symbolize_names: true)
-TMP_DIR = "#{ROOT_DIR}/tmp"
+APP = YAML.load(File.read(".app.yml"), filename: ".app.yml", symbolize_names: true)
+TMP_DIR = "tmp"
 HELMV2_DIR = "#{TMP_DIR}/helmv2"
 HELM_PKG_DIR = "#{TMP_DIR}/packaged-chart"
+CLIENT_DIR = "client"
 
 require 'rake/clean'
-CLEAN << TMP_DIR
+CLEAN << TMP_DIR << CLIENT_DIR
 
 def get_var(name, env_name: name.to_s.upcase, yml_name: name.to_s.downcase.to_sym, prompt: true, required: true)
   value = ENV[env_name]
@@ -41,8 +41,8 @@ end
 directory HELMV2_DIR
 
 file "#{HELMV2_DIR}/#{APP[:name]}/Chart.yaml" => [HELMV2_DIR] do
-  cp_r "#{ROOT_DIR}/helm/#{APP[:name]}", HELMV2_DIR, preserve: true
-  cp_r "#{ROOT_DIR}/helm/helmv2/.", "#{HELMV2_DIR}/#{APP[:name]}/", preserve: true
+  cp_r "helm/#{APP[:name]}", HELMV2_DIR, preserve: true
+  cp_r "helm/helmv2/.", "#{HELMV2_DIR}/#{APP[:name]}/", preserve: true
   chart = File.read("#{HELMV2_DIR}/#{APP[:name]}/Chart.yaml")
   chart = chart.gsub(/apiVersion: v2/, "apiVersion: v1")
   chart = chart.gsub(/version: ([0-9.]*)/, 'version: \1-helmv2')
@@ -53,7 +53,7 @@ task :generate_helmv2 => ["#{HELMV2_DIR}/#{APP[:name]}/Chart.yaml"]
 
 directory HELM_PKG_DIR
 
-HELM_SRC_DIR = "#{ROOT_DIR}/helm/#{APP[:name]}"
+HELM_SRC_DIR = "helm/#{APP[:name]}"
 task :helm_build_package => [HELM_PKG_DIR] do
   sh "helm package #{HELM_SRC_DIR}", chdir: HELM_PKG_DIR
 end
@@ -80,12 +80,16 @@ end
 
 task :helm_package => [:helm_index]
 
-task :build_development do
+task :build_development => [:client] do
   sh "docker build --target development -t #{APP[:name]}-development ."
 end
 
 task :test => [:build_development] do
-  sh "docker run -e CI -e CODECOV_TOKEN #{APP[:name]}-development test"
+  if ENV['CI'] && ENV['CODECOV_TOKEN']
+    sh "set -e && ci_env=$(curl -s https://codecov.io/env | bash) && docker run -e CI -e CODECOV_TOKEN ${ci_env} #{APP[:name]}-development test"
+  else
+    sh "docker run -e CI -e CODECOV_TOKEN #{APP[:name]}-development test"
+  end
 end
 
 task :rspec do
@@ -94,7 +98,7 @@ task :rspec do
   Rake::Task[:spec].invoke
 end
 
-task :build_release do
+task :build_release => [:client] do
   sh "docker build --target release -t #{APP[:name]} ."
 end
 
@@ -111,11 +115,11 @@ end
 task :set_version do
   version = get_var('VERSION')
 
-  gsub_file("#{ROOT_DIR}/helm/#{APP[:name]}/Chart.yaml",
+  gsub_file("helm/#{APP[:name]}/Chart.yaml",
             /^version:.*/, "version: #{version}")
-  gsub_file("#{ROOT_DIR}/helm/#{APP[:name]}/Chart.yaml",
+  gsub_file("helm/#{APP[:name]}/Chart.yaml",
             /^appVersion:.*/, "appVersion: #{version}")
-  gsub_file("#{ROOT_DIR}/.app.yml",
+  gsub_file(".app.yml",
             /version:.*/, "version: #{version}")
 end
 
@@ -217,3 +221,19 @@ task :console do
   require "pry"
   Pry.start
 end
+
+file "#{CLIENT_DIR}/Gemfile" => "openapi.yml" do
+  rm_rf "client"
+  sh *%W[
+    docker run --rm
+      -v #{Dir.pwd}:/data
+      --user #{Process.uid}:#{Process.gid}
+      openapitools/openapi-generator-cli generate
+        -i /data/openapi.yml
+        -g ruby
+        -o /data/client
+        --additional-properties=gemName=cloudtruth-client
+  ]
+end
+
+task :client => "#{CLIENT_DIR}/Gemfile"

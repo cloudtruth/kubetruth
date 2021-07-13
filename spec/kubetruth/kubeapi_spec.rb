@@ -88,6 +88,23 @@ module Kubetruth
       @spec_name = "#{self.class.name}#{ex.description}".downcase.gsub(/[^\w]+/, "-")
     end
 
+    describe "instance" do
+
+      it "fails if not configured" do
+        expect { described_class.instance }.to raise_error(ArgumentError, /has not been configured/)
+      end
+
+      it "succeeds when configured" do
+        described_class.configure(namespace: "ns1", token: "token1", api_url: "http://localhost")
+        expect(described_class.instance).to be_an_instance_of(described_class)
+        expect(described_class.instance).to equal(described_class.instance)
+        expect(described_class.instance.instance_variable_get(:@namespace)).to eq("ns1")
+        expect(described_class.instance.instance_variable_get(:@auth_options)).to eq({bearer_token: "token1"})
+        expect(described_class.instance.instance_variable_get(:@api_url)).to eq("http://localhost")
+      end
+
+    end
+
     describe "initialize" do
 
       it "uses supplied namespace" do
@@ -103,6 +120,7 @@ module Kubetruth
         expect(instance.instance_variable_get(:@auth_options)[:bearer_token_file]).to eq(KubeApi::TOKEN_PATH)
         expect(instance.instance_variable_get(:@ssl_options)[:ca_file]).to eq(KubeApi::CA_PATH)
       end
+
     end
 
     describe "#api_url" do

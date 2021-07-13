@@ -21,6 +21,7 @@ module Kubetruth
       it "passes args to etl" do
         args = %w[
             --api-key abc123
+            --api-url cu
             --kube-namespace kn
             --kube-token kt
             --kube-url ku
@@ -28,17 +29,19 @@ module Kubetruth
             --polling-interval 27
         ]
 
-        expect(Kubetruth).to receive(:ctapi_setup).with({
-          api_key: "abc123"
-        })
+        expect(Kubetruth::CtApi).to receive(:configure).with({
+                                                               api_key: "abc123",
+                                                               api_url: "cu"
+                                                             })
+
+        expect(Kubetruth::KubeApi).to receive(:configure).with({
+                                                                 namespace: "kn",
+                                                                 token: "kt",
+                                                                 api_url: "ku"
+                                                             })
 
         etl = double(ETL)
-        expect(ETL).to receive(:new).with(kube_context: {
-                                              namespace: "kn",
-                                              token: "kt",
-                                              api_url: "ku"
-                                          },
-                                          dry_run: true).and_return(etl)
+        expect(ETL).to receive(:new).with(dry_run: true).and_return(etl)
         expect(etl).to receive(:apply)
         expect(etl).to receive(:with_polling).with(27).and_yield
         cli.run(args)
@@ -51,8 +54,10 @@ module Kubetruth
             Kubetruth::Logging.testing = false
             Kubetruth::Logging.setup_logging(level: :debug, color: false)
 
-            allow(Kubetruth).to receive(:ctapi_setup)
-            etl = ETL.new(kube_context: {namespace: 'ns', token: 'xyz'}, dry_run: true)
+            allow(Kubetruth::CtApi).to receive(:instance).and_return(double(Kubetruth::CtApi))
+            allow(Kubetruth::KubeApi).to receive(:instance).and_return(double(Kubetruth::KubeApi))
+
+            etl = ETL.new(dry_run: true)
             allow(ETL).to receive(:new).and_return(etl)
 
             watcher = double("watcher")
@@ -66,7 +71,7 @@ module Kubetruth
               count += 1
               exit if count > 1
             end
-            cli.run(%w[--api-key xyz --polling-interval 1])
+            cli.run(%w[--api-key xyz --kube-namespace ns1 --kube-token xyz --polling-interval 1])
           end
           sleep 0.5
           Process.kill("HUP", pid)

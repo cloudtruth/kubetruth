@@ -11,3 +11,4 @@ packaged-chart/
 old-index.yaml
 # rspec failure tracking
 .rspec_status
+client

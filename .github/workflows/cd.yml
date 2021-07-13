@@ -20,13 +20,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gems-
 
-      - name: Install Ruby version specified in `.ruby-version`
-        uses: eregon/use-ruby-action@master
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
 
-      - run: gem install --no-document bundler
-      - run: bundle config path vendor/bundle
-      - run: bundle install --jobs 4 --retry 3
-      - run: bundle exec rspec
+      - name: Run the tests
+        run: rake test
 
   deploy:
     if: startsWith(github.ref, 'refs/tags/v')

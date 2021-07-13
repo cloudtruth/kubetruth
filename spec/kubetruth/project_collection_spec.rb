@@ -12,21 +12,6 @@ module Kubetruth
       allow(collection).to receive(:ctapi).and_return(@ctapi)
     end
 
-    describe "#ctapi" do
-
-      it "is memoized" do
-        begin
-          ::Kubetruth.const_set(:CtApi, Class) if ! defined? ::Kubetruth::CtApi
-          expect(::Kubetruth::CtApi).to receive(:new).and_return(@ctapi)
-          instance = described_class.new
-          expect(instance.ctapi).to equal(instance.ctapi)
-        ensure
-          ::Kubetruth.send(:remove_const, :CtApi)
-        end
-      end
-
-    end
-
     describe "#names" do
 
       it "gets project names from ctapi" do

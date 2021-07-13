@@ -1,147 +1,126 @@
-require "graphql/client"
-require "graphql/client/http"
+require 'uri'
+require "cloudtruth-client"
 require_relative 'parameter'
 
 module Kubetruth
+  class CtApi
 
-  def self.ctapi_setup(api_key:, api_url: nil)
-    unless Kubetruth.const_defined?(:CtApi)
-      ::Logging.logger.root.debug {"Setting up CtApi"}
-      api_url ||= "https://api.cloudtruth.com/graphql"
+    @@instance = nil
 
-      clazz = Class.new do
+    def self.configure(api_key:, api_url:)
+      @@instance = self.new(api_key: api_key, api_url: api_url)
+    end
 
-        include GemLogger::LoggerSupport
+    def self.instance
+      raise ArgumentError.new("CtApi has not been configured") if @@instance.nil?
+      return @@instance
+    end
 
-        cattr_accessor :http, :schema, :client, :queries
+    include GemLogger::LoggerSupport
 
-        self.http = ::GraphQL::Client::HTTP.new(api_url) do
-          define_method :headers do |context = {}|
-            { "User-Agent": "kubetruth/#{Kubetruth::VERSION}", "Authorization": "Bearer #{api_key}" }
-          end
-        end
-        self.schema = ::GraphQL::Client.load_schema(http)
-        self.client = ::GraphQL::Client.new(schema: schema, execute: http)
-        self.client.allow_dynamic_queries = true
+    attr_reader :client, :apis
 
-        self.queries = {}
+    class ApiConfiguration < CloudtruthClient::Configuration
 
-        self.queries[:EnvironmentsQuery] = client.parse <<~GRAPHQL
-          query {
-            viewer {
-              organization {
-                environments {
-                  nodes {
-                    id
-                    name
-                  }
-                }
-              }
+      # The presence of JWTAuth in the hardcoded default auth_settings was
+      # overwriting our set api key with nil in
+      # CloudtruthClient:„:ApiClient#update_params_for_auth!
+      def auth_settings
+        {
+          'ApiKeyAuth' =>
+            {
+              type: 'api_key',
+              in: 'header',
+              key: 'Authorization',
+              value: api_key_with_prefix('ApiKeyAuth')
             }
-          }
-        GRAPHQL
-
-        self.queries[:ProjectsQuery] = client.parse <<~GRAPHQL
-          query {
-            viewer {
-              organization {
-                projects {
-                  nodes {
-                    id
-                    name
-                  }
-                }
-              }
-            }
-          }
-        GRAPHQL
-
-        self.queries[:ParametersQuery] = client.parse <<~GRAPHQL
-          query($environmentId: ID, $projectName: String, $searchTerm: String) {
-            viewer {
-              organization {
-                project(name: $projectName) {
-                  parameters(searchTerm: $searchTerm, orderBy: { keyName: ASC }) {
-                    nodes {
-                      id
-                      keyName
-                      isSecret
-                      environmentValue(environmentId: $environmentId) {
-                        parameterValue
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        GRAPHQL
-
-        def initialize()
-        end
-
-        def environments
-          @environments ||= begin
-                              variables = {}
-                              result = client.query(self.queries[:EnvironmentsQuery], variables: variables)
-                              logger.debug{"Environments query result: #{result.inspect}"}
-                              Hash[result&.data&.viewer&.organization&.environments&.nodes&.collect {|e| [e.name, e.id] }]
-                            end
-        end
-
-        def environment_id(environment)
-          env_id = self.environments[environment]
-
-          # retry in case environments have been updated upstream since we cached
-          # them
-          if env_id.nil?
-            logger.debug {"Unknown environment, retrying after clearing cache"}
-            @environments = nil
-            env_id = self.environments[environment]
-          end
-
-          raise Kubetruth::Error.new("Unknown environment: #{environment}") unless env_id
-          env_id.to_s
-        end
-
-        def projects
-          variables = {}
-          result = client.query(self.queries[:ProjectsQuery], variables: variables)
-          logger.debug{"Projects query result: #{result.inspect}"}
-          Hash[result&.data&.viewer&.organization&.projects&.nodes&.collect {|e| [e.name, e.id] }]
-        end
-
-        def environment_names
-          environments.keys
-        end
-
-        def project_names
-          projects.keys
-        end
-
-        def parameters(searchTerm: "", project: nil, environment: "default")
-          variables = {searchTerm: searchTerm, environmentId: environment_id(environment)}
-          variables[:projectName] = project if project.present?
-
-          result = client.query(self.queries[:ParametersQuery], variables: variables)
-          logger.debug do
-            cleaned = result&.original_hash&.deep_dup
-            cleaned&.[]("data")&.[]("viewer")&.[]("organization")&.[]("project")&.[]("parameters")&.[]("nodes")&.each do |e|
-              e["environmentValue"]["parameterValue"] = "<masked>" if e["isSecret"]
-            end
-            "Parameters query result: #{cleaned.inspect}, errors: #{result&.errors.inspect}"
-          end
-
-          result&.data&.viewer&.organization&.project&.parameters&.nodes&.collect do |e|
-            Kubetruth::Parameter.new(key: e.key_name, value: e.environment_value.parameter_value, secret: e.is_secret)
-          end
-        end
-
+        }
       end
 
-      Kubetruth.const_set(:CtApi, clazz)
     end
-    ::Kubetruth::CtApi
-  end
 
+    def initialize(api_key:, api_url:)
+      @api_key = api_key
+      @api_url = api_url
+      uri = URI(@api_url)
+      config = ApiConfiguration.new
+      config.server_index = nil
+      config.scheme = uri.scheme
+      host_port = uri.host
+      host_port << ":#{uri.port}" unless [80, 443].include?(uri.port)
+      config.host = host_port
+      config.base_path = uri.path
+      config.api_key = {'ApiKeyAuth' => api_key}
+      config.api_key_prefix = {'ApiKeyAuth' => "Api-Key"}
+      config.logger = logger
+      # config.debugging = logger.debug?
+      @client = CloudtruthClient::ApiClient.new(config)
+      @client.user_agent = "kubetruth/#{Kubetruth::VERSION}"
+      @apis = {
+        api: CloudtruthClient::ApiApi.new(@client),
+        environments: CloudtruthClient::EnvironmentsApi.new(@client),
+        projects: CloudtruthClient::ProjectsApi.new(@client)
+      }
+    end
+
+    def environments
+      @environments ||= begin
+        result = apis[:environments].environments_list
+        logger.debug{"Environments query result: #{result.inspect}"}
+        Hash[result&.results&.collect {|r| [r.name, r.id]}]
+      end
+    end
+
+    def environment_names
+      environments.keys
+    end
+
+    def environment_id(environment)
+      env_id = self.environments[environment]
+
+      # retry in case environments have been updated upstream since we cached
+      # them
+      if env_id.nil?
+        logger.debug {"Unknown environment, retrying after clearing cache"}
+        @environments = nil
+        env_id = self.environments[environment]
+      end
+
+      raise Kubetruth::Error.new("Unknown environment: #{environment}") unless env_id
+      env_id.to_s
+    end
+
+    def projects
+      result = apis[:projects].projects_list
+      logger.debug{"Projects query result: #{result.inspect}"}
+      Hash[result&.results&.collect {|r| [r.name, r.id]}]
+    end
+
+    def project_names
+      projects.keys
+    end
+
+    def parameters(project:, environment: "default")
+      env_id = environment_id(environment)
+      proj_id = projects[project]
+      result = apis[:projects].projects_parameters_list(proj_id, environment: env_id)
+      logger.debug do
+        cleaned = result&.to_hash&.deep_dup
+        cleaned&.[](:results)&.each do |param|
+          if param[:secret]
+            param[:values].each do |k, v|
+              v[:value] = "<masked>"
+            end
+          end
+        end
+        "Parameters query result: #{cleaned.inspect}"
+      end
+      result&.results&.collect do |param|
+        # values is keyed by url, but we forced it to only have a single entry
+        # for the supplied environment
+        Kubetruth::Parameter.new(key: param.name, value: param.values.values.first&.value, secret: param.secret)
+      end
+    end
+
+  end
 end

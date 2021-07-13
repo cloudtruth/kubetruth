@@ -1,5 +1,6 @@
 require_relative 'cli_base'
 require_relative 'ctapi'
+require_relative 'kubeapi'
 require_relative 'etl'
 
 module Kubetruth
@@ -15,6 +16,11 @@ module Kubetruth
            'APIKEY', "The cloudtruth api key",
            environment_variable: 'CLOUDTRUTH_API_KEY',
            required: true
+
+    option "--api-url",
+           'APIURL', "The cloudtruth api endpoint",
+           environment_variable: 'CLOUDTRUTH_API_URL',
+           default: "https://api.cloudtruth.com"
 
     option "--kube-namespace",
            'NAMESPACE', "The kubernetes namespace. Defaults to runtime namespace when run in kube"
@@ -38,15 +44,10 @@ module Kubetruth
     def execute
       super
 
-      kube_context = {
-          namespace: kube_namespace,
-          token: kube_token,
-          api_url: kube_url
-      }
+      Kubetruth::CtApi.configure(api_key: api_key, api_url: api_url)
+      Kubetruth::KubeApi.configure(namespace: kube_namespace, token: kube_token, api_url: kube_url)
 
-      Kubetruth.ctapi_setup(api_key: api_key)
-
-      etl = ETL.new(kube_context: kube_context, dry_run: dry_run?)
+      etl = ETL.new(dry_run: dry_run?)
 
       Signal.trap("HUP") do
         puts "Handling HUP signal - waking up ETL poller" # logger cant be called from trap

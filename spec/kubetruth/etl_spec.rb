@@ -1,59 +1,34 @@
 require 'rspec'
 require 'kubetruth/etl'
 require 'kubetruth/project_collection'
+require 'kubetruth/parameter'
 
 module Kubetruth
   describe ETL do
 
-    let(:init_args) {{
-      kube_context: {}
-    }}
-    let(:etl) { described_class.new(**init_args) }
-
-    def kubeapi
-      kapi = double(Kubetruth::KubeApi)
-      allow(Kubetruth::KubeApi).to receive(:new).and_return(kapi)
-      allow(kapi).to receive(:get_resource).and_return(Kubeclient::Resource.new)
-      allow(kapi).to receive(:apply_resource)
-      allow(kapi).to receive(:under_management?).and_return(true)
-      allow(kapi).to receive(:set_managed)
-      allow(kapi).to receive(:ensure_namespace)
-      allow(kapi).to receive(:namespace).and_return("default")
-      allow(kapi).to receive(:get_project_mappings).and_return([])
-      kapi
-    end
+    let(:etl) { described_class.new }
 
     before(:each) do
-      @kubeapi = kubeapi
-    end
-
-    describe "#kubeapi" do
-
-      it "passes namespace to ctor" do
-        etl = described_class.new(kube_context: {namespace: "foo"})
-        expect(Kubetruth::KubeApi).to receive(:new).with(namespace: "foo")
-        etl.kubeapi
-      end
-
-      it "is memoized" do
-        etl = described_class.new(**init_args)
-        allow(Kubetruth::KubeApi).to receive(:new)
-        expect(etl.kubeapi).to equal(etl.kubeapi)
-      end
-
+      @kubeapi = double(Kubetruth::KubeApi)
+      allow(@kubeapi).to receive(:get_resource).and_return(Kubeclient::Resource.new)
+      allow(@kubeapi).to receive(:apply_resource)
+      allow(@kubeapi).to receive(:under_management?).and_return(true)
+      allow(@kubeapi).to receive(:set_managed)
+      allow(@kubeapi).to receive(:ensure_namespace)
+      allow(@kubeapi).to receive(:namespace).and_return("default")
+      allow(@kubeapi).to receive(:get_project_mappings).and_return([])
+      allow_any_instance_of(described_class).to receive(:kubeapi).and_return(@kubeapi)
     end
 
     describe "#interruptible_sleep" do
 
       it "runs for interval without interruption" do
-        etl = described_class.new(**init_args)
         t = Time.now.to_f
         etl.interruptible_sleep(0.2)
         expect(Time.now.to_f - t).to be >= 0.2
       end
 
       it "can be interrupted" do
-        etl = described_class.new(**init_args)
         Thread.new do
           sleep 0.1
           etl.interrupt_sleep
@@ -70,8 +45,6 @@ module Kubetruth
       class ForceExit < Exception; end
 
       it "runs with an interval" do
-        etl = described_class.new(**init_args)
-
         watcher = double()
         expect(@kubeapi).to receive(:watch_project_mappings).and_return(watcher).twice
         expect(watcher).to receive(:each).twice
@@ -93,8 +66,6 @@ module Kubetruth
       end
 
       it "isolates run loop from block failures" do
-        etl = described_class.new(**init_args)
-
         watcher = double()
         expect(@kubeapi).to receive(:watch_project_mappings).and_return(watcher).twice
         expect(watcher).to receive(:each).twice
@@ -116,8 +87,6 @@ module Kubetruth
       end
 
       it "treats Kubetruth::Error differently in block failures" do
-        etl = described_class.new(**init_args)
-
         watcher = double()
         expect(@kubeapi).to receive(:watch_project_mappings).and_return(watcher).twice
         expect(watcher).to receive(:each).twice
@@ -142,8 +111,6 @@ module Kubetruth
       end
 
       it "interrupts sleep on watch event" do
-        etl = described_class.new(**init_args)
-
         watcher = double()
         notice = double("notice", type: "UPDATED", object: double("kube_resource"))
         expect(@kubeapi).to receive(:watch_project_mappings).and_return(watcher)
@@ -171,7 +138,6 @@ module Kubetruth
       it "raises if no primary" do
         allow(@kubeapi).to receive(:namespace).and_return("primary-ns")
         expect(@kubeapi).to receive(:get_project_mappings).and_return({})
-        etl = described_class.new(**init_args)
         expect { etl.load_config }.to raise_error(Kubetruth::Error, /A default set of mappings is required/)
       end
 
@@ -185,7 +151,6 @@ module Kubetruth
               "override2" => Config::DEFAULT_SPEC.merge(scope: "override", name: "override2")
             }
           })
-        etl = described_class.new(**init_args)
         configs = etl.load_config
         expect(configs.size).to eq(1)
         expect(configs.first).to be_an_instance_of(Kubetruth::Config)
@@ -206,7 +171,6 @@ module Kubetruth
               "override1" => Config::DEFAULT_SPEC.merge(scope: "override", name: "override1")
             }
           })
-        etl = described_class.new(**init_args)
         configs = etl.load_config
         expect(configs.size).to eq(2)
         expect(configs.first).to be_an_instance_of(Kubetruth::Config)
@@ -232,7 +196,6 @@ module Kubetruth
               "myroot" => Config::DEFAULT_SPEC.merge(scope: "root", name: "myroot", environment: "env3"),
             }
           })
-        etl = described_class.new(**init_args)
 
         nses = ["primary-ns", "other-ns", "yetanother-ns"]
         envs = ["default", "otherenv",  "env3"]
@@ -404,10 +367,11 @@ module Kubetruth
       end
 
       it "allows dryrun" do
-        etl.instance_variable_set(:@dry_run, true)
+        etl = described_class.new(dry_run: true)
         allow(etl).to receive(:load_config).and_yield(@ns, config)
         expect(collection).to receive(:names).and_return(["proj1"])
 
+        expect(@kubeapi).to receive(:get_resource)
         expect(@kubeapi).to_not receive(:ensure_namespace)
         expect(@kubeapi).to_not receive(:apply_resource)
 

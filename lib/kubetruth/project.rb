@@ -5,26 +5,14 @@ module Kubetruth
 
     def parameters
       @parameters ||= begin
-        result = []
-
-        # First search for all the selected parameters
-        #
-        searchTerm = ""
-        if spec.key_selector.source =~ /^[\w\.\-]*$/
-          logger.debug {"Simple key_selector '#{spec.key_selector.source}', using as search filter to fetch parameters"}
-          searchTerm = spec.key_selector.source
-        else
-          logger.debug {"Complex key_selector '#{spec.key_selector.source}', using as client-side regexp match against parameters"}
-        end
-
-        params = collection.ctapi.parameters(searchTerm: searchTerm, project: name, environment: spec.environment)
+        params = collection.ctapi.parameters(project: name, environment: spec.environment)
         logger.debug do
           cleaned = params.deep_dup
           cleaned.each {|p| p.value = "<masked>" if p.secret}
           "Params fetched from cloudtruth: #{cleaned.inspect}"
         end
 
-        if searchTerm.blank? && spec.key_selector.source.present?
+        if spec.key_selector.source.present?
           logger.debug {"Looking for key pattern matches to '#{spec.key_selector.inspect}'"}
           params = params.select do |param|
             if param.key.match(spec.key_selector)

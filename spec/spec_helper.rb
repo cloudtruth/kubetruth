@@ -33,67 +33,16 @@ def fixture_dir
   @fixture_dir ||= File.expand_path("../fixtures", __FILE__)
 end
 
-# Monkey patch VCR so we can do a regexp replace for parameter values (multiple
-# different strings matching a pattern in single response body)
-class VCR::HTTPInteraction::HookAware
-  def filter!(text, replacement_text)
-    # replacement -> text when loading a fixture
-    if replacement_text.is_a?(Regexp)
-      replacement_text = text
-      return self if replacement_text.empty?
-    end
-
-    # text -> replacement when writing out a fixture
-    if text.is_a?(Regexp)
-      return self if text == //
-    else
-      text = text.to_s
-      return self if text.empty?
-    end
-
-    filter_object!(self, text, replacement_text)
-  end
-
-  private
-
-  def filter_object!(object, text, replacement_text)
-    if object.respond_to?(:gsub)
-
-      if text.is_a?(Regexp)
-        object.gsub!(text, replacement_text) if object.match?(text)
-      else
-        begin
-        object.gsub!(text, replacement_text) if object.include?(text)
-        rescue
-          raise
-        end
-
-      end
-    elsif Hash === object
-      filter_hash!(object, text, replacement_text)
-    elsif object.respond_to?(:each)
-      # This handles nested arrays and structs
-      object.each { |o| filter_object!(o, text, replacement_text) }
-    end
-
-    object
-  end
-end
-
 VCR.configure do |c|
   c.cassette_library_dir = "#{fixture_dir}/vcr"
   c.hook_into :webmock
   c.configure_rspec_metadata!
-  c.filter_sensitive_data('<BEARER_TOKEN>') do |interaction|
+  c.filter_sensitive_data('<TOKEN>') do |interaction|
     auths = interaction.request.headers['Authorization'].first
-    if (match = auths.match /^Bearer\s+([^,\s]+)/ )
+    if (match = auths.match /^[^\s]+\s+([^,\s]+)/ )
       match.captures.first
     end
   end
-
-  string_with_escapes = '"((\\\\.|[^\"])*)"'
-  c.filter_sensitive_data('"parameterValue":"<PARAM_VALUE>"') { /"parameterValue":#{string_with_escapes}/ }
-  c.filter_sensitive_data('"CLOUDTRUTH_API_KEY":"<API_KEY>"') { /"CLOUDTRUTH_API_KEY":#{string_with_escapes}/ }
 end
 
 

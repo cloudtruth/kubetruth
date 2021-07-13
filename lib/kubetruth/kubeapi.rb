@@ -5,6 +5,17 @@ module Kubetruth
 
     include GemLogger::LoggerSupport
 
+    @@instance = nil
+
+    def self.configure(namespace:, token:, api_url:)
+      @@instance = self.new(namespace: namespace, token: token, api_url: api_url)
+    end
+
+    def self.instance
+      raise ArgumentError.new("KubeApi has not been configured") if @@instance.nil?
+      return @@instance
+    end
+
     attr_accessor :namespace
 
     NAMESPACE_PATH = '/var/run/secrets/kubernetes.io/serviceaccount/namespace'

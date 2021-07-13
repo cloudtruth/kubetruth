@@ -31,25 +31,25 @@ module Kubetruth
                                              collection: collection) }
 
       it "handles empty" do
-        expect(@ctapi).to receive(:parameters).with(searchTerm: "", project: project.name, environment: "default").and_return([])
+        expect(@ctapi).to receive(:parameters).with(project: project.name, environment: "default").and_return([])
         params = project.parameters
         expect(params).to eq([])
       end
 
-      it "uses simple key_selector as search parameter" do
+      it "uses simple key_selector" do
         project.spec.key_selector = /svc/
-        expect(@ctapi).to receive(:parameters).with(searchTerm: "svc", project: project.name, environment: "default").and_return([
+        expect(@ctapi).to receive(:parameters).with(project: project.name, environment: "default").and_return([
           Parameter.new(key: "svc.param1", value: "value1", secret: false),
           Parameter.new(key: "svc.param2", value: "value2", secret: false),
         ])
         params = project.parameters
         expect(params.size).to eq(2)
-        expect(Logging.contents).to_not match(/Looking for key pattern matches/)
+        expect(Logging.contents).to match(/Looking for key pattern matches/)
       end
 
-      it "uses complex key_selector client-side" do
+      it "uses complex key_selector" do
         project.spec.key_selector = /foo$/
-        expect(@ctapi).to receive(:parameters).with(searchTerm: "", project: project.name, environment: "default").and_return([
+        expect(@ctapi).to receive(:parameters).with(project: project.name, environment: "default").and_return([
           Parameter.new(key: "svc.param1", value: "value1", secret: false),
           Parameter.new(key: "svc.param2.foo", value: "value2", secret: false),
         ])
@@ -62,7 +62,7 @@ module Kubetruth
       it "doesn't expose secret in debug log" do
         Logging.setup_logging(level: :debug, color: false)
 
-        expect(@ctapi).to receive(:parameters).with(searchTerm: "", project: project.name, environment: "default").and_return([
+        expect(@ctapi).to receive(:parameters).with(project: project.name, environment: "default").and_return([
                                                               Parameter.new(key: "param1", value: "value1", secret: false),
                                                               Parameter.new(key: "param2", value: "sekret", secret: true),
                                                               Parameter.new(key: "param3", value: "alsosekret", secret: true),

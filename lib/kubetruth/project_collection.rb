@@ -12,9 +12,7 @@ module Kubetruth
     end
 
     def ctapi
-      @ctapi ||= begin
-        Kubetruth::CtApi.new
-      end
+      Kubetruth::CtApi.instance
     end
 
     def names
