@@ -182,7 +182,7 @@ module Kubetruth
 
           end
         end
-      end
+      end.wait
     end
 
     def params_to_hash(param_list)
