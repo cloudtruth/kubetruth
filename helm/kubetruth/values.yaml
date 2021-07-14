@@ -68,6 +68,7 @@ affinity: {}
 
 appSettings:
   apiKey:
+  apiUrl:
   pollingInterval:
   debug: false
 

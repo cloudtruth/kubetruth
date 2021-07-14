@@ -40,6 +40,10 @@ spec:
                 name: {{ include "kubetruth.fullname" . }}
           args:
             - app
+            {{- if .Values.appSettings.apiUrl }}
+            - --api-url
+            - "{{ .Values.appSettings.apiUrl }}"
+            {{- end }}
             {{- if .Values.appSettings.pollingInterval }}
             - --polling-interval
             - "{{ .Values.appSettings.pollingInterval }}"
