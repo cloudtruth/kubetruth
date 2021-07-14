@@ -76,13 +76,24 @@ module Kubetruth
       end
     end
 
+    def async(*args, **kwargs)
+      Async(*args, **kwargs) do |task|
+        begin
+          yield
+        rescue => e
+          logger.log_exception(e, "Failure in async task: #{task.annotation}")
+          task.stop
+        end
+      end
+    end
+
     def load_config
       configs = []
       mappings_by_ns = kubeapi.get_project_mappings
       primary_mappings = mappings_by_ns.delete(kubeapi.namespace)
       raise Error.new("A default set of mappings is required in the namespace kubetruth is installed in (#{kubeapi.namespace})") unless primary_mappings
 
-      Async(annotation: "Primary Config: #{kubeapi.namespace}") do
+      async(annotation: "Primary Config: #{kubeapi.namespace}") do
         primary_config = Kubetruth::Config.new(primary_mappings.values)
         logger.info {"Processing primary mappings for namespace '#{kubeapi.namespace}'"}
         configs << primary_config
@@ -90,7 +101,7 @@ module Kubetruth
       end
 
       mappings_by_ns.each do |namespace, ns_mappings|
-        Async(annotation: "Secondary Config: #{namespace}") do
+        async(annotation: "Secondary Config: #{namespace}") do
           secondary_mappings = primary_mappings.deep_merge(ns_mappings)
           secondary_config = Kubetruth::Config.new(secondary_mappings.values)
           logger.info {"Processing secondary mappings for namespace '#{namespace}'"}
@@ -103,7 +114,7 @@ module Kubetruth
     end
 
     def apply
-      Async(annotation: "ETL Event Loop") do
+      async(annotation: "ETL Event Loop") do
         logger.warn("Performing dry-run") if @dry_run
 
         load_config do |namespace, config|
@@ -136,7 +147,7 @@ module Kubetruth
               next
             end
 
-            Async(annotation: "Project: #{project.name}") do
+            async(annotation: "Project: #{project.name}") do
 
               # constructing the hash will cause any overrides to happen in the right
               # order (includer wins over last included over first included)
@@ -172,7 +183,7 @@ module Kubetruth
                 parsed_ymls = YAML.safe_load_stream(resource_yml, template_id)
                 logger.debug {"Skipping empty template"} if parsed_ymls.empty?
                 parsed_ymls.each do |parsed_yml|
-                  Async(annotation: "Apply Template: #{template_id}") do
+                  async(annotation: "Apply Template: #{template_id}") do
                     kube_apply(parsed_yml)
                   end
                 end

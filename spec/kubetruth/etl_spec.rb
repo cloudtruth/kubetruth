@@ -517,5 +517,16 @@ module Kubetruth
 
     end
 
+    describe "verify async behavior" do
+
+      it "logs exceptions" do
+        etl.async(annotation: "badtask") do
+          raise "task fail"
+        end
+        expect(Logging.contents).to match(/ERROR ETL \[exception=RuntimeError \] Failure in async task: badtask/)
+      end
+
+    end
+
   end
 end

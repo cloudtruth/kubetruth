@@ -404,27 +404,21 @@ module Kubetruth
         end_times = {}
         start_times[:total] = Time.now.to_f
 
+        Async(annotation: "top") do
 
-          Async(annotation: "top") do
-
-            Async(annotation: "first") do
-              start_times[:first] = Time.now.to_f
-              kapi.get_project_mappings # non-memoized
-              end_times[:first] = Time.now.to_f
-            end
-
-            Async(annotation: "second") do
-              begin
-                start_times[:second] = Time.now.to_f
-                kapi.get_project_mappings # non-memoized
-                end_times[:second] = Time.now.to_f
-              rescue => e
-                puts e
-                puts e.backtrace
-              end
-            end
-
+          Async(annotation: "first") do
+            start_times[:first] = Time.now.to_f
+            kapi.get_project_mappings # non-memoized
+            end_times[:first] = Time.now.to_f
           end
+
+          Async(annotation: "second") do
+            start_times[:second] = Time.now.to_f
+            kapi.get_project_mappings # non-memoized
+            end_times[:second] = Time.now.to_f
+          end
+
+        end
 
         end_times[:total] = Time.now.to_f
         elapsed_times = Hash[end_times.collect {|k, v| [k, v - start_times[k]]}]
