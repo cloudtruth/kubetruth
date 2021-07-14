@@ -79,7 +79,7 @@ module Kubetruth
     def async(*args, **kwargs)
       Async(*args, **kwargs) do |task|
         begin
-          yield
+          yield task
         rescue => e
           logger.log_exception(e, "Failure in async task: #{task.annotation}")
           task.stop

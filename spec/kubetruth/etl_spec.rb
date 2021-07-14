@@ -520,10 +520,17 @@ module Kubetruth
     describe "verify async behavior" do
 
       it "logs exceptions" do
-        etl.async(annotation: "badtask") do
+        task = etl.async(annotation: "badtask") do
           raise "task fail"
         end
         expect(Logging.contents).to match(/ERROR ETL \[exception=RuntimeError \] Failure in async task: badtask/)
+        expect(task.status).to eq(:stopped)
+      end
+
+      it "yields task" do
+        etl.async(annotation: "mytask") do |task|
+          expect(task.annotation).to eq("mytask")
+        end
       end
 
     end
