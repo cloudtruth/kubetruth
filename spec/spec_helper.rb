@@ -20,10 +20,12 @@ SimpleCov.at_fork do |pid|
   # start
   SimpleCov.start do
     add_filter 'spec'
+    add_filter '/client/'
   end
 end
 SimpleCov.start do
   add_filter 'spec'
+  add_filter '/client/'
 end
 
 require 'vcr'
@@ -31,6 +33,10 @@ require 'webmock/rspec'
 
 def fixture_dir
   @fixture_dir ||= File.expand_path("../fixtures", __FILE__)
+end
+
+def logger
+  ::Logging.logger.root
 end
 
 VCR.configure do |c|
