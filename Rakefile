@@ -10,9 +10,10 @@ CLIENT_DIR = "client"
 require 'rake/clean'
 CLEAN << TMP_DIR << CLIENT_DIR
 
-def get_var(name, env_name: name.to_s.upcase, yml_name: name.to_s.downcase.to_sym, prompt: true, required: true)
+def get_var(name, env_name: name.to_s.upcase, yml_name: name.to_s.downcase.to_sym, default: nil, prompt: true, required: true)
   value = ENV[env_name]
   value ||= APP[yml_name]
+  value ||= default
 
   if value.nil? && $stdin.tty? && prompt
     print "Enter '#{name}': "
@@ -81,14 +82,16 @@ end
 task :helm_package => [:helm_index]
 
 task :build_development => [:client] do
-  sh "docker build --target development -t #{APP[:name]}-development ."
+  image_name = get_var(:image_name, default: "#{APP[:name]}-development", prompt: false, required: false)
+  sh "docker build --target development -t #{image_name} ."
 end
 
 task :test => [:build_development] do
+  image_name = get_var(:image_name, default: "#{APP[:name]}-development", prompt: false, required: false)
   if ENV['CI'] && ENV['CODECOV_TOKEN']
-    sh "set -e && ci_env=$(curl -s https://codecov.io/env | bash) && docker run -e CI -e CODECOV_TOKEN ${ci_env} #{APP[:name]}-development test"
+    sh "set -e && ci_env=$(curl -s https://codecov.io/env | bash) && docker run -e CI -e CODECOV_TOKEN ${ci_env} #{image_name} test"
   else
-    sh "docker run -e CI -e CODECOV_TOKEN #{APP[:name]}-development test"
+    sh "docker run -e CI -e CODECOV_TOKEN #{image_name} test"
   end
 end
 
@@ -99,7 +102,8 @@ task :rspec do
 end
 
 task :build_release => [:client] do
-  sh "docker build --target release -t #{APP[:name]} ."
+  image_name = get_var(:image_name, default: "#{APP[:name]}", prompt: false, required: false)
+  sh "docker build --target release -t #{image_name} ."
 end
 
 task :docker_push do
