@@ -8,8 +8,8 @@ module Kubetruth
     let(:collection) { described_class.new }
 
     before(:each) do
-      @ctapi = double()
-      allow(collection).to receive(:ctapi).and_return(@ctapi)
+      @ctapi = double(Kubetruth::CtApi)
+      allow(Kubetruth::CtApi).to receive(:instance).and_return(@ctapi)
     end
 
     describe "#names" do

@@ -1,4 +1,5 @@
 require 'rspec'
+require 'async'
 require 'kubetruth/kubeapi'
 require 'kubetruth/config'
 
@@ -391,6 +392,54 @@ module Kubetruth
         block = Proc.new {}
         expect(kubeapi.crd_client).to receive(:watch_project_mappings).with(resource_version: existing_ver, &block)
         kubeapi.watch_project_mappings(&block)
+      end
+
+    end
+
+    describe "validate async" do
+
+      it "does api requests concurrently" do
+        kapi = kubeapi # rspec let block has a mutex that intermittently causes problems when using async
+        start_times = {}
+        end_times = {}
+        start_times[:total] = Time.now.to_f
+
+
+          Async(annotation: "top") do
+
+            Async(annotation: "first") do
+              start_times[:first] = Time.now.to_f
+              kapi.get_project_mappings # non-memoized
+              end_times[:first] = Time.now.to_f
+            end
+
+            Async(annotation: "second") do
+              begin
+                start_times[:second] = Time.now.to_f
+                kapi.get_project_mappings # non-memoized
+                end_times[:second] = Time.now.to_f
+              rescue => e
+                puts e
+                puts e.backtrace
+              end
+            end
+
+          end
+
+        end_times[:total] = Time.now.to_f
+        elapsed_times = Hash[end_times.collect {|k, v| [k, v - start_times[k]]}]
+
+        logger.debug { "Start times: #{start_times.inspect}" }
+        logger.debug { "End times: #{end_times.inspect}" }
+        logger.debug { "Elapsed times: #{elapsed_times.inspect}" }
+
+        # When VCR plays back requests, it doesn't use concurrent IO like live
+        # requests do, so this assertion will fail.  As a result we only do the
+        # check when someone has cleared the cassette and is re-running against
+        # an actual http api
+        if VCR.current_cassette.originally_recorded_at.nil? || VCR.current_cassette.record_mode == :all
+          expect(elapsed_times[:total]).to be < (elapsed_times[:first] + elapsed_times[:second])
+        end
       end
 
     end

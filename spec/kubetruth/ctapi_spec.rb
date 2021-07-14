@@ -1,18 +1,22 @@
 require 'rspec'
+require 'async'
 require 'kubetruth/ctapi'
 
 module Kubetruth
 
-  describe CtApi, :vcr do
+  describe CtApi, :vcr => {
+      # uncomment (or delete vcr yml file) to force record of new fixtures
+      # :record => :all
+  } do
 
     let(:ctapi) {
       # Spin up a local dev server and create a user with an api key to use
       # here, or use cloudtruth actual
-      key = 'QINuBCMG.5p9I9xZgyirtlYHZ5E3G3j0tCZW34EE6' || ENV['CLOUDTRUTH_API_KEY']
+      key = ENV['CLOUDTRUTH_API_KEY']
       url = ENV['CLOUDTRUTH_API_URL'] || "https://localhost:8000"
       instance = ::Kubetruth::CtApi.new(api_key: key, api_url: url)
       instance.client.config.debugging = false # ssl debug logging is messy, so only turn this on as desired
-      instance.client.config.verify_ssl = false
+      instance.client.config.ssl_verify = false
       instance
     }
 
@@ -126,6 +130,49 @@ module Kubetruth
       end
 
     end
+
+    describe "validate async" do
+
+      it "does api requests concurrently" do
+        start_times = {}
+        end_times = {}
+        start_times[:total] = Time.now.to_f
+
+        Async(annotation: "top") do
+
+          Async(annotation: "first") do
+            start_times[:first] = Time.now.to_f
+            ctapi.projects # non-memoized
+            end_times[:first] = Time.now.to_f
+          end
+
+          Async(annotation: "second") do
+            start_times[:second] = Time.now.to_f
+            ctapi.projects # non-memoized
+            end_times[:second] = Time.now.to_f
+          end
+
+        end
+
+        end_times[:total] = Time.now.to_f
+        elapsed_times = Hash[end_times.collect {|k, v| [k, v - start_times[k]]}]
+
+        logger.debug { "Start times: #{start_times.inspect}" }
+        logger.debug { "End times: #{end_times.inspect}" }
+        logger.debug { "Elapsed times: #{elapsed_times.inspect}" }
+
+        # When VCR plays back requests, it doesn't use concurrent IO like live
+        # requests do, so this assertion will fail.  As a result we only do the
+        # check when someone has cleared the cassette and is re-running against
+        # an actual http api
+        if VCR.current_cassette.originally_recorded_at.nil? || VCR.current_cassette.record_mode == :all
+          expect(elapsed_times[:total]).to be < (elapsed_times[:first] + elapsed_times[:second])
+        end
+
+      end
+
+    end
+
 
   end
 

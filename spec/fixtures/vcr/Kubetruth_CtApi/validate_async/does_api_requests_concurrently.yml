@@ -25,7 +25,7 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:32:49 GMT
+      - Wed, 14 Jul 2021 00:33:57 GMT
       Connection:
       - close
       Content-Type:
@@ -43,15 +43,15 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=r6PRgYh3hIfJouL5wObHJsSuQK1hp2gcrS5TW2eVpBXCAxgLJ6DT71TsZgnO0EnT;
-        expires=Wed, 13 Jul 2022 00:32:49 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=1wq9m7gp8nib4snz2ri7hvn426ld1932; expires=Wed, 28 Jul 2021 00:32:49
+      - csrftoken=HECasuvLPw19qNPSunfnwr28ZHY6ziRB3eEmz0tydPlYe9hTfp5aIvcZwQplOT9M;
+        expires=Wed, 13 Jul 2022 00:33:57 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=oa82noplt4kh66vs1gqt6b5nwe6wsm0n; expires=Wed, 28 Jul 2021 00:33:57
         GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
     body:
       encoding: UTF-8
       string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/8ea8dad8-7405-4a79-bb11-4cc64ad647a0/","id":"8ea8dad8-7405-4a79-bb11-4cc64ad647a0","name":"MyFirstProject","description":"A
-        first project workspace to experiment with","created_at":"2021-07-13T17:57:00.004749Z","modified_at":"2021-07-13T17:57:00.004959Z"},{"url":"https://localhost:8000/api/v1/projects/09757741-9659-4b43-bcbd-26317dfa2bff/","id":"09757741-9659-4b43-bcbd-26317dfa2bff","name":"TestProject","description":"","created_at":"2021-07-13T18:36:53.178046Z","modified_at":"2021-07-13T18:36:53.178104Z"}]}'
-  recorded_at: Wed, 14 Jul 2021 00:32:49 GMT
+        first project workspace to experiment with","created_at":"2021-07-13T17:57:00.004749Z","modified_at":"2021-07-13T17:57:00.004959Z"},{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/","id":"cfc4437a-d76f-4981-a9c4-06a212fc5933","name":"TestProject","description":"","created_at":"2021-07-14T00:33:35.954746Z","modified_at":"2021-07-14T00:33:35.954777Z"}]}'
+  recorded_at: Wed, 14 Jul 2021 00:33:57 GMT
 - request:
     method: get
     uri: https://localhost:8000/api/v1/projects/
@@ -77,7 +77,7 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:32:51 GMT
+      - Wed, 14 Jul 2021 00:33:59 GMT
       Connection:
       - close
       Content-Type:
@@ -95,13 +95,13 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=A6z1o0lLkWfN84u4pBdB4ifKy31WzMmwJCSJlYKsfaaZhY06QtVaCMuofF5HHkxc;
-        expires=Wed, 13 Jul 2022 00:32:51 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=ndzx70fuln5rofs3ofiw2y5yuhwtyfzm; expires=Wed, 28 Jul 2021 00:32:51
+      - csrftoken=QSuUWf4l8L8R42Nw3nCcSD9DLBBfk79PgW4pBGlq0uEQiwPKPBSZWZLK2fPCpXVk;
+        expires=Wed, 13 Jul 2022 00:33:59 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=v3k4gqac9dgdsbvc10tht0ooakb2ujcy; expires=Wed, 28 Jul 2021 00:33:59
         GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
     body:
       encoding: UTF-8
       string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/8ea8dad8-7405-4a79-bb11-4cc64ad647a0/","id":"8ea8dad8-7405-4a79-bb11-4cc64ad647a0","name":"MyFirstProject","description":"A
-        first project workspace to experiment with","created_at":"2021-07-13T17:57:00.004749Z","modified_at":"2021-07-13T17:57:00.004959Z"},{"url":"https://localhost:8000/api/v1/projects/09757741-9659-4b43-bcbd-26317dfa2bff/","id":"09757741-9659-4b43-bcbd-26317dfa2bff","name":"TestProject","description":"","created_at":"2021-07-13T18:36:53.178046Z","modified_at":"2021-07-13T18:36:53.178104Z"}]}'
-  recorded_at: Wed, 14 Jul 2021 00:32:51 GMT
+        first project workspace to experiment with","created_at":"2021-07-13T17:57:00.004749Z","modified_at":"2021-07-13T17:57:00.004959Z"},{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/","id":"cfc4437a-d76f-4981-a9c4-06a212fc5933","name":"TestProject","description":"","created_at":"2021-07-14T00:33:35.954746Z","modified_at":"2021-07-14T00:33:35.954777Z"}]}'
+  recorded_at: Wed, 14 Jul 2021 00:33:59 GMT
 recorded_with: VCR 6.0.0

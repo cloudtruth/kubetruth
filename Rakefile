@@ -232,6 +232,7 @@ file "#{CLIENT_DIR}/Gemfile" => "openapi.yml" do
         -i /data/openapi.yml
         -g ruby
         -o /data/client
+        --library faraday
         --additional-properties=gemName=cloudtruth-client
   ]
 end
