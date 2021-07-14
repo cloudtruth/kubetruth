@@ -11,6 +11,8 @@ possible, using naming conventions to automate the delivery of configuration so
 that you don't have to jump through setup hoops for each app/service/etc that
 you would like to configure with CloudTruth
 
+![CloudTruth Operator KubeTruth Workflow](docs/kubetruth_operator.png)
+
 ## Installation
 
 ```shell
