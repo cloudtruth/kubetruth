@@ -21,7 +21,7 @@ module Kubetruth
         @deps_checked ||= begin
           system("helm version >/dev/null 2>&1") || fail("test dependency not installed - helm ")
           system("minikube version >/dev/null 2>&1") || fail("test dependency not installed - minikube")
-          system("minikube status >/dev/null 2>&1") || fail("test dependency nor running - minikube")
+          system("minikube status >/dev/null 2>&1") || fail("test dependency not running - minikube")
           true
         end
       end

@@ -249,18 +249,20 @@ end
 
 task :client => "#{CLIENT_DIR}/Gemfile"
 
-task :install => :client do
+task :install do
   build_type = get_var(:build_type, prompt: false, required: false, default: "development")
   namespace = get_var(:namespace, prompt: false, required: false)
   values_file = get_var(:values_file, prompt: false, required: false, default: "local/values.yaml")
+
+  system("minikube version", [:out, :err] => "/dev/null") || fail("dev dependency not installed - minikube")
+  system("minikube status", [:out, :err] => "/dev/null") || fail("dev dependency not running - minikube")
+
+  Rake::Task["client"].invoke
 
   minikube_env = Hash[`minikube docker-env --shell bash`.scan(/([^ ]*)="(.*)"/)]
   orig_env = ENV.to_hash
   minikube_env.each {|k, v| ENV[k] = v }
   begin
-    Rake::Task["build_#{build_type}"].invoke
-
-    ENV['IMAGE_NAME'] = "kubetruth"
     Rake::Task["build_#{build_type}"].invoke
   ensure
     (minikube_env.keys - orig_env.keys).each {|k| ENV.delete(k) }

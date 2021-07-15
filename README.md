@@ -360,6 +360,7 @@ appSettings:
   apiKey: <your_api_key>
 EOF
 
+# requires minikube to be installed and running
 rake install
 
 # OR
