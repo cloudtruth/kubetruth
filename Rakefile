@@ -82,16 +82,15 @@ end
 task :helm_package => [:helm_index]
 
 task :build_development => [:client] do
-  image_name = get_var(:image_name, default: "#{APP[:name]}-development", prompt: false, required: false)
-  sh "docker build --target development -t #{image_name} ."
+  image_name = get_var(:image_name, default: "#{APP[:name]}", prompt: false, required: false)
+  sh "docker build --target development -t #{image_name}:latest -t #{image_name}:development ."
 end
 
 task :test => [:build_development] do
-  image_name = get_var(:image_name, default: "#{APP[:name]}-development", prompt: false, required: false)
   if ENV['CI'] && ENV['CODECOV_TOKEN']
-    sh "set -e && ci_env=$(curl -s https://codecov.io/env | bash) && docker run -e CI -e CODECOV_TOKEN ${ci_env} #{image_name} test"
+    sh "set -e && ci_env=$(curl -s https://codecov.io/env | bash) && docker run -e CI -e CODECOV_TOKEN ${ci_env} #{APP[:name]} test"
   else
-    sh "docker run -e CI -e CODECOV_TOKEN #{image_name} test"
+    sh "docker run -e CI -e CODECOV_TOKEN #{APP[:name]} test"
   end
 end
 
@@ -103,7 +102,7 @@ end
 
 task :build_release => [:client] do
   image_name = get_var(:image_name, default: "#{APP[:name]}", prompt: false, required: false)
-  sh "docker build --target release -t #{image_name} ."
+  sh "docker build --target release -t #{image_name}:latest -t #{image_name}:release ."
 end
 
 task :docker_push do
@@ -227,11 +226,18 @@ task :console do
 end
 
 file "#{CLIENT_DIR}/Gemfile" => "openapi.yml" do
+
+  if ENV['MINIKUBE_ACTIVE_DOCKERD']
+    puts "Cannot generate the rest client in the minikube docker environment"
+    puts "Run in a shell without 'eval $(minikube docker-env)'"
+    exit 1
+  end
+
   rm_rf "client"
+  # may need --user #{Process.uid}:#{Process.gid} for some Hosts
   sh *%W[
     docker run --rm
       -v #{Dir.pwd}:/data
-      --user #{Process.uid}:#{Process.gid}
       openapitools/openapi-generator-cli generate
         -i /data/openapi.yml
         -g ruby
@@ -242,3 +248,37 @@ file "#{CLIENT_DIR}/Gemfile" => "openapi.yml" do
 end
 
 task :client => "#{CLIENT_DIR}/Gemfile"
+
+task :install => :client do
+  build_type = get_var(:build_type, prompt: false, required: false, default: "development")
+  namespace = get_var(:namespace, prompt: false, required: false)
+  values_file = get_var(:values_file, prompt: false, required: false, default: "local/values.yaml")
+
+  minikube_env = Hash[`minikube docker-env --shell bash`.scan(/([^ ]*)="(.*)"/)]
+  orig_env = ENV.to_hash
+  minikube_env.each {|k, v| ENV[k] = v }
+  begin
+    Rake::Task["build_#{build_type}"].invoke
+
+    ENV['IMAGE_NAME'] = "kubetruth"
+    Rake::Task["build_#{build_type}"].invoke
+  ensure
+    (minikube_env.keys - orig_env.keys).each {|k| ENV.delete(k) }
+    (minikube_env.keys & orig_env.keys).each {|k, v| ENV[k] = orig_env[k] }
+  end
+
+  cmd = "helm install"
+  cmd << " --create-namespace --namespace #{namespace}" if namespace
+  cmd << " --values #{values_file}" if File.exist?(values_file)
+  cmd << " kubetruth helm/kubetruth/"
+  sh cmd
+end
+
+task :clean_install do
+  namespace = get_var(:namespace, prompt: false, required: false)
+  cmd = "helm delete"
+  cmd << " --namespace #{namespace}" if namespace
+  cmd << " kubetruth"
+  sh cmd
+  sh "kubectl delete customresourcedefinition projectmappings.kubetruth.cloudtruth.com"
+end
