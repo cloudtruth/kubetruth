@@ -20,7 +20,7 @@ module Kubetruth
     option "--api-url",
            'APIURL', "The cloudtruth api endpoint",
            environment_variable: 'CLOUDTRUTH_API_URL',
-           default: "https://api.cloudtruth.com"
+           default: "https://api.cloudtruth.io"
 
     option "--kube-namespace",
            'NAMESPACE', "The kubernetes namespace. Defaults to runtime namespace when run in kube"
