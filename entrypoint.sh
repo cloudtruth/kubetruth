@@ -14,7 +14,7 @@ case $action in
 
   console)
     echo "Starting console"
-    exec rake console
+    LOCAL=true exec rake console
   ;;
 
   test)

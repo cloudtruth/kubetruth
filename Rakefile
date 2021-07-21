@@ -1,7 +1,7 @@
 require 'yaml'
 require 'open-uri'
 
-APP = YAML.load(File.read(".app.yml"), filename: ".app.yml", symbolize_names: true)
+APP = YAML.load(File.read(".app.yml"), symbolize_names: true)
 TMP_DIR = "tmp"
 HELMV2_DIR = "#{TMP_DIR}/helmv2"
 HELM_PKG_DIR = "#{TMP_DIR}/packaged-chart"
@@ -218,11 +218,17 @@ task :changelog do
 end
 
 task :console do
-  $LOAD_PATH.unshift File.expand_path("lib", __dir__)
-  require "bundler/setup"
-  require APP[:name]
-  require "pry"
-  Pry.start
+  local = get_var(:local, prompt: false, required: false, default: false)
+  if local
+    $LOAD_PATH.unshift File.expand_path("lib", __dir__)
+    require "bundler/setup"
+    require APP[:name]
+    require "pry"
+    Pry.start
+  else
+    Rake::Task["build_development"].invoke
+    sh "docker run -it kubetruth:development console"
+  end
 end
 
 file "#{CLIENT_DIR}/Gemfile" => "openapi.yml" do
