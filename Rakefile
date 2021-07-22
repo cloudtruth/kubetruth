@@ -1,18 +1,19 @@
 require 'yaml'
 require 'open-uri'
 
-ROOT_DIR = File.expand_path(__dir__)
-APP = YAML.load(File.read("#{ROOT_DIR}/.app.yml"), filename: "#{ROOT_DIR}/.app.yml", symbolize_names: true)
-TMP_DIR = "#{ROOT_DIR}/tmp"
+APP = YAML.load(File.read(".app.yml"), symbolize_names: true)
+TMP_DIR = "tmp"
 HELMV2_DIR = "#{TMP_DIR}/helmv2"
 HELM_PKG_DIR = "#{TMP_DIR}/packaged-chart"
+CLIENT_DIR = "client"
 
 require 'rake/clean'
-CLEAN << TMP_DIR
+CLEAN << TMP_DIR << CLIENT_DIR
 
-def get_var(name, env_name: name.to_s.upcase, yml_name: name.to_s.downcase.to_sym, prompt: true, required: true)
+def get_var(name, env_name: name.to_s.upcase, yml_name: name.to_s.downcase.to_sym, default: nil, prompt: true, required: true)
   value = ENV[env_name]
   value ||= APP[yml_name]
+  value ||= default
 
   if value.nil? && $stdin.tty? && prompt
     print "Enter '#{name}': "
@@ -41,8 +42,8 @@ end
 directory HELMV2_DIR
 
 file "#{HELMV2_DIR}/#{APP[:name]}/Chart.yaml" => [HELMV2_DIR] do
-  cp_r "#{ROOT_DIR}/helm/#{APP[:name]}", HELMV2_DIR, preserve: true
-  cp_r "#{ROOT_DIR}/helm/helmv2/.", "#{HELMV2_DIR}/#{APP[:name]}/", preserve: true
+  cp_r "helm/#{APP[:name]}", HELMV2_DIR, preserve: true
+  cp_r "helm/helmv2/.", "#{HELMV2_DIR}/#{APP[:name]}/", preserve: true
   chart = File.read("#{HELMV2_DIR}/#{APP[:name]}/Chart.yaml")
   chart = chart.gsub(/apiVersion: v2/, "apiVersion: v1")
   chart = chart.gsub(/version: ([0-9.]*)/, 'version: \1-helmv2')
@@ -53,7 +54,7 @@ task :generate_helmv2 => ["#{HELMV2_DIR}/#{APP[:name]}/Chart.yaml"]
 
 directory HELM_PKG_DIR
 
-HELM_SRC_DIR = "#{ROOT_DIR}/helm/#{APP[:name]}"
+HELM_SRC_DIR = "helm/#{APP[:name]}"
 task :helm_build_package => [HELM_PKG_DIR] do
   sh "helm package #{HELM_SRC_DIR}", chdir: HELM_PKG_DIR
 end
@@ -80,12 +81,17 @@ end
 
 task :helm_package => [:helm_index]
 
-task :build_development do
-  sh "docker build --target development -t #{APP[:name]}-development ."
+task :build_development => [:client] do
+  image_name = get_var(:image_name, default: "#{APP[:name]}", prompt: false, required: false)
+  sh "docker build --target development -t #{image_name}:latest -t #{image_name}:development ."
 end
 
 task :test => [:build_development] do
-  sh "docker run -e CI -e CODECOV_TOKEN #{APP[:name]}-development test"
+  if ENV['CI'] && ENV['CODECOV_TOKEN']
+    sh "set -e && ci_env=$(curl -s https://codecov.io/env | bash) && docker run -e CI -e CODECOV_TOKEN ${ci_env} #{APP[:name]} test"
+  else
+    sh "docker run -e CI -e CODECOV_TOKEN #{APP[:name]} test"
+  end
 end
 
 task :rspec do
@@ -94,8 +100,9 @@ task :rspec do
   Rake::Task[:spec].invoke
 end
 
-task :build_release do
-  sh "docker build --target release -t #{APP[:name]} ."
+task :build_release => [:client] do
+  image_name = get_var(:image_name, default: "#{APP[:name]}", prompt: false, required: false)
+  sh "docker build --target release -t #{image_name}:latest -t #{image_name}:release ."
 end
 
 task :docker_push do
@@ -111,11 +118,11 @@ end
 task :set_version do
   version = get_var('VERSION')
 
-  gsub_file("#{ROOT_DIR}/helm/#{APP[:name]}/Chart.yaml",
+  gsub_file("helm/#{APP[:name]}/Chart.yaml",
             /^version:.*/, "version: #{version}")
-  gsub_file("#{ROOT_DIR}/helm/#{APP[:name]}/Chart.yaml",
+  gsub_file("helm/#{APP[:name]}/Chart.yaml",
             /^appVersion:.*/, "appVersion: #{version}")
-  gsub_file("#{ROOT_DIR}/.app.yml",
+  gsub_file(".app.yml",
             /version:.*/, "version: #{version}")
 end
 
@@ -211,9 +218,75 @@ task :changelog do
 end
 
 task :console do
-  $LOAD_PATH.unshift File.expand_path("lib", __dir__)
-  require "bundler/setup"
-  require APP[:name]
-  require "pry"
-  Pry.start
+  local = get_var(:local, prompt: false, required: false, default: false)
+  if local
+    $LOAD_PATH.unshift File.expand_path("lib", __dir__)
+    require "bundler/setup"
+    require APP[:name]
+    require "pry"
+    Pry.start
+  else
+    Rake::Task["build_development"].invoke
+    sh "docker run -it kubetruth:development console"
+  end
+end
+
+file "#{CLIENT_DIR}/Gemfile" => "openapi.yml" do
+
+  if ENV['MINIKUBE_ACTIVE_DOCKERD']
+    puts "Cannot generate the rest client in the minikube docker environment"
+    puts "Run in a shell without 'eval $(minikube docker-env)'"
+    exit 1
+  end
+
+  rm_rf "client"
+  # may need --user #{Process.uid}:#{Process.gid} for some Hosts
+  sh *%W[
+    docker run --rm
+      -v #{Dir.pwd}:/data
+      openapitools/openapi-generator-cli generate
+        -i /data/openapi.yml
+        -g ruby
+        -o /data/client
+        --library faraday
+        --additional-properties=gemName=cloudtruth-client
+  ]
+end
+
+task :client => "#{CLIENT_DIR}/Gemfile"
+
+task :install do
+  build_type = get_var(:build_type, prompt: false, required: false, default: "development")
+  namespace = get_var(:namespace, prompt: false, required: false)
+  values_file = get_var(:values_file, prompt: false, required: false, default: "local/values.yaml")
+
+  system("minikube version", [:out, :err] => "/dev/null") || fail("dev dependency not installed - minikube")
+  system("minikube status", [:out, :err] => "/dev/null") || fail("dev dependency not running - minikube")
+
+  Rake::Task["client"].invoke
+
+  minikube_env = Hash[`minikube docker-env --shell bash`.scan(/([^ ]*)="(.*)"/)]
+  orig_env = ENV.to_hash
+  minikube_env.each {|k, v| ENV[k] = v }
+  begin
+    Rake::Task["build_#{build_type}"].invoke
+  ensure
+    (minikube_env.keys - orig_env.keys).each {|k| ENV.delete(k) }
+    (minikube_env.keys & orig_env.keys).each {|k, v| ENV[k] = orig_env[k] }
+  end
+
+  cmd = "helm install"
+  cmd << " --create-namespace --namespace #{namespace}" if namespace
+  cmd << " --values #{values_file}" if File.exist?(values_file)
+  cmd << " kubetruth helm/kubetruth/"
+  sh cmd
+end
+
+task :clean_install do
+  namespace = get_var(:namespace, prompt: false, required: false)
+  cmd = "helm delete"
+  cmd << " --namespace #{namespace}" if namespace
+  cmd << " kubetruth"
+  sh cmd
+  sh "kubectl delete customresourcedefinition projectmappings.kubetruth.cloudtruth.com"
 end

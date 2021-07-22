@@ -1,0 +1,107 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://localhost:8000/api/v1/projects/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - kubetruth/0.6.0
+      Accept:
+      - application/json
+      Authorization:
+      - Api-Key <TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - gunicorn
+      Date:
+      - Thu, 22 Jul 2021 14:03:07 GMT
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      Vary:
+      - Accept, Cookie, Origin
+      Allow:
+      - GET, POST, HEAD, OPTIONS
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '610'
+      X-Content-Type-Options:
+      - nosniff
+      Referrer-Policy:
+      - same-origin
+      Set-Cookie:
+      - csrftoken=4M9TBe1j2RQfzb10eiMsLr9a9Vt3VSb3IPvNbbUgFXZS5F8Uxy4CWK5qM6IsmdBh;
+        expires=Thu, 21 Jul 2022 14:03:07 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=jff00lb3pxm2bia75vv68faq8b4vvij3; expires=Thu, 05 Aug 2021 14:03:07
+        GMT; HttpOnly; Max-Age=1209600; Path=/
+    body:
+      encoding: UTF-8
+      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/f771a465-728a-4459-8738-ee633aafdb90/","id":"f771a465-728a-4459-8738-ee633aafdb90","name":"MyFirstProject","description":"A
+        first project workspace to experiment with","created_at":"2021-07-22T14:01:17.862316Z","modified_at":"2021-07-22T14:01:17.862382Z"},{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/","id":"e3e7e278-acfd-4530-89db-61393e173caa","name":"TestProject","description":"","created_at":"2021-07-22T14:02:54.081137Z","modified_at":"2021-07-22T14:02:54.081168Z"}]}'
+  recorded_at: Thu, 22 Jul 2021 14:03:07 GMT
+- request:
+    method: get
+    uri: https://localhost:8000/api/v1/projects/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - kubetruth/0.6.0
+      Accept:
+      - application/json
+      Authorization:
+      - Api-Key <TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - gunicorn
+      Date:
+      - Thu, 22 Jul 2021 14:03:08 GMT
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      Vary:
+      - Accept, Cookie, Origin
+      Allow:
+      - GET, POST, HEAD, OPTIONS
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '610'
+      X-Content-Type-Options:
+      - nosniff
+      Referrer-Policy:
+      - same-origin
+      Set-Cookie:
+      - csrftoken=cVpyiNf4YulZFcVGt20j09mORUXQ4a35hmznuh66HwuW1Bs62TzPS5VBFYiLHRqt;
+        expires=Thu, 21 Jul 2022 14:03:08 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=p9g70z93ifvf1c8jdkz7nkjt49apgilp; expires=Thu, 05 Aug 2021 14:03:08
+        GMT; HttpOnly; Max-Age=1209600; Path=/
+    body:
+      encoding: UTF-8
+      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/f771a465-728a-4459-8738-ee633aafdb90/","id":"f771a465-728a-4459-8738-ee633aafdb90","name":"MyFirstProject","description":"A
+        first project workspace to experiment with","created_at":"2021-07-22T14:01:17.862316Z","modified_at":"2021-07-22T14:01:17.862382Z"},{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/","id":"e3e7e278-acfd-4530-89db-61393e173caa","name":"TestProject","description":"","created_at":"2021-07-22T14:02:54.081137Z","modified_at":"2021-07-22T14:02:54.081168Z"}]}'
+  recorded_at: Thu, 22 Jul 2021 14:03:08 GMT
+recorded_with: VCR 6.0.0

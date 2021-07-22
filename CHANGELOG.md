@@ -1,3 +1,30 @@
+1.0.0 (07/22/2021)
+------------------
+
+#### Notes on major changes
+
+* \[breaking change] Updated to use the new Cloudtruth REST API
+
+#### Full changelog
+
+* exclude params with nil values from templates [65966f8](../../commit/65966f8)
+* latest api schema [079657e](../../commit/079657e)
+* fix NPE - values are nil if unset [4c5ac74](../../commit/4c5ac74)
+* run console through docker [3ad434b](../../commit/3ad434b)
+* Use correct default API host [63a54bc](../../commit/63a54bc)
+* check for minikube for rake install [0098866](../../commit/0098866)
+* convenience tasks [3b4fe55](../../commit/3b4fe55)
+* latest api schema [b76eb58](../../commit/b76eb58)
+* yield task in async helper [0b53d64](../../commit/0b53d64)
+* use logger for async exceptions [5cf8639](../../commit/5cf8639)
+* allow overriding of image name when building docker image [60dd50a](../../commit/60dd50a)
+* allow setting ct api url at install time [8561036](../../commit/8561036)
+* add tests to validate concurrency for http calls.  Use faradat instead of typhoeus in generated client lib to get concurrency for ctapi [d194ac6](../../commit/d194ac6)
+* explicit async wait at top level to future proof if sibling asyncs are added [d1d3992](../../commit/d1d3992)
+* ignore coverage for generated client lib [2d540c0](../../commit/2d540c0)
+* initial conversion to use cloudtruth rest api [22b3584](../../commit/22b3584)
+* complete test coverage [366e919](../../commit/366e919)
+
 0.6.0 (07/07/2021)
 ------------------
 

@@ -1,4 +1,5 @@
 require 'rspec'
+require 'async'
 require 'kubetruth/kubeapi'
 require 'kubetruth/config'
 
@@ -20,7 +21,7 @@ module Kubetruth
         @deps_checked ||= begin
           system("helm version >/dev/null 2>&1") || fail("test dependency not installed - helm ")
           system("minikube version >/dev/null 2>&1") || fail("test dependency not installed - minikube")
-          system("minikube status >/dev/null 2>&1") || fail("test dependency nor running - minikube")
+          system("minikube status >/dev/null 2>&1") || fail("test dependency not running - minikube")
           true
         end
       end
@@ -88,6 +89,23 @@ module Kubetruth
       @spec_name = "#{self.class.name}#{ex.description}".downcase.gsub(/[^\w]+/, "-")
     end
 
+    describe "instance" do
+
+      it "fails if not configured" do
+        expect { described_class.instance }.to raise_error(ArgumentError, /has not been configured/)
+      end
+
+      it "succeeds when configured" do
+        described_class.configure(namespace: "ns1", token: "token1", api_url: "http://localhost")
+        expect(described_class.instance).to be_an_instance_of(described_class)
+        expect(described_class.instance).to equal(described_class.instance)
+        expect(described_class.instance.instance_variable_get(:@namespace)).to eq("ns1")
+        expect(described_class.instance.instance_variable_get(:@auth_options)).to eq({bearer_token: "token1"})
+        expect(described_class.instance.instance_variable_get(:@api_url)).to eq("http://localhost")
+      end
+
+    end
+
     describe "initialize" do
 
       it "uses supplied namespace" do
@@ -103,6 +121,7 @@ module Kubetruth
         expect(instance.instance_variable_get(:@auth_options)[:bearer_token_file]).to eq(KubeApi::TOKEN_PATH)
         expect(instance.instance_variable_get(:@ssl_options)[:ca_file]).to eq(KubeApi::CA_PATH)
       end
+
     end
 
     describe "#api_url" do
@@ -373,6 +392,48 @@ module Kubetruth
         block = Proc.new {}
         expect(kubeapi.crd_client).to receive(:watch_project_mappings).with(resource_version: existing_ver, &block)
         kubeapi.watch_project_mappings(&block)
+      end
+
+    end
+
+    describe "validate async" do
+
+      it "does api requests concurrently" do
+        kapi = kubeapi # rspec let block has a mutex that intermittently causes problems when using async
+        start_times = {}
+        end_times = {}
+        start_times[:total] = Time.now.to_f
+
+        Async(annotation: "top") do
+
+          Async(annotation: "first") do
+            start_times[:first] = Time.now.to_f
+            kapi.get_project_mappings # non-memoized
+            end_times[:first] = Time.now.to_f
+          end
+
+          Async(annotation: "second") do
+            start_times[:second] = Time.now.to_f
+            kapi.get_project_mappings # non-memoized
+            end_times[:second] = Time.now.to_f
+          end
+
+        end
+
+        end_times[:total] = Time.now.to_f
+        elapsed_times = Hash[end_times.collect {|k, v| [k, v - start_times[k]]}]
+
+        logger.debug { "Start times: #{start_times.inspect}" }
+        logger.debug { "End times: #{end_times.inspect}" }
+        logger.debug { "Elapsed times: #{elapsed_times.inspect}" }
+
+        # When VCR plays back requests, it doesn't use concurrent IO like live
+        # requests do, so this assertion will fail.  As a result we only do the
+        # check when someone has cleared the cassette and is re-running against
+        # an actual http api
+        if VCR.current_cassette.originally_recorded_at.nil? || VCR.current_cassette.record_mode == :all
+          expect(elapsed_times[:total]).to be < (elapsed_times[:first] + elapsed_times[:second])
+        end
       end
 
     end

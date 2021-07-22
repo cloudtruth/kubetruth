@@ -5,7 +5,6 @@ require 'yaml/safe_load_stream'
 using YAMLSafeLoadStream
 
 require_relative 'config'
-require_relative 'ctapi'
 require_relative 'kubeapi'
 require_relative 'project_collection'
 
@@ -13,13 +12,12 @@ module Kubetruth
   class ETL
     include GemLogger::LoggerSupport
 
-    def initialize(kube_context:, dry_run: false)
-      @kube_context = kube_context
+    def initialize(dry_run: false)
       @dry_run = dry_run
     end
 
     def kubeapi
-      @kubeapi ||= KubeApi.new(**@kube_context)
+      KubeApi.instance
     end
 
     def interruptible_sleep(interval)
@@ -78,13 +76,24 @@ module Kubetruth
       end
     end
 
+    def async(*args, **kwargs)
+      Async(*args, **kwargs) do |task|
+        begin
+          yield task
+        rescue => e
+          logger.log_exception(e, "Failure in async task: #{task.annotation}")
+          task.stop
+        end
+      end
+    end
+
     def load_config
       configs = []
       mappings_by_ns = kubeapi.get_project_mappings
       primary_mappings = mappings_by_ns.delete(kubeapi.namespace)
       raise Error.new("A default set of mappings is required in the namespace kubetruth is installed in (#{kubeapi.namespace})") unless primary_mappings
 
-      Async(annotation: "Primary Config: #{kubeapi.namespace}") do
+      async(annotation: "Primary Config: #{kubeapi.namespace}") do
         primary_config = Kubetruth::Config.new(primary_mappings.values)
         logger.info {"Processing primary mappings for namespace '#{kubeapi.namespace}'"}
         configs << primary_config
@@ -92,7 +101,7 @@ module Kubetruth
       end
 
       mappings_by_ns.each do |namespace, ns_mappings|
-        Async(annotation: "Secondary Config: #{namespace}") do
+        async(annotation: "Secondary Config: #{namespace}") do
           secondary_mappings = primary_mappings.deep_merge(ns_mappings)
           secondary_config = Kubetruth::Config.new(secondary_mappings.values)
           logger.info {"Processing secondary mappings for namespace '#{namespace}'"}
@@ -105,7 +114,7 @@ module Kubetruth
     end
 
     def apply
-      Async(annotation: "ETL Event Loop") do
+      async(annotation: "ETL Event Loop") do
         logger.warn("Performing dry-run") if @dry_run
 
         load_config do |namespace, config|
@@ -138,7 +147,7 @@ module Kubetruth
               next
             end
 
-            Async(annotation: "Project: #{project.name}") do
+            async(annotation: "Project: #{project.name}") do
 
               # constructing the hash will cause any overrides to happen in the right
               # order (includer wins over last included over first included)
@@ -152,6 +161,15 @@ module Kubetruth
               param_origins_parts = parameter_origins.group_by {|k, v| config_param_hash.has_key?(k) }
               config_origins = Hash[param_origins_parts[true] || []]
               secret_origins = Hash[param_origins_parts[false] || []]
+
+              config_param_hash = config_param_hash.reject do |k, v|
+                logger.debug { "Excluding parameter with nil value: #{k}" } if v.nil?
+                v.nil?
+              end
+              secret_param_hash = secret_param_hash.reject do |k, v|
+                logger.debug { "Excluding secret parameter with nil value: #{k}" } if v.nil?
+                v.nil?
+              end
 
               project.spec.resource_templates.each_with_index do |pair, i|
                 template_name, template = *pair
@@ -174,7 +192,7 @@ module Kubetruth
                 parsed_ymls = YAML.safe_load_stream(resource_yml, template_id)
                 logger.debug {"Skipping empty template"} if parsed_ymls.empty?
                 parsed_ymls.each do |parsed_yml|
-                  Async(annotation: "Apply Template: #{template_id}") do
+                  async(annotation: "Apply Template: #{template_id}") do
                     kube_apply(parsed_yml)
                   end
                 end
@@ -184,7 +202,7 @@ module Kubetruth
 
           end
         end
-      end
+      end.wait
     end
 
     def params_to_hash(param_list)

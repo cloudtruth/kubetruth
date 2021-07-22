@@ -5,6 +5,12 @@ GIT
   specs:
     yaml-safe_load_stream (0.1.2)
 
+PATH
+  remote: client
+  specs:
+    cloudtruth-client (1.0.0)
+      faraday (~> 1.0, >= 1.0.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -34,6 +40,23 @@ GEM
     docile (1.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
+    faraday (1.5.1)
+      faraday-em_http (~> 1.0)
+      faraday-em_synchrony (~> 1.0)
+      faraday-excon (~> 1.1)
+      faraday-httpclient (~> 1.0.1)
+      faraday-net_http (~> 1.0)
+      faraday-net_http_persistent (~> 1.1)
+      faraday-patron (~> 1.0)
+      multipart-post (>= 1.2, < 3)
+      ruby2_keywords (>= 0.0.4)
+    faraday-em_http (1.0.0)
+    faraday-em_synchrony (1.0.0)
+    faraday-excon (1.1.0)
+    faraday-httpclient (1.0.1)
+    faraday-net_http (1.0.1)
+    faraday-net_http_persistent (1.2.0)
+    faraday-patron (1.0.0)
     ffi (1.15.3)
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
@@ -41,10 +64,6 @@ GEM
     fiber-local (1.0.0)
     gem_logger (0.3.0)
       activesupport
-    graphql (1.12.13)
-    graphql-client (0.16.0)
-      activesupport (>= 3.0)
-      graphql (~> 1.8)
     hashdiff (1.0.1)
     http (4.4.1)
       addressable (~> 2.3)
@@ -77,6 +96,7 @@ GEM
     mime-types-data (3.2021.0704)
     minitest (5.14.4)
     multi_json (1.15.0)
+    multipart-post (2.1.1)
     netrc (0.11.0)
     nio4r (2.5.7)
     pry (0.14.1)
@@ -107,6 +127,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
+    ruby2_keywords (0.0.4)
     simplecov (0.21.2)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -133,9 +154,9 @@ DEPENDENCIES
   activesupport
   async
   clamp
+  cloudtruth-client!
   codecov
   gem_logger
-  graphql-client
   kubeclient
   liquid
   logging

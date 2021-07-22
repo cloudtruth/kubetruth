@@ -351,13 +351,29 @@ interactive prompt that will allow you to experiment.
 
 To install and run via helm in a local cluster:
 ``` 
+mkdir local
+cat > local/values.yml <<-EOF
+image:
+  repository: kubetruth
+  pullPolicy: Never
+  tag: latest
+appSettings:
+  debug: true
+  apiKey: <your_api_key>
+EOF
+
+# requires minikube to be installed and running
+rake install
+
+# OR
+
 # If using minikube, ensure that docker builds the image into the minikube container
 # with the command:
 # eval $(minikube docker-env)
 #
 docker build --release development -t kubetruth . && helm install \
     --set image.repository=kubetruth --set image.pullPolicy=Never --set image.tag=latest \
-    --set appSettings.debug=true --set appSettings.apiKey=$CLOUDTRUTH_API_KEY --set appSettings.environment=development \
+    --set appSettings.debug=true --set appSettings.apiKey=$CLOUDTRUTH_API_KEY \
     kubetruth ./helm/kubetruth/
 ```
 

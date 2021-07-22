@@ -28,6 +28,7 @@ RUN apk add --no-cache \
     --virtual build_deps \
     $BUILD_PACKAGES
 
+COPY client $APP_DIR/client
 COPY Gemfile* $APP_DIR/
 RUN bundle config --local without 'development test' && \
     bundle install --jobs=4
