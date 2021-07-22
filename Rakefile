@@ -2,6 +2,7 @@ require 'yaml'
 require 'open-uri'
 
 APP = YAML.load(File.read(".app.yml"), symbolize_names: true)
+ROOT_DIR = File.expand_path(__dir__)
 TMP_DIR = "tmp"
 HELMV2_DIR = "#{TMP_DIR}/helmv2"
 HELM_PKG_DIR = "#{TMP_DIR}/packaged-chart"
@@ -56,12 +57,12 @@ directory HELM_PKG_DIR
 
 HELM_SRC_DIR = "helm/#{APP[:name]}"
 task :helm_build_package => [HELM_PKG_DIR] do
-  sh "helm package #{HELM_SRC_DIR}", chdir: HELM_PKG_DIR
+  sh "helm package '#{ROOT_DIR}/#{HELM_SRC_DIR}'", chdir: HELM_PKG_DIR
 end
 
 HELMV2_SRC_DIR = "#{HELMV2_DIR}/#{APP[:name]}"
 task :helmv2_build_package => [HELM_PKG_DIR, :generate_helmv2] do
-  sh "helm package #{HELMV2_SRC_DIR}", chdir: HELM_PKG_DIR
+  sh "helm package '#{ROOT_DIR}/#{HELMV2_SRC_DIR}'", chdir: HELM_PKG_DIR
 end
 
 task :helm_index => [:helm_build_package, :helmv2_build_package] do
@@ -69,10 +70,11 @@ task :helm_index => [:helm_build_package, :helmv2_build_package] do
 
   maybe_merge=""
   begin
-    File.write("#{TMP_DIR}/old-index.yaml", IO.read("#{helm_repo_url}/index.yaml"))
+    existing_yaml = URI.parse("https://packages.cloudtruth.com/charts/index.yaml").read
+    File.write("#{TMP_DIR}/old-index.yaml", existing_yaml)
     maybe_merge="--merge #{TMP_DIR}/old-index.yaml"
-  rescue
-    puts "No pre-existing helm index at #{helm_repo_url}"
+  rescue => e
+    puts "No pre-existing helm index at #{helm_repo_url}: #{e}"
   end
 
   sh "helm repo index #{maybe_merge} --url #{helm_repo_url} #{TMP_DIR}/packaged-chart/"
