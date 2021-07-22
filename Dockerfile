@@ -3,7 +3,7 @@ FROM ruby:3.0-alpine AS base
 ENV APP_DIR="/srv/app" \
     BUNDLE_PATH="/srv/bundler" \
     BUILD_PACKAGES="build-base ruby-dev" \
-    APP_PACKAGES="bash curl tzdata git" \
+    APP_PACKAGES="bash curl tzdata git less" \
     RELEASE_PACKAGES="bash" \
     APP_USER="app"
 
