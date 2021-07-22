@@ -454,6 +454,32 @@ module Kubetruth
 
         etl.apply()
       end
+
+      it "skips params with nil values" do
+        allow(etl).to receive(:load_config).and_yield(@ns, config)
+        expect(collection).to receive(:names).and_return(["proj1"])
+        allow(collection).to receive(:create_project).and_wrap_original do |m, *args|
+          project = m.call(*args)
+          allow(project).to receive(:parameters).and_return([
+                                                              Parameter.new(key: "param1", value: "value1", secret: false),
+                                                              Parameter.new(key: "param2", value: "value2", secret: true),
+                                                              Parameter.new(key: "param3", value: nil, secret: false),
+                                                              Parameter.new(key: "param4", value: nil, secret: true)
+                                                            ])
+          project
+        end
+
+        allow(etl).to receive(:kube_apply)
+        expect(config.root_spec.resource_templates.values.first).to receive(:render) do |*args, **kwargs|
+          expect(kwargs[:parameters]).to eq({"param1"=>"value1"})
+          expect(kwargs[:parameter_origins]).to eq({"param1"=>"proj1", "param3"=>"proj1"})
+          expect(kwargs[:secrets]).to eq({"param2"=>"value2"})
+          expect(kwargs[:secret_origins]).to eq({"param2"=>"proj1", "param4"=>"proj1"})
+          ""
+        end
+
+        etl.apply()
+      end
     end
 
     describe "default templates" do

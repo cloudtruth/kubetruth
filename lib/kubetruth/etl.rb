@@ -162,6 +162,15 @@ module Kubetruth
               config_origins = Hash[param_origins_parts[true] || []]
               secret_origins = Hash[param_origins_parts[false] || []]
 
+              config_param_hash = config_param_hash.reject do |k, v|
+                logger.debug { "Excluding parameter with nil value: #{k}" } if v.nil?
+                v.nil?
+              end
+              secret_param_hash = secret_param_hash.reject do |k, v|
+                logger.debug { "Excluding secret parameter with nil value: #{k}" } if v.nil?
+                v.nil?
+              end
+
               project.spec.resource_templates.each_with_index do |pair, i|
                 template_name, template = *pair
                 logger.debug { "Processing template '#{template_name}' (#{i+1}/#{project.spec.resource_templates.size})" }
