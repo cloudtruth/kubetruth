@@ -109,7 +109,7 @@ module Kubetruth
         cleaned&.[](:results)&.each do |param|
           if param[:secret]
             param[:values].each do |k, v|
-              v[:value] = "<masked>"
+              v[:value] = "<masked>" unless v.nil?
             end
           end
         end
