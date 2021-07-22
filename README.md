@@ -1,5 +1,5 @@
 [![Build Status](https://github.com/cloudtruth/kubetruth/workflows/CD/badge.svg)](https://github.com/cloudtruth/kubetruth/actions)
-[![Coverage Status](https://codecov.io/gh/cloudtruth/kubetruth/branch/master/graph/badge.svg)](https://codecov.io/gh/cloudtruth/kubetruth)
+[![Coverage Status](https://codecov.io/gh/cloudtruth/kubetruth/branch/main/graph/badge.svg)](https://codecov.io/gh/cloudtruth/kubetruth)
 [![Configured by CloudTruth](https://img.shields.io/badge/configured--by-CloudTruth-blue.svg?style=plastic&labelColor=384047&color=00A6C0&link=https://cloudtruth.com)](https://cloudtruth.com)
 
 # Kubetruth
