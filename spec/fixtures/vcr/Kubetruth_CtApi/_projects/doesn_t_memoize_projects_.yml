@@ -25,7 +25,7 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:32:53 GMT
+      - Thu, 22 Jul 2021 14:02:27 GMT
       Connection:
       - close
       Content-Type:
@@ -37,21 +37,21 @@ http_interactions:
       X-Frame-Options:
       - DENY
       Content-Length:
-      - '610'
+      - '354'
       X-Content-Type-Options:
       - nosniff
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=ch0Bl8Ex1lAKstIdz4GYyYcEmAoY9RaHu3f9fawUx2s2UW3a9XVYuniiyzbqReKa;
-        expires=Wed, 13 Jul 2022 00:32:53 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=14dlxj1wjqsb43t3goom8kxn0cu2as4n; expires=Wed, 28 Jul 2021 00:32:53
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=QsDiSj6ZxABPUJ54l8T6Qc3lvRKNekV9zJgGpyor1i1GliG5rtcZ4mXhbjiOowm9;
+        expires=Thu, 21 Jul 2022 14:02:27 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=d588hwr5c3clil8zq1ud3dtn2oov13ra; expires=Thu, 05 Aug 2021 14:02:27
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/8ea8dad8-7405-4a79-bb11-4cc64ad647a0/","id":"8ea8dad8-7405-4a79-bb11-4cc64ad647a0","name":"MyFirstProject","description":"A
-        first project workspace to experiment with","created_at":"2021-07-13T17:57:00.004749Z","modified_at":"2021-07-13T17:57:00.004959Z"},{"url":"https://localhost:8000/api/v1/projects/09757741-9659-4b43-bcbd-26317dfa2bff/","id":"09757741-9659-4b43-bcbd-26317dfa2bff","name":"TestProject","description":"","created_at":"2021-07-13T18:36:53.178046Z","modified_at":"2021-07-13T18:36:53.178104Z"}]}'
-  recorded_at: Wed, 14 Jul 2021 00:32:53 GMT
+      string: '{"count":1,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/f771a465-728a-4459-8738-ee633aafdb90/","id":"f771a465-728a-4459-8738-ee633aafdb90","name":"MyFirstProject","description":"A
+        first project workspace to experiment with","created_at":"2021-07-22T14:01:17.862316Z","modified_at":"2021-07-22T14:01:17.862382Z"}]}'
+  recorded_at: Thu, 22 Jul 2021 14:02:27 GMT
 - request:
     method: get
     uri: https://localhost:8000/api/v1/projects/
@@ -77,7 +77,7 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:32:55 GMT
+      - Thu, 22 Jul 2021 14:02:28 GMT
       Connection:
       - close
       Content-Type:
@@ -89,21 +89,21 @@ http_interactions:
       X-Frame-Options:
       - DENY
       Content-Length:
-      - '610'
+      - '354'
       X-Content-Type-Options:
       - nosniff
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=CHig2DCFyFXKSRX9sBFaFMAGKTCmlGR9vnkiAn0hBuu2wtGssU1ktCT9tAZo9BFQ;
-        expires=Wed, 13 Jul 2022 00:32:55 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=k2w7iby6yjbk4cqd4tlyw815lpnqf28s; expires=Wed, 28 Jul 2021 00:32:55
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=8buBBEBJrUtudXvoLFDBDbltFJdGsykiBOiaLJOVzEyA8awbObuFZhJUU6q1iZzf;
+        expires=Thu, 21 Jul 2022 14:02:28 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=zn096zft2m1wfgpu42mz3u6whqckn8ma; expires=Thu, 05 Aug 2021 14:02:28
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/8ea8dad8-7405-4a79-bb11-4cc64ad647a0/","id":"8ea8dad8-7405-4a79-bb11-4cc64ad647a0","name":"MyFirstProject","description":"A
-        first project workspace to experiment with","created_at":"2021-07-13T17:57:00.004749Z","modified_at":"2021-07-13T17:57:00.004959Z"},{"url":"https://localhost:8000/api/v1/projects/09757741-9659-4b43-bcbd-26317dfa2bff/","id":"09757741-9659-4b43-bcbd-26317dfa2bff","name":"TestProject","description":"","created_at":"2021-07-13T18:36:53.178046Z","modified_at":"2021-07-13T18:36:53.178104Z"}]}'
-  recorded_at: Wed, 14 Jul 2021 00:32:55 GMT
+      string: '{"count":1,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/f771a465-728a-4459-8738-ee633aafdb90/","id":"f771a465-728a-4459-8738-ee633aafdb90","name":"MyFirstProject","description":"A
+        first project workspace to experiment with","created_at":"2021-07-22T14:01:17.862316Z","modified_at":"2021-07-22T14:01:17.862382Z"}]}'
+  recorded_at: Thu, 22 Jul 2021 14:02:28 GMT
 - request:
     method: get
     uri: https://localhost:8000/api/v1/projects/
@@ -129,7 +129,7 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:32:57 GMT
+      - Thu, 22 Jul 2021 14:02:29 GMT
       Connection:
       - close
       Content-Type:
@@ -141,21 +141,21 @@ http_interactions:
       X-Frame-Options:
       - DENY
       Content-Length:
-      - '610'
+      - '354'
       X-Content-Type-Options:
       - nosniff
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=cMcKBCveIvd58Uve90TPNaw5ibGrGeidsBCg20xw8mnRabSZmUWGzwvM4bggZb5o;
-        expires=Wed, 13 Jul 2022 00:32:57 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=ik4qks5ghq9tfbrr3b0um8w6ykfjccqq; expires=Wed, 28 Jul 2021 00:32:57
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=MTTxuTl2YrHemSw09DMPxACusbLzKEbXXjkNx0x7Kw1Pr1wowgYWzTA9DGzKlrlp;
+        expires=Thu, 21 Jul 2022 14:02:29 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=voafwcemgaqtnyzexpbiz9n84skugx59; expires=Thu, 05 Aug 2021 14:02:29
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/8ea8dad8-7405-4a79-bb11-4cc64ad647a0/","id":"8ea8dad8-7405-4a79-bb11-4cc64ad647a0","name":"MyFirstProject","description":"A
-        first project workspace to experiment with","created_at":"2021-07-13T17:57:00.004749Z","modified_at":"2021-07-13T17:57:00.004959Z"},{"url":"https://localhost:8000/api/v1/projects/09757741-9659-4b43-bcbd-26317dfa2bff/","id":"09757741-9659-4b43-bcbd-26317dfa2bff","name":"TestProject","description":"","created_at":"2021-07-13T18:36:53.178046Z","modified_at":"2021-07-13T18:36:53.178104Z"}]}'
-  recorded_at: Wed, 14 Jul 2021 00:32:57 GMT
+      string: '{"count":1,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/f771a465-728a-4459-8738-ee633aafdb90/","id":"f771a465-728a-4459-8738-ee633aafdb90","name":"MyFirstProject","description":"A
+        first project workspace to experiment with","created_at":"2021-07-22T14:01:17.862316Z","modified_at":"2021-07-22T14:01:17.862382Z"}]}'
+  recorded_at: Thu, 22 Jul 2021 14:02:29 GMT
 - request:
     method: get
     uri: https://localhost:8000/api/v1/projects/
@@ -181,7 +181,7 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:32:58 GMT
+      - Thu, 22 Jul 2021 14:02:30 GMT
       Connection:
       - close
       Content-Type:
@@ -193,19 +193,19 @@ http_interactions:
       X-Frame-Options:
       - DENY
       Content-Length:
-      - '610'
+      - '354'
       X-Content-Type-Options:
       - nosniff
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=cCL4Vkkg9LMahqdnrNVbUDIx5lcBXpb9m3p8MVy7c91WIMZC8jNcXj3zehpYLgmO;
-        expires=Wed, 13 Jul 2022 00:32:58 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=ms9y746ckkv3077kdhhjo1zck4dh6119; expires=Wed, 28 Jul 2021 00:32:58
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=LWAWdBHWzHrWv3yHcZ7qIFOET2h0xZGBJsXqHec4lzZauQD6oBJWKWEOdRwg02OR;
+        expires=Thu, 21 Jul 2022 14:02:30 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=w7ds8z2qz8em307q5r0fnugpy79lekzv; expires=Thu, 05 Aug 2021 14:02:30
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/8ea8dad8-7405-4a79-bb11-4cc64ad647a0/","id":"8ea8dad8-7405-4a79-bb11-4cc64ad647a0","name":"MyFirstProject","description":"A
-        first project workspace to experiment with","created_at":"2021-07-13T17:57:00.004749Z","modified_at":"2021-07-13T17:57:00.004959Z"},{"url":"https://localhost:8000/api/v1/projects/09757741-9659-4b43-bcbd-26317dfa2bff/","id":"09757741-9659-4b43-bcbd-26317dfa2bff","name":"TestProject","description":"","created_at":"2021-07-13T18:36:53.178046Z","modified_at":"2021-07-13T18:36:53.178104Z"}]}'
-  recorded_at: Wed, 14 Jul 2021 00:32:58 GMT
+      string: '{"count":1,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/f771a465-728a-4459-8738-ee633aafdb90/","id":"f771a465-728a-4459-8738-ee633aafdb90","name":"MyFirstProject","description":"A
+        first project workspace to experiment with","created_at":"2021-07-22T14:01:17.862316Z","modified_at":"2021-07-22T14:01:17.862382Z"}]}'
+  recorded_at: Thu, 22 Jul 2021 14:02:30 GMT
 recorded_with: VCR 6.0.0

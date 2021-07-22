@@ -25,7 +25,7 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:33:32 GMT
+      - Thu, 22 Jul 2021 14:02:51 GMT
       Connection:
       - close
       Content-Type:
@@ -43,18 +43,18 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=k1ZpoOMYGVrKrZr2mVhe08DAwhf6DUE9NQsei98yahNYpt4wAcoDIYRNl9AAlZhL;
-        expires=Wed, 13 Jul 2022 00:33:32 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=2bsijm8scgs5439ywwjcdgdvju9h137l; expires=Wed, 28 Jul 2021 00:33:32
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=F2ZO8zcXyn6zy45OczSabn8hKBcQmpUmFOSBkxNH5QqAIlW8KmH080AhxshhH03h;
+        expires=Thu, 21 Jul 2022 14:02:51 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=g3swn1zcfcz080gz0vnjg71e0oylkwju; expires=Thu, 05 Aug 2021 14:02:51
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/8ea8dad8-7405-4a79-bb11-4cc64ad647a0/","id":"8ea8dad8-7405-4a79-bb11-4cc64ad647a0","name":"MyFirstProject","description":"A
-        first project workspace to experiment with","created_at":"2021-07-13T17:57:00.004749Z","modified_at":"2021-07-13T17:57:00.004959Z"},{"url":"https://localhost:8000/api/v1/projects/f76f1696-252c-4289-8fdc-e611579e4dba/","id":"f76f1696-252c-4289-8fdc-e611579e4dba","name":"TestProject","description":"","created_at":"2021-07-14T00:33:16.808298Z","modified_at":"2021-07-14T00:33:16.808341Z"}]}'
-  recorded_at: Wed, 14 Jul 2021 00:33:32 GMT
+      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/f771a465-728a-4459-8738-ee633aafdb90/","id":"f771a465-728a-4459-8738-ee633aafdb90","name":"MyFirstProject","description":"A
+        first project workspace to experiment with","created_at":"2021-07-22T14:01:17.862316Z","modified_at":"2021-07-22T14:01:17.862382Z"},{"url":"https://localhost:8000/api/v1/projects/3401da03-3bbb-47d4-a6bc-8be59fa8de5b/","id":"3401da03-3bbb-47d4-a6bc-8be59fa8de5b","name":"TestProject","description":"","created_at":"2021-07-22T14:02:40.974824Z","modified_at":"2021-07-22T14:02:40.974862Z"}]}'
+  recorded_at: Thu, 22 Jul 2021 14:02:51 GMT
 - request:
     method: delete
-    uri: https://localhost:8000/api/v1/projects/f76f1696-252c-4289-8fdc-e611579e4dba/
+    uri: https://localhost:8000/api/v1/projects/3401da03-3bbb-47d4-a6bc-8be59fa8de5b/
     body:
       encoding: US-ASCII
       string: ''
@@ -77,7 +77,7 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:33:34 GMT
+      - Thu, 22 Jul 2021 14:02:53 GMT
       Connection:
       - close
       Vary:
@@ -93,14 +93,14 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=3gYlHDn3sErf6EGpsChaWEAtkVErUgWZ5mjprCGQxoeCuVtVaCXg9oZi04xyoJ1R;
-        expires=Wed, 13 Jul 2022 00:33:34 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=x32j6jo3x7kwo9pj1bareu9knfk7f5wa; expires=Wed, 28 Jul 2021 00:33:34
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=7wzdlMiEVNKgoqlWYEwY1C2JhSCDwjxBh3v5gU4MlhoSltpnVkLfX7zZMQ4irLdV;
+        expires=Thu, 21 Jul 2022 14:02:53 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=02nyiervt6c8p0rsj2oen0cxcrlp7cro; expires=Thu, 05 Aug 2021 14:02:53
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
       string: ''
-  recorded_at: Wed, 14 Jul 2021 00:33:34 GMT
+  recorded_at: Thu, 22 Jul 2021 14:02:53 GMT
 - request:
     method: post
     uri: https://localhost:8000/api/v1/projects/
@@ -126,13 +126,13 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:33:35 GMT
+      - Thu, 22 Jul 2021 14:02:54 GMT
       Connection:
       - close
       Content-Type:
       - application/json
       Location:
-      - https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/
+      - https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/
       Vary:
       - Accept, Cookie, Origin
       Allow:
@@ -146,14 +146,14 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=8QPXPiV6KY8NhNUe9fGP7DqJKfOPjFfqVZM5vVVRUJKhc5SYDLohuH907Q2R9PJ0;
-        expires=Wed, 13 Jul 2022 00:33:35 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=fefosfk6ssw43fv0uyxi4gzknkk9r9do; expires=Wed, 28 Jul 2021 00:33:35
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=DQQGGsNxpbGqiGtE5iwbylGOr1vJNhbVASLQ1Ke0xMZDlsRdilhy4uyeCJ7GSrBQ;
+        expires=Thu, 21 Jul 2022 14:02:54 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=u6lzfks0amabw5v5x6ar5ajhkxiq166t; expires=Thu, 05 Aug 2021 14:02:54
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/","id":"cfc4437a-d76f-4981-a9c4-06a212fc5933","name":"TestProject","description":"","created_at":"2021-07-14T00:33:35.954746Z","modified_at":"2021-07-14T00:33:35.954777Z"}'
-  recorded_at: Wed, 14 Jul 2021 00:33:35 GMT
+      string: '{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/","id":"e3e7e278-acfd-4530-89db-61393e173caa","name":"TestProject","description":"","created_at":"2021-07-22T14:02:54.081137Z","modified_at":"2021-07-22T14:02:54.081168Z"}'
+  recorded_at: Thu, 22 Jul 2021 14:02:54 GMT
 - request:
     method: get
     uri: https://localhost:8000/api/v1/projects/
@@ -179,7 +179,7 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:33:37 GMT
+      - Thu, 22 Jul 2021 14:02:55 GMT
       Connection:
       - close
       Content-Type:
@@ -197,18 +197,18 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=8Ukrj8NIfZkhL3xrNPqNFnLkaDZ6mfii3GuXjbXbKpYAWvRw4a84p3nWLqdqxAO2;
-        expires=Wed, 13 Jul 2022 00:33:37 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=mm37sg06wu3d22t3akicxs45cyrzsskw; expires=Wed, 28 Jul 2021 00:33:37
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=IuFGjpzDltMerHC4jMNnYyoN93gKFKxpc6Iq9fqFZV0qy484Ajcye7sOn3LUhQqL;
+        expires=Thu, 21 Jul 2022 14:02:55 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=159bdg5b8pu9a84vzji37tve3hd64edt; expires=Thu, 05 Aug 2021 14:02:55
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/8ea8dad8-7405-4a79-bb11-4cc64ad647a0/","id":"8ea8dad8-7405-4a79-bb11-4cc64ad647a0","name":"MyFirstProject","description":"A
-        first project workspace to experiment with","created_at":"2021-07-13T17:57:00.004749Z","modified_at":"2021-07-13T17:57:00.004959Z"},{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/","id":"cfc4437a-d76f-4981-a9c4-06a212fc5933","name":"TestProject","description":"","created_at":"2021-07-14T00:33:35.954746Z","modified_at":"2021-07-14T00:33:35.954777Z"}]}'
-  recorded_at: Wed, 14 Jul 2021 00:33:37 GMT
+      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/f771a465-728a-4459-8738-ee633aafdb90/","id":"f771a465-728a-4459-8738-ee633aafdb90","name":"MyFirstProject","description":"A
+        first project workspace to experiment with","created_at":"2021-07-22T14:01:17.862316Z","modified_at":"2021-07-22T14:01:17.862382Z"},{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/","id":"e3e7e278-acfd-4530-89db-61393e173caa","name":"TestProject","description":"","created_at":"2021-07-22T14:02:54.081137Z","modified_at":"2021-07-22T14:02:54.081168Z"}]}'
+  recorded_at: Thu, 22 Jul 2021 14:02:55 GMT
 - request:
     method: post
-    uri: https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/
+    uri: https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/
     body:
       encoding: UTF-8
       string: '{"name":"one"}'
@@ -231,13 +231,13 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:33:39 GMT
+      - Thu, 22 Jul 2021 14:02:56 GMT
       Connection:
       - close
       Content-Type:
       - application/json
       Location:
-      - https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/006cd384-dbcc-44fa-9acc-469db44176d0/
+      - https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/51074ae1-be9f-42a7-b114-be44f3abdbe1/
       Vary:
       - Accept, Cookie, Origin
       Allow:
@@ -251,17 +251,17 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=CYeD3rKHKKpK9tygFQwKWqBeRY01Vl17CRBz1dYsJclrV8eHSrWBmrrf9zdcmSH7;
-        expires=Wed, 13 Jul 2022 00:33:39 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=5k9guc629mejp96z2kl1mwsewtpgzvrk; expires=Wed, 28 Jul 2021 00:33:39
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=7FJJEGN4MJoHLDhxL5jM0bPBBh1b0m5orkJEMfTAo2PJGLXAHRSfussQsF2F3xyJ;
+        expires=Thu, 21 Jul 2022 14:02:56 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=yvqv85w5qwzugby6afs5bc2et07s8ba9; expires=Thu, 05 Aug 2021 14:02:56
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/006cd384-dbcc-44fa-9acc-469db44176d0/","id":"006cd384-dbcc-44fa-9acc-469db44176d0","name":"one","description":"","secret":false,"templates":[],"uses_dynamic_values":false,"values":{"https://localhost:8000/api/v1/environments/1c03b5c1-7040-49e4-be35-7594be262c11/":null,"https://localhost:8000/api/v1/environments/30b123cd-288c-4fd8-b5cc-607086c8cb4f/":null,"https://localhost:8000/api/v1/environments/1eadb281-baa9-4816-8f88-775d0a636f16/":null,"https://localhost:8000/api/v1/environments/f7f81820-f920-467c-9a37-fc4a6ad518fe/":null},"created_at":"2021-07-14T00:33:38.816864Z","modified_at":"2021-07-14T00:33:38.816984Z"}'
-  recorded_at: Wed, 14 Jul 2021 00:33:39 GMT
+      string: '{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/51074ae1-be9f-42a7-b114-be44f3abdbe1/","id":"51074ae1-be9f-42a7-b114-be44f3abdbe1","name":"one","description":"","secret":false,"templates":[],"uses_dynamic_values":false,"values":{"https://localhost:8000/api/v1/environments/8720a7b8-c8be-4c17-9eb9-2e37c5b876fc/":null,"https://localhost:8000/api/v1/environments/c21d0fc6-bcfa-4bf7-89d5-13a9b53e1c3c/":null,"https://localhost:8000/api/v1/environments/8332d031-f59d-4e79-9ba8-927487555d7c/":null,"https://localhost:8000/api/v1/environments/60cc35ce-af46-464e-8d87-41de2a3f20ff/":null},"created_at":"2021-07-22T14:02:55.928770Z","modified_at":"2021-07-22T14:02:55.928863Z"}'
+  recorded_at: Thu, 22 Jul 2021 14:02:56 GMT
 - request:
     method: post
-    uri: https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/
+    uri: https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/
     body:
       encoding: UTF-8
       string: '{"name":"two"}'
@@ -284,13 +284,13 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:33:43 GMT
+      - Thu, 22 Jul 2021 14:02:57 GMT
       Connection:
       - close
       Content-Type:
       - application/json
       Location:
-      - https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe/
+      - https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea/
       Vary:
       - Accept, Cookie, Origin
       Allow:
@@ -304,14 +304,14 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=bQ9AUeB71IF19UwkkUgt7Rd3GMhMvJ54nFYRlDjypR8XwScF6JLklgSjUmC8k1yT;
-        expires=Wed, 13 Jul 2022 00:33:43 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=2bmfucz9j43eg8am96vxjrnnbcxge4sb; expires=Wed, 28 Jul 2021 00:33:43
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=v3h2L5R1KvDfWUCU1czE7jMmO445eQNw6xaEQvEwfqCsOBEfGBD3JuRhNize89iq;
+        expires=Thu, 21 Jul 2022 14:02:57 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=xcq8s9acq9qmmcdg9lck0h2vj7pawcww; expires=Thu, 05 Aug 2021 14:02:57
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe/","id":"ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe","name":"two","description":"","secret":false,"templates":[],"uses_dynamic_values":false,"values":{"https://localhost:8000/api/v1/environments/1c03b5c1-7040-49e4-be35-7594be262c11/":null,"https://localhost:8000/api/v1/environments/30b123cd-288c-4fd8-b5cc-607086c8cb4f/":null,"https://localhost:8000/api/v1/environments/1eadb281-baa9-4816-8f88-775d0a636f16/":null,"https://localhost:8000/api/v1/environments/f7f81820-f920-467c-9a37-fc4a6ad518fe/":null},"created_at":"2021-07-14T00:33:43.331042Z","modified_at":"2021-07-14T00:33:43.331084Z"}'
-  recorded_at: Wed, 14 Jul 2021 00:33:43 GMT
+      string: '{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea/","id":"bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea","name":"two","description":"","secret":false,"templates":[],"uses_dynamic_values":false,"values":{"https://localhost:8000/api/v1/environments/8720a7b8-c8be-4c17-9eb9-2e37c5b876fc/":null,"https://localhost:8000/api/v1/environments/c21d0fc6-bcfa-4bf7-89d5-13a9b53e1c3c/":null,"https://localhost:8000/api/v1/environments/8332d031-f59d-4e79-9ba8-927487555d7c/":null,"https://localhost:8000/api/v1/environments/60cc35ce-af46-464e-8d87-41de2a3f20ff/":null},"created_at":"2021-07-22T14:02:56.909374Z","modified_at":"2021-07-22T14:02:56.909409Z"}'
+  recorded_at: Thu, 22 Jul 2021 14:02:57 GMT
 - request:
     method: get
     uri: https://localhost:8000/api/v1/environments/
@@ -337,7 +337,7 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:33:45 GMT
+      - Thu, 22 Jul 2021 14:02:58 GMT
       Connection:
       - close
       Content-Type:
@@ -355,24 +355,24 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=stDzq6D0t9z6LhHQRkldvzX4MPRYiHnWoMKbGxoKbEvvOflak20EeMIpkHH0r5ou;
-        expires=Wed, 13 Jul 2022 00:33:45 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=n7s26j3tiy0dgzlzkglngxmm2uyssiud; expires=Wed, 28 Jul 2021 00:33:45
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=jk2MlZ9ncBKvj2jfc6UDvwdY0pzkmSl16tdycRqYXyKJc9Y3taWZWWKeBXutLnYE;
+        expires=Thu, 21 Jul 2022 14:02:58 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=iyzrln4hnn8i5r788a2xs3sg72afwsu6; expires=Thu, 05 Aug 2021 14:02:58
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"count":4,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/environments/1c03b5c1-7040-49e4-be35-7594be262c11/","id":"1c03b5c1-7040-49e4-be35-7594be262c11","name":"default","description":"Default
-        environment, base for all environments.","parent":null,"created_at":"2021-07-13T17:57:00.029171Z","modified_at":"2021-07-13T17:57:00.029210Z"},{"url":"https://localhost:8000/api/v1/environments/30b123cd-288c-4fd8-b5cc-607086c8cb4f/","id":"30b123cd-288c-4fd8-b5cc-607086c8cb4f","name":"development","description":"Development
-        deployment environment","parent":"https://localhost:8000/api/v1/environments/1c03b5c1-7040-49e4-be35-7594be262c11/","created_at":"2021-07-13T17:57:00.048313Z","modified_at":"2021-07-13T17:57:00.048347Z"},{"url":"https://localhost:8000/api/v1/environments/1eadb281-baa9-4816-8f88-775d0a636f16/","id":"1eadb281-baa9-4816-8f88-775d0a636f16","name":"production","description":"Production
-        deployment environment","parent":"https://localhost:8000/api/v1/environments/1c03b5c1-7040-49e4-be35-7594be262c11/","created_at":"2021-07-13T17:57:00.072603Z","modified_at":"2021-07-13T17:57:00.072636Z"},{"url":"https://localhost:8000/api/v1/environments/f7f81820-f920-467c-9a37-fc4a6ad518fe/","id":"f7f81820-f920-467c-9a37-fc4a6ad518fe","name":"staging","description":"Staging
-        deployment environment","parent":"https://localhost:8000/api/v1/environments/1c03b5c1-7040-49e4-be35-7594be262c11/","created_at":"2021-07-13T17:57:00.061960Z","modified_at":"2021-07-13T17:57:00.061995Z"}]}'
-  recorded_at: Wed, 14 Jul 2021 00:33:45 GMT
+      string: '{"count":4,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/environments/8720a7b8-c8be-4c17-9eb9-2e37c5b876fc/","id":"8720a7b8-c8be-4c17-9eb9-2e37c5b876fc","name":"default","description":"Default
+        environment, base for all environments.","parent":null,"created_at":"2021-07-22T14:01:17.889236Z","modified_at":"2021-07-22T14:02:46.739356Z"},{"url":"https://localhost:8000/api/v1/environments/c21d0fc6-bcfa-4bf7-89d5-13a9b53e1c3c/","id":"c21d0fc6-bcfa-4bf7-89d5-13a9b53e1c3c","name":"development","description":"Development
+        deployment environment","parent":"https://localhost:8000/api/v1/environments/8720a7b8-c8be-4c17-9eb9-2e37c5b876fc/","created_at":"2021-07-22T14:01:17.913891Z","modified_at":"2021-07-22T14:01:17.913964Z"},{"url":"https://localhost:8000/api/v1/environments/8332d031-f59d-4e79-9ba8-927487555d7c/","id":"8332d031-f59d-4e79-9ba8-927487555d7c","name":"production","description":"Production
+        deployment environment","parent":"https://localhost:8000/api/v1/environments/8720a7b8-c8be-4c17-9eb9-2e37c5b876fc/","created_at":"2021-07-22T14:01:17.957566Z","modified_at":"2021-07-22T14:01:17.957710Z"},{"url":"https://localhost:8000/api/v1/environments/60cc35ce-af46-464e-8d87-41de2a3f20ff/","id":"60cc35ce-af46-464e-8d87-41de2a3f20ff","name":"staging","description":"Staging
+        deployment environment","parent":"https://localhost:8000/api/v1/environments/8720a7b8-c8be-4c17-9eb9-2e37c5b876fc/","created_at":"2021-07-22T14:01:17.934364Z","modified_at":"2021-07-22T14:01:17.934409Z"}]}'
+  recorded_at: Thu, 22 Jul 2021 14:02:58 GMT
 - request:
     method: post
-    uri: https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/006cd384-dbcc-44fa-9acc-469db44176d0/values/
+    uri: https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/51074ae1-be9f-42a7-b114-be44f3abdbe1/values/
     body:
       encoding: UTF-8
-      string: '{"environment":"1c03b5c1-7040-49e4-be35-7594be262c11","dynamic":false,"static_value":"defaultone"}'
+      string: '{"environment":"8720a7b8-c8be-4c17-9eb9-2e37c5b876fc","dynamic":false,"static_value":"defaultone"}'
     headers:
       Content-Type:
       - application/json
@@ -392,13 +392,13 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:33:47 GMT
+      - Thu, 22 Jul 2021 14:02:59 GMT
       Connection:
       - close
       Content-Type:
       - application/json
       Location:
-      - https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/006cd384-dbcc-44fa-9acc-469db44176d0/values/97cffdc3-8f65-492f-9ad7-1bd43a4f5b85/
+      - https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/51074ae1-be9f-42a7-b114-be44f3abdbe1/values/457c10f4-78e2-4d8c-9429-8e2c5f11923d/
       Vary:
       - Accept, Cookie, Origin
       Allow:
@@ -412,20 +412,20 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=jbaFHLKZgOQKrfaBIhWivCCOcCH02ImFJqaxjgXclEI5rZTyttr15xmkvSJ1sjgA;
-        expires=Wed, 13 Jul 2022 00:33:47 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=8r3clvn6yrtce2ahsm1ps8ucnrp8r57x; expires=Wed, 28 Jul 2021 00:33:47
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=3T4K4zW4iccu6MypRTZ1Y8rYIThIAoKdpIuqe8tfEMG29nuMtY9s7BeGozcQNAaB;
+        expires=Thu, 21 Jul 2022 14:02:59 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=svp3bi3h9q1fe34v8opxvoz12omsdppy; expires=Thu, 05 Aug 2021 14:02:59
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/006cd384-dbcc-44fa-9acc-469db44176d0/values/97cffdc3-8f65-492f-9ad7-1bd43a4f5b85/","id":"97cffdc3-8f65-492f-9ad7-1bd43a4f5b85","environment":"https://localhost:8000/api/v1/environments/1c03b5c1-7040-49e4-be35-7594be262c11/","parameter":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/006cd384-dbcc-44fa-9acc-469db44176d0/","dynamic":false,"dynamic_fqn":"","dynamic_filter":"","static_value":"defaultone","value":"defaultone","created_at":"2021-07-14T00:33:47.170890Z","modified_at":"2021-07-14T00:33:47.170927Z"}'
-  recorded_at: Wed, 14 Jul 2021 00:33:47 GMT
+      string: '{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/51074ae1-be9f-42a7-b114-be44f3abdbe1/values/457c10f4-78e2-4d8c-9429-8e2c5f11923d/","id":"457c10f4-78e2-4d8c-9429-8e2c5f11923d","environment":"https://localhost:8000/api/v1/environments/8720a7b8-c8be-4c17-9eb9-2e37c5b876fc/","parameter":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/51074ae1-be9f-42a7-b114-be44f3abdbe1/","dynamic":false,"dynamic_fqn":"","dynamic_filter":"","static_value":"defaultone","value":"defaultone","created_at":"2021-07-22T14:02:59.271238Z","modified_at":"2021-07-22T14:02:59.271307Z"}'
+  recorded_at: Thu, 22 Jul 2021 14:02:59 GMT
 - request:
     method: post
-    uri: https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/006cd384-dbcc-44fa-9acc-469db44176d0/values/
+    uri: https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/51074ae1-be9f-42a7-b114-be44f3abdbe1/values/
     body:
       encoding: UTF-8
-      string: '{"environment":"30b123cd-288c-4fd8-b5cc-607086c8cb4f","dynamic":false,"static_value":"developmentone"}'
+      string: '{"environment":"c21d0fc6-bcfa-4bf7-89d5-13a9b53e1c3c","dynamic":false,"static_value":"developmentone"}'
     headers:
       Content-Type:
       - application/json
@@ -445,13 +445,13 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:33:48 GMT
+      - Thu, 22 Jul 2021 14:03:00 GMT
       Connection:
       - close
       Content-Type:
       - application/json
       Location:
-      - https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/006cd384-dbcc-44fa-9acc-469db44176d0/values/513e212f-592b-4fd1-ae05-6fed068172b0/
+      - https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/51074ae1-be9f-42a7-b114-be44f3abdbe1/values/d59cb81e-1b81-437f-8efc-826ad1ea312f/
       Vary:
       - Accept, Cookie, Origin
       Allow:
@@ -465,20 +465,20 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=et9LV2q5t44uPvHSZ89s8xjBMkgZQtX2pP9SatUjBPaePAUzO9lGO7UKTLd8rsOx;
-        expires=Wed, 13 Jul 2022 00:33:48 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=4vvwiyh0stmffdzvtmlckzct1h661cyx; expires=Wed, 28 Jul 2021 00:33:48
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=XEL8dQ1fjpbc9W6GBsd2wbl1qb72irMSsPfmCFn6xhP9Za3RN90lvmKVyPgvvJxQ;
+        expires=Thu, 21 Jul 2022 14:03:00 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=m990ca42axt9ktwf3o7s3wuhrim55liw; expires=Thu, 05 Aug 2021 14:03:00
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/006cd384-dbcc-44fa-9acc-469db44176d0/values/513e212f-592b-4fd1-ae05-6fed068172b0/","id":"513e212f-592b-4fd1-ae05-6fed068172b0","environment":"https://localhost:8000/api/v1/environments/30b123cd-288c-4fd8-b5cc-607086c8cb4f/","parameter":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/006cd384-dbcc-44fa-9acc-469db44176d0/","dynamic":false,"dynamic_fqn":"","dynamic_filter":"","static_value":"developmentone","value":"developmentone","created_at":"2021-07-14T00:33:48.323820Z","modified_at":"2021-07-14T00:33:48.323855Z"}'
-  recorded_at: Wed, 14 Jul 2021 00:33:48 GMT
+      string: '{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/51074ae1-be9f-42a7-b114-be44f3abdbe1/values/d59cb81e-1b81-437f-8efc-826ad1ea312f/","id":"d59cb81e-1b81-437f-8efc-826ad1ea312f","environment":"https://localhost:8000/api/v1/environments/c21d0fc6-bcfa-4bf7-89d5-13a9b53e1c3c/","parameter":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/51074ae1-be9f-42a7-b114-be44f3abdbe1/","dynamic":false,"dynamic_fqn":"","dynamic_filter":"","static_value":"developmentone","value":"developmentone","created_at":"2021-07-22T14:03:00.136868Z","modified_at":"2021-07-22T14:03:00.136910Z"}'
+  recorded_at: Thu, 22 Jul 2021 14:03:00 GMT
 - request:
     method: post
-    uri: https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe/values/
+    uri: https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea/values/
     body:
       encoding: UTF-8
-      string: '{"environment":"1c03b5c1-7040-49e4-be35-7594be262c11","dynamic":false,"static_value":"defaulttwo"}'
+      string: '{"environment":"8720a7b8-c8be-4c17-9eb9-2e37c5b876fc","dynamic":false,"static_value":"defaulttwo"}'
     headers:
       Content-Type:
       - application/json
@@ -498,13 +498,13 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:33:49 GMT
+      - Thu, 22 Jul 2021 14:03:01 GMT
       Connection:
       - close
       Content-Type:
       - application/json
       Location:
-      - https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe/values/26e60318-221c-43d8-934f-ed53de34f1cd/
+      - https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea/values/35e8aaf3-1daf-4e87-b51d-e1ba9284ea25/
       Vary:
       - Accept, Cookie, Origin
       Allow:
@@ -518,20 +518,20 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=kOoIto0hpMQRhujiROY9wmcVDreIdBzXNPzZxFCmcQGFAfGN4cGizMaCRDZWVAxz;
-        expires=Wed, 13 Jul 2022 00:33:49 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=6jcnmcf9mzitc7ssy776apjhnqtplyit; expires=Wed, 28 Jul 2021 00:33:49
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=uPC0XGuriBn4BqOrooZzyDJwbM0Ri64gn3ByTOgi2yfH5VaTIcbPGLb07s8nvWSG;
+        expires=Thu, 21 Jul 2022 14:03:01 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=lzk3yik4exta94bwcukonyxo4edicfcu; expires=Thu, 05 Aug 2021 14:03:01
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe/values/26e60318-221c-43d8-934f-ed53de34f1cd/","id":"26e60318-221c-43d8-934f-ed53de34f1cd","environment":"https://localhost:8000/api/v1/environments/1c03b5c1-7040-49e4-be35-7594be262c11/","parameter":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe/","dynamic":false,"dynamic_fqn":"","dynamic_filter":"","static_value":"defaulttwo","value":"defaulttwo","created_at":"2021-07-14T00:33:49.694778Z","modified_at":"2021-07-14T00:33:49.694823Z"}'
-  recorded_at: Wed, 14 Jul 2021 00:33:49 GMT
+      string: '{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea/values/35e8aaf3-1daf-4e87-b51d-e1ba9284ea25/","id":"35e8aaf3-1daf-4e87-b51d-e1ba9284ea25","environment":"https://localhost:8000/api/v1/environments/8720a7b8-c8be-4c17-9eb9-2e37c5b876fc/","parameter":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea/","dynamic":false,"dynamic_fqn":"","dynamic_filter":"","static_value":"defaulttwo","value":"defaulttwo","created_at":"2021-07-22T14:03:01.075583Z","modified_at":"2021-07-22T14:03:01.075625Z"}'
+  recorded_at: Thu, 22 Jul 2021 14:03:01 GMT
 - request:
     method: post
-    uri: https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe/values/
+    uri: https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea/values/
     body:
       encoding: UTF-8
-      string: '{"environment":"30b123cd-288c-4fd8-b5cc-607086c8cb4f","dynamic":false,"static_value":"developmenttwo"}'
+      string: '{"environment":"c21d0fc6-bcfa-4bf7-89d5-13a9b53e1c3c","dynamic":false,"static_value":"developmenttwo"}'
     headers:
       Content-Type:
       - application/json
@@ -551,13 +551,13 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:33:50 GMT
+      - Thu, 22 Jul 2021 14:03:01 GMT
       Connection:
       - close
       Content-Type:
       - application/json
       Location:
-      - https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe/values/0c0c8ee6-107f-4545-9257-d8c0f3dd5f26/
+      - https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea/values/e053cc03-ef6a-4110-b7f5-8e7ec0b70cfe/
       Vary:
       - Accept, Cookie, Origin
       Allow:
@@ -571,14 +571,14 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=fnxtDCYG6lkG5uP57sDrbYyvkPgABNclCdoj0Rh753HVsPDR0h67IegdqbGIko2z;
-        expires=Wed, 13 Jul 2022 00:33:50 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=b7afrd58v2iuw1vaq6sagln25j0m8mjv; expires=Wed, 28 Jul 2021 00:33:50
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=sr6kuvIWXNLa5VQSJLh2fexdT2Qf88fCt2kj2jkWPuaApP5ZaQlJczVtFuOWLdZD;
+        expires=Thu, 21 Jul 2022 14:03:01 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=u8tahqutg23g3sa347uj94elh0ywig6w; expires=Thu, 05 Aug 2021 14:03:01
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe/values/0c0c8ee6-107f-4545-9257-d8c0f3dd5f26/","id":"0c0c8ee6-107f-4545-9257-d8c0f3dd5f26","environment":"https://localhost:8000/api/v1/environments/30b123cd-288c-4fd8-b5cc-607086c8cb4f/","parameter":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe/","dynamic":false,"dynamic_fqn":"","dynamic_filter":"","static_value":"developmenttwo","value":"developmenttwo","created_at":"2021-07-14T00:33:50.950803Z","modified_at":"2021-07-14T00:33:50.950848Z"}'
-  recorded_at: Wed, 14 Jul 2021 00:33:50 GMT
+      string: '{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea/values/e053cc03-ef6a-4110-b7f5-8e7ec0b70cfe/","id":"e053cc03-ef6a-4110-b7f5-8e7ec0b70cfe","environment":"https://localhost:8000/api/v1/environments/c21d0fc6-bcfa-4bf7-89d5-13a9b53e1c3c/","parameter":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea/","dynamic":false,"dynamic_fqn":"","dynamic_filter":"","static_value":"developmenttwo","value":"developmenttwo","created_at":"2021-07-22T14:03:01.956995Z","modified_at":"2021-07-22T14:03:01.957028Z"}'
+  recorded_at: Thu, 22 Jul 2021 14:03:01 GMT
 - request:
     method: get
     uri: https://localhost:8000/api/v1/projects/
@@ -604,7 +604,7 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:33:52 GMT
+      - Thu, 22 Jul 2021 14:03:03 GMT
       Connection:
       - close
       Content-Type:
@@ -622,18 +622,18 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=9QL6spA1DpPsgIwKA5GF6VMZDSs39Z2ZCpzBvOGpzrUEEOtnIHEi4Jz9yaikYd6T;
-        expires=Wed, 13 Jul 2022 00:33:52 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=8x9jirw0xnkdhco07rcx0vgrjfvblfsp; expires=Wed, 28 Jul 2021 00:33:52
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=uLzfTn96ST9tuS4EoupGrfD0xHNztIcTYp4C3sMxSMZqR3Rif5mcaG6NM5eKQZ7G;
+        expires=Thu, 21 Jul 2022 14:03:03 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=20opz2wj9r4m2m0jab6lvbiqfz4yiacd; expires=Thu, 05 Aug 2021 14:03:03
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/8ea8dad8-7405-4a79-bb11-4cc64ad647a0/","id":"8ea8dad8-7405-4a79-bb11-4cc64ad647a0","name":"MyFirstProject","description":"A
-        first project workspace to experiment with","created_at":"2021-07-13T17:57:00.004749Z","modified_at":"2021-07-13T17:57:00.004959Z"},{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/","id":"cfc4437a-d76f-4981-a9c4-06a212fc5933","name":"TestProject","description":"","created_at":"2021-07-14T00:33:35.954746Z","modified_at":"2021-07-14T00:33:35.954777Z"}]}'
-  recorded_at: Wed, 14 Jul 2021 00:33:52 GMT
+      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/f771a465-728a-4459-8738-ee633aafdb90/","id":"f771a465-728a-4459-8738-ee633aafdb90","name":"MyFirstProject","description":"A
+        first project workspace to experiment with","created_at":"2021-07-22T14:01:17.862316Z","modified_at":"2021-07-22T14:01:17.862382Z"},{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/","id":"e3e7e278-acfd-4530-89db-61393e173caa","name":"TestProject","description":"","created_at":"2021-07-22T14:02:54.081137Z","modified_at":"2021-07-22T14:02:54.081168Z"}]}'
+  recorded_at: Thu, 22 Jul 2021 14:03:03 GMT
 - request:
     method: get
-    uri: https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/?environment=1c03b5c1-7040-49e4-be35-7594be262c11
+    uri: https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/?environment=8720a7b8-c8be-4c17-9eb9-2e37c5b876fc
     body:
       encoding: US-ASCII
       string: ''
@@ -656,7 +656,7 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:33:53 GMT
+      - Thu, 22 Jul 2021 14:03:04 GMT
       Connection:
       - close
       Content-Type:
@@ -674,14 +674,14 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=7Te7KxtJR2IlPCfXUlpY8RYkXwsAqzqmcIr4paANFalILbjixV6lTZFHGIlcSmON;
-        expires=Wed, 13 Jul 2022 00:33:53 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=pk4j18ku4bguneh1ram8j6ay9nu0g3u0; expires=Wed, 28 Jul 2021 00:33:53
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=I0RlMpPDVoaSAaqC80XgBESAbGr6EJ6uNS78s9maO484TXM44ZoPfWQQt2xUGS6e;
+        expires=Thu, 21 Jul 2022 14:03:04 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=h8njdaxszss90rmevsgnxwrwbr792pqt; expires=Thu, 05 Aug 2021 14:03:04
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/006cd384-dbcc-44fa-9acc-469db44176d0/","id":"006cd384-dbcc-44fa-9acc-469db44176d0","name":"one","description":"","secret":false,"templates":[],"uses_dynamic_values":false,"values":{"https://localhost:8000/api/v1/environments/1c03b5c1-7040-49e4-be35-7594be262c11/":{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/006cd384-dbcc-44fa-9acc-469db44176d0/values/97cffdc3-8f65-492f-9ad7-1bd43a4f5b85/","id":"97cffdc3-8f65-492f-9ad7-1bd43a4f5b85","environment":"https://localhost:8000/api/v1/environments/1c03b5c1-7040-49e4-be35-7594be262c11/","parameter":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/006cd384-dbcc-44fa-9acc-469db44176d0/","dynamic":false,"dynamic_fqn":"","dynamic_filter":"","static_value":"defaultone","value":"defaultone","created_at":"2021-07-14T00:33:47.170890Z","modified_at":"2021-07-14T00:33:47.170927Z"}},"created_at":"2021-07-14T00:33:38.816864Z","modified_at":"2021-07-14T00:33:38.816984Z"},{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe/","id":"ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe","name":"two","description":"","secret":false,"templates":[],"uses_dynamic_values":false,"values":{"https://localhost:8000/api/v1/environments/1c03b5c1-7040-49e4-be35-7594be262c11/":{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe/values/26e60318-221c-43d8-934f-ed53de34f1cd/","id":"26e60318-221c-43d8-934f-ed53de34f1cd","environment":"https://localhost:8000/api/v1/environments/1c03b5c1-7040-49e4-be35-7594be262c11/","parameter":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe/","dynamic":false,"dynamic_fqn":"","dynamic_filter":"","static_value":"defaulttwo","value":"defaulttwo","created_at":"2021-07-14T00:33:49.694778Z","modified_at":"2021-07-14T00:33:49.694823Z"}},"created_at":"2021-07-14T00:33:43.331042Z","modified_at":"2021-07-14T00:33:43.331084Z"}]}'
-  recorded_at: Wed, 14 Jul 2021 00:33:53 GMT
+      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/51074ae1-be9f-42a7-b114-be44f3abdbe1/","id":"51074ae1-be9f-42a7-b114-be44f3abdbe1","name":"one","description":"","secret":false,"templates":[],"uses_dynamic_values":false,"values":{"https://localhost:8000/api/v1/environments/8720a7b8-c8be-4c17-9eb9-2e37c5b876fc/":{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/51074ae1-be9f-42a7-b114-be44f3abdbe1/values/457c10f4-78e2-4d8c-9429-8e2c5f11923d/","id":"457c10f4-78e2-4d8c-9429-8e2c5f11923d","environment":"https://localhost:8000/api/v1/environments/8720a7b8-c8be-4c17-9eb9-2e37c5b876fc/","parameter":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/51074ae1-be9f-42a7-b114-be44f3abdbe1/","dynamic":false,"dynamic_fqn":"","dynamic_filter":"","static_value":"defaultone","value":"defaultone","created_at":"2021-07-22T14:02:59.271238Z","modified_at":"2021-07-22T14:02:59.271307Z"}},"created_at":"2021-07-22T14:02:55.928770Z","modified_at":"2021-07-22T14:03:00.123702Z"},{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea/","id":"bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea","name":"two","description":"","secret":false,"templates":[],"uses_dynamic_values":false,"values":{"https://localhost:8000/api/v1/environments/8720a7b8-c8be-4c17-9eb9-2e37c5b876fc/":{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea/values/35e8aaf3-1daf-4e87-b51d-e1ba9284ea25/","id":"35e8aaf3-1daf-4e87-b51d-e1ba9284ea25","environment":"https://localhost:8000/api/v1/environments/8720a7b8-c8be-4c17-9eb9-2e37c5b876fc/","parameter":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea/","dynamic":false,"dynamic_fqn":"","dynamic_filter":"","static_value":"defaulttwo","value":"defaulttwo","created_at":"2021-07-22T14:03:01.075583Z","modified_at":"2021-07-22T14:03:01.075625Z"}},"created_at":"2021-07-22T14:02:56.909374Z","modified_at":"2021-07-22T14:03:01.949133Z"}]}'
+  recorded_at: Thu, 22 Jul 2021 14:03:04 GMT
 - request:
     method: get
     uri: https://localhost:8000/api/v1/projects/
@@ -707,7 +707,7 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:33:54 GMT
+      - Thu, 22 Jul 2021 14:03:05 GMT
       Connection:
       - close
       Content-Type:
@@ -725,18 +725,18 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=QLzp2JeKVRqxY2RuierGPEBw9WpvzvjeInRJYJnqo4LRvyWi2gIn3LNNKyWRHl6F;
-        expires=Wed, 13 Jul 2022 00:33:54 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=5wy0fx4kl4pxipfwozeip1z883etsd9z; expires=Wed, 28 Jul 2021 00:33:54
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=7IBiOl1AjJsAVizPPGuKpZO1OV3Y4eo7qWSy0VPtO4FYOqvGBJVipoaeeuuwqNF9;
+        expires=Thu, 21 Jul 2022 14:03:05 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=aixl9vaacpwdn7dgxxumsqhttyurwgo9; expires=Thu, 05 Aug 2021 14:03:05
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/8ea8dad8-7405-4a79-bb11-4cc64ad647a0/","id":"8ea8dad8-7405-4a79-bb11-4cc64ad647a0","name":"MyFirstProject","description":"A
-        first project workspace to experiment with","created_at":"2021-07-13T17:57:00.004749Z","modified_at":"2021-07-13T17:57:00.004959Z"},{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/","id":"cfc4437a-d76f-4981-a9c4-06a212fc5933","name":"TestProject","description":"","created_at":"2021-07-14T00:33:35.954746Z","modified_at":"2021-07-14T00:33:35.954777Z"}]}'
-  recorded_at: Wed, 14 Jul 2021 00:33:54 GMT
+      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/f771a465-728a-4459-8738-ee633aafdb90/","id":"f771a465-728a-4459-8738-ee633aafdb90","name":"MyFirstProject","description":"A
+        first project workspace to experiment with","created_at":"2021-07-22T14:01:17.862316Z","modified_at":"2021-07-22T14:01:17.862382Z"},{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/","id":"e3e7e278-acfd-4530-89db-61393e173caa","name":"TestProject","description":"","created_at":"2021-07-22T14:02:54.081137Z","modified_at":"2021-07-22T14:02:54.081168Z"}]}'
+  recorded_at: Thu, 22 Jul 2021 14:03:05 GMT
 - request:
     method: get
-    uri: https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/?environment=30b123cd-288c-4fd8-b5cc-607086c8cb4f
+    uri: https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/?environment=c21d0fc6-bcfa-4bf7-89d5-13a9b53e1c3c
     body:
       encoding: US-ASCII
       string: ''
@@ -759,7 +759,7 @@ http_interactions:
       Server:
       - gunicorn
       Date:
-      - Wed, 14 Jul 2021 00:33:56 GMT
+      - Thu, 22 Jul 2021 14:03:06 GMT
       Connection:
       - close
       Content-Type:
@@ -777,12 +777,12 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=pS2nDGxE8MZEcp2vPkYkRUVhHuVDy9CSzUSOWRvoxJ3bV6briQ6gbr4cPNckQ3uP;
-        expires=Wed, 13 Jul 2022 00:33:56 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=va82j4htmccbda6e21v86auiia4cg4za; expires=Wed, 28 Jul 2021 00:33:56
-        GMT; HttpOnly; Max-Age=1209600; Path=/; SameSite=Lax
+      - csrftoken=wxACCGQUQGuendvIw0aCiNUwfXhud3nCDXMHT7T2GCZwxpyz3Lktfx2c4JGrGPUU;
+        expires=Thu, 21 Jul 2022 14:03:06 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=0h7h2x1qrfp0k4n9yp33odgmtzu8xal3; expires=Thu, 05 Aug 2021 14:03:06
+        GMT; HttpOnly; Max-Age=1209600; Path=/
     body:
       encoding: UTF-8
-      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/006cd384-dbcc-44fa-9acc-469db44176d0/","id":"006cd384-dbcc-44fa-9acc-469db44176d0","name":"one","description":"","secret":false,"templates":[],"uses_dynamic_values":false,"values":{"https://localhost:8000/api/v1/environments/30b123cd-288c-4fd8-b5cc-607086c8cb4f/":{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/006cd384-dbcc-44fa-9acc-469db44176d0/values/513e212f-592b-4fd1-ae05-6fed068172b0/","id":"513e212f-592b-4fd1-ae05-6fed068172b0","environment":"https://localhost:8000/api/v1/environments/30b123cd-288c-4fd8-b5cc-607086c8cb4f/","parameter":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/006cd384-dbcc-44fa-9acc-469db44176d0/","dynamic":false,"dynamic_fqn":"","dynamic_filter":"","static_value":"developmentone","value":"developmentone","created_at":"2021-07-14T00:33:48.323820Z","modified_at":"2021-07-14T00:33:48.323855Z"}},"created_at":"2021-07-14T00:33:38.816864Z","modified_at":"2021-07-14T00:33:38.816984Z"},{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe/","id":"ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe","name":"two","description":"","secret":false,"templates":[],"uses_dynamic_values":false,"values":{"https://localhost:8000/api/v1/environments/30b123cd-288c-4fd8-b5cc-607086c8cb4f/":{"url":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe/values/0c0c8ee6-107f-4545-9257-d8c0f3dd5f26/","id":"0c0c8ee6-107f-4545-9257-d8c0f3dd5f26","environment":"https://localhost:8000/api/v1/environments/30b123cd-288c-4fd8-b5cc-607086c8cb4f/","parameter":"https://localhost:8000/api/v1/projects/cfc4437a-d76f-4981-a9c4-06a212fc5933/parameters/ef7bc0b0-7c15-4e91-bca0-6bcc5e240cfe/","dynamic":false,"dynamic_fqn":"","dynamic_filter":"","static_value":"developmenttwo","value":"developmenttwo","created_at":"2021-07-14T00:33:50.950803Z","modified_at":"2021-07-14T00:33:50.950848Z"}},"created_at":"2021-07-14T00:33:43.331042Z","modified_at":"2021-07-14T00:33:43.331084Z"}]}'
-  recorded_at: Wed, 14 Jul 2021 00:33:56 GMT
+      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/51074ae1-be9f-42a7-b114-be44f3abdbe1/","id":"51074ae1-be9f-42a7-b114-be44f3abdbe1","name":"one","description":"","secret":false,"templates":[],"uses_dynamic_values":false,"values":{"https://localhost:8000/api/v1/environments/c21d0fc6-bcfa-4bf7-89d5-13a9b53e1c3c/":{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/51074ae1-be9f-42a7-b114-be44f3abdbe1/values/d59cb81e-1b81-437f-8efc-826ad1ea312f/","id":"d59cb81e-1b81-437f-8efc-826ad1ea312f","environment":"https://localhost:8000/api/v1/environments/c21d0fc6-bcfa-4bf7-89d5-13a9b53e1c3c/","parameter":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/51074ae1-be9f-42a7-b114-be44f3abdbe1/","dynamic":false,"dynamic_fqn":"","dynamic_filter":"","static_value":"developmentone","value":"developmentone","created_at":"2021-07-22T14:03:00.136868Z","modified_at":"2021-07-22T14:03:00.136910Z"}},"created_at":"2021-07-22T14:02:55.928770Z","modified_at":"2021-07-22T14:03:00.123702Z"},{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea/","id":"bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea","name":"two","description":"","secret":false,"templates":[],"uses_dynamic_values":false,"values":{"https://localhost:8000/api/v1/environments/c21d0fc6-bcfa-4bf7-89d5-13a9b53e1c3c/":{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea/values/e053cc03-ef6a-4110-b7f5-8e7ec0b70cfe/","id":"e053cc03-ef6a-4110-b7f5-8e7ec0b70cfe","environment":"https://localhost:8000/api/v1/environments/c21d0fc6-bcfa-4bf7-89d5-13a9b53e1c3c/","parameter":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/parameters/bfbd5cb9-fb8c-4f68-aba9-fa61efe0dfea/","dynamic":false,"dynamic_fqn":"","dynamic_filter":"","static_value":"developmenttwo","value":"developmenttwo","created_at":"2021-07-22T14:03:01.956995Z","modified_at":"2021-07-22T14:03:01.957028Z"}},"created_at":"2021-07-22T14:02:56.909374Z","modified_at":"2021-07-22T14:03:01.949133Z"}]}'
+  recorded_at: Thu, 22 Jul 2021 14:03:06 GMT
 recorded_with: VCR 6.0.0
