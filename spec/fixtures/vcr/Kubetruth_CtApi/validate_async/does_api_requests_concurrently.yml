@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - kubetruth/0.6.0
+      - kubetruth/1.0.0
       Accept:
       - application/json
       Authorization:
@@ -23,9 +23,9 @@ http_interactions:
       message: OK
     headers:
       Server:
-      - gunicorn
+      - undisclosed
       Date:
-      - Thu, 22 Jul 2021 14:03:07 GMT
+      - Mon, 02 Aug 2021 14:31:11 GMT
       Connection:
       - close
       Content-Type:
@@ -43,15 +43,15 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=4M9TBe1j2RQfzb10eiMsLr9a9Vt3VSb3IPvNbbUgFXZS5F8Uxy4CWK5qM6IsmdBh;
-        expires=Thu, 21 Jul 2022 14:03:07 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=jff00lb3pxm2bia75vv68faq8b4vvij3; expires=Thu, 05 Aug 2021 14:03:07
-        GMT; HttpOnly; Max-Age=1209600; Path=/
+      - csrftoken=0c2F0GbDlWSVmzW31kGIxDehR9yiScIxaHANAGv2FbPkOBCjUAhJkpfRF7s6nVxs;
+        expires=Mon, 01 Aug 2022 14:31:11 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=1etbs2uyk93c8bbuq31e23vsnvklxgc3; expires=Mon, 16 Aug 2021 14:31:11
+        GMT; Max-Age=1209600; Path=/; Secure
     body:
       encoding: UTF-8
-      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/f771a465-728a-4459-8738-ee633aafdb90/","id":"f771a465-728a-4459-8738-ee633aafdb90","name":"MyFirstProject","description":"A
-        first project workspace to experiment with","created_at":"2021-07-22T14:01:17.862316Z","modified_at":"2021-07-22T14:01:17.862382Z"},{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/","id":"e3e7e278-acfd-4530-89db-61393e173caa","name":"TestProject","description":"","created_at":"2021-07-22T14:02:54.081137Z","modified_at":"2021-07-22T14:02:54.081168Z"}]}'
-  recorded_at: Thu, 22 Jul 2021 14:03:07 GMT
+      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/650a3510-56d7-4af9-93ae-ee9db1c50a18/","id":"650a3510-56d7-4af9-93ae-ee9db1c50a18","name":"MyFirstProject","description":"A
+        first project workspace to experiment with","created_at":"2021-08-02T14:22:36.009207Z","modified_at":"2021-08-02T14:22:36.009254Z"},{"url":"https://localhost:8000/api/v1/projects/5e8c2418-ad99-4261-83bd-b755bb3bb78f/","id":"5e8c2418-ad99-4261-83bd-b755bb3bb78f","name":"TestProject","description":"","created_at":"2021-08-02T14:30:49.492805Z","modified_at":"2021-08-02T14:30:49.492953Z"}]}'
+  recorded_at: Mon, 02 Aug 2021 14:31:11 GMT
 - request:
     method: get
     uri: https://localhost:8000/api/v1/projects/
@@ -62,7 +62,7 @@ http_interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - kubetruth/0.6.0
+      - kubetruth/1.0.0
       Accept:
       - application/json
       Authorization:
@@ -75,9 +75,9 @@ http_interactions:
       message: OK
     headers:
       Server:
-      - gunicorn
+      - undisclosed
       Date:
-      - Thu, 22 Jul 2021 14:03:08 GMT
+      - Mon, 02 Aug 2021 14:31:12 GMT
       Connection:
       - close
       Content-Type:
@@ -95,13 +95,13 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=cVpyiNf4YulZFcVGt20j09mORUXQ4a35hmznuh66HwuW1Bs62TzPS5VBFYiLHRqt;
-        expires=Thu, 21 Jul 2022 14:03:08 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=p9g70z93ifvf1c8jdkz7nkjt49apgilp; expires=Thu, 05 Aug 2021 14:03:08
-        GMT; HttpOnly; Max-Age=1209600; Path=/
+      - csrftoken=k4KUmakGgoEeeqIZ087IKYgMQ94M1ObB60kSZqFh3wKZoDia4czrb1kSZpuvElKx;
+        expires=Mon, 01 Aug 2022 14:31:12 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=6kxqpt71k4f8fgvrodmjb4jlho4t8h7u; expires=Mon, 16 Aug 2021 14:31:12
+        GMT; Max-Age=1209600; Path=/; Secure
     body:
       encoding: UTF-8
-      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/f771a465-728a-4459-8738-ee633aafdb90/","id":"f771a465-728a-4459-8738-ee633aafdb90","name":"MyFirstProject","description":"A
-        first project workspace to experiment with","created_at":"2021-07-22T14:01:17.862316Z","modified_at":"2021-07-22T14:01:17.862382Z"},{"url":"https://localhost:8000/api/v1/projects/e3e7e278-acfd-4530-89db-61393e173caa/","id":"e3e7e278-acfd-4530-89db-61393e173caa","name":"TestProject","description":"","created_at":"2021-07-22T14:02:54.081137Z","modified_at":"2021-07-22T14:02:54.081168Z"}]}'
-  recorded_at: Thu, 22 Jul 2021 14:03:08 GMT
+      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/650a3510-56d7-4af9-93ae-ee9db1c50a18/","id":"650a3510-56d7-4af9-93ae-ee9db1c50a18","name":"MyFirstProject","description":"A
+        first project workspace to experiment with","created_at":"2021-08-02T14:22:36.009207Z","modified_at":"2021-08-02T14:22:36.009254Z"},{"url":"https://localhost:8000/api/v1/projects/5e8c2418-ad99-4261-83bd-b755bb3bb78f/","id":"5e8c2418-ad99-4261-83bd-b755bb3bb78f","name":"TestProject","description":"","created_at":"2021-08-02T14:30:49.492805Z","modified_at":"2021-08-02T14:30:49.492953Z"}]}'
+  recorded_at: Mon, 02 Aug 2021 14:31:12 GMT
 recorded_with: VCR 6.0.0

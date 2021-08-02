@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - kubetruth/0.6.0
+      - kubetruth/1.0.0
       Accept:
       - application/json
       Authorization:
@@ -23,9 +23,9 @@ http_interactions:
       message: OK
     headers:
       Server:
-      - gunicorn
+      - undisclosed
       Date:
-      - Thu, 22 Jul 2021 14:02:18 GMT
+      - Mon, 02 Aug 2021 14:29:53 GMT
       Connection:
       - close
       Content-Type:
@@ -43,16 +43,16 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=fXNQJaQsqlLsQ6kPforSyprCghU93YW6kZVSYbEY9Y3sERCLQuSTgi0PO8q2rokg;
-        expires=Thu, 21 Jul 2022 14:02:18 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=cr9yof77dnsnz5lmzsey6xv4e7jots07; expires=Thu, 05 Aug 2021 14:02:18
-        GMT; HttpOnly; Max-Age=1209600; Path=/
+      - csrftoken=9HGqb6X49oBqZg02XshHqZNCq75D13F9wsqUk4qvnZBC6O2jZ5rgtcqIcxnwO8pb;
+        expires=Mon, 01 Aug 2022 14:29:53 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=4mffpzoy5i4beohkfc4pykoliz5p8n7g; expires=Mon, 16 Aug 2021 14:29:53
+        GMT; Max-Age=1209600; Path=/; Secure
     body:
       encoding: UTF-8
-      string: '{"count":4,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/environments/8720a7b8-c8be-4c17-9eb9-2e37c5b876fc/","id":"8720a7b8-c8be-4c17-9eb9-2e37c5b876fc","name":"default","description":"Default
-        environment, base for all environments.","parent":null,"created_at":"2021-07-22T14:01:17.889236Z","modified_at":"2021-07-22T14:01:17.889291Z"},{"url":"https://localhost:8000/api/v1/environments/c21d0fc6-bcfa-4bf7-89d5-13a9b53e1c3c/","id":"c21d0fc6-bcfa-4bf7-89d5-13a9b53e1c3c","name":"development","description":"Development
-        deployment environment","parent":"https://localhost:8000/api/v1/environments/8720a7b8-c8be-4c17-9eb9-2e37c5b876fc/","created_at":"2021-07-22T14:01:17.913891Z","modified_at":"2021-07-22T14:01:17.913964Z"},{"url":"https://localhost:8000/api/v1/environments/8332d031-f59d-4e79-9ba8-927487555d7c/","id":"8332d031-f59d-4e79-9ba8-927487555d7c","name":"production","description":"Production
-        deployment environment","parent":"https://localhost:8000/api/v1/environments/8720a7b8-c8be-4c17-9eb9-2e37c5b876fc/","created_at":"2021-07-22T14:01:17.957566Z","modified_at":"2021-07-22T14:01:17.957710Z"},{"url":"https://localhost:8000/api/v1/environments/60cc35ce-af46-464e-8d87-41de2a3f20ff/","id":"60cc35ce-af46-464e-8d87-41de2a3f20ff","name":"staging","description":"Staging
-        deployment environment","parent":"https://localhost:8000/api/v1/environments/8720a7b8-c8be-4c17-9eb9-2e37c5b876fc/","created_at":"2021-07-22T14:01:17.934364Z","modified_at":"2021-07-22T14:01:17.934409Z"}]}'
-  recorded_at: Thu, 22 Jul 2021 14:02:18 GMT
+      string: '{"count":4,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/","id":"3ce72447-641f-418d-a12a-71173a56ffca","name":"default","description":"Default
+        environment, base for all environments.","parent":null,"created_at":"2021-08-02T14:22:36.043828Z","modified_at":"2021-08-02T14:22:36.043884Z"},{"url":"https://localhost:8000/api/v1/environments/0293a31b-70a7-458c-afe4-162fa9febc1e/","id":"0293a31b-70a7-458c-afe4-162fa9febc1e","name":"development","description":"Development
+        deployment environment","parent":"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/","created_at":"2021-08-02T14:22:36.086474Z","modified_at":"2021-08-02T14:22:36.086539Z"},{"url":"https://localhost:8000/api/v1/environments/d5a11b75-2690-4363-83a3-873f3a98cef8/","id":"d5a11b75-2690-4363-83a3-873f3a98cef8","name":"production","description":"Production
+        deployment environment","parent":"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/","created_at":"2021-08-02T14:22:36.142958Z","modified_at":"2021-08-02T14:22:36.143017Z"},{"url":"https://localhost:8000/api/v1/environments/5694a5f3-a09c-40f1-b40b-74f260508516/","id":"5694a5f3-a09c-40f1-b40b-74f260508516","name":"staging","description":"Staging
+        deployment environment","parent":"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/","created_at":"2021-08-02T14:22:36.114024Z","modified_at":"2021-08-02T14:22:36.114565Z"}]}'
+  recorded_at: Mon, 02 Aug 2021 14:29:53 GMT
 recorded_with: VCR 6.0.0

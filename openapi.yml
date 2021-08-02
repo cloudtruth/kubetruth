@@ -2,8 +2,8 @@ openapi: 3.0.3
 info:
   title: CloudTruth Management API
   version: ''
-  description: CloudTruth centralizes your parameters and secrets making them easier
-    to manage and use.
+  description: CloudTruth centralizes your configuration parameters and secrets making
+    them easier to manage and use as a team.
   contact:
     name: CloudTruth Support
     email: support@cloudtruth.com
@@ -128,8 +128,6 @@ paths:
       tags:
       - api
       security:
-      - JWTAuth: []
-      - ApiKeyAuth: []
       - {}
       responses:
         '200':
@@ -188,6 +186,12 @@ paths:
         required: false
         in: query
         description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
         schema:
           type: integer
       - in: query
@@ -259,6 +263,12 @@ paths:
         required: false
         in: query
         description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
         schema:
           type: integer
       - in: query
@@ -435,6 +445,12 @@ paths:
         required: false
         in: query
         description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
         schema:
           type: integer
       tags:
@@ -628,6 +644,12 @@ paths:
         description: A page number within the paginated result set.
         schema:
           type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
       tags:
       - integrations
       security:
@@ -662,6 +684,12 @@ paths:
         required: false
         in: query
         description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
         schema:
           type: integer
       tags:
@@ -776,6 +804,12 @@ paths:
         required: false
         in: query
         description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
         schema:
           type: integer
       - in: query
@@ -1037,6 +1071,12 @@ paths:
         description: A page number within the paginated result set.
         schema:
           type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
       - in: query
         name: role
         schema:
@@ -1218,6 +1258,12 @@ paths:
         description: A page number within the paginated result set.
         schema:
           type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
       tags:
       - organizations
       security:
@@ -1378,6 +1424,12 @@ paths:
         required: false
         in: query
         description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
         schema:
           type: integer
       tags:
@@ -1583,6 +1635,12 @@ paths:
         description: A page number within the paginated result set.
         schema:
           type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
       - in: path
         name: project_pk
         schema:
@@ -1637,6 +1695,12 @@ paths:
         required: false
         in: query
         description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
         schema:
           type: integer
       - in: path
@@ -1725,6 +1789,12 @@ paths:
         required: false
         in: query
         description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
         schema:
           type: integer
       - in: path
@@ -2097,16 +2167,16 @@ paths:
           description: While checking pre-conditions, a dynamic value was encountered
             that could not be resolved.
         '404':
+          description: The given project id could not be found, or while checking
+            pre-conditions, a dynamic value was encountered that could not be resolved.
+        '415':
           description: While checking pre-conditions, a dynamic value was encountered
-            that could not be resolved.
+            that has an invalid content type.
         '422':
           description: 'A pre-condition to modifying the `secret` setting of the parameter
             failed, for example setting `secret: false` and having a dynamic value
             that resolves to a value that is a secret.  In this case it would be unsafe
             to allow the `secret` setting to change.'
-        '415':
-          description: While checking pre-conditions, a dynamic value was encountered
-            that has an invalid content type.
         '507':
           description: While checking pre-conditions, a dynamic value was encountered
             that was too large to process.
@@ -2154,16 +2224,16 @@ paths:
           description: While checking pre-conditions, a dynamic value was encountered
             that could not be resolved.
         '404':
+          description: The given project id could not be found, or while checking
+            pre-conditions, a dynamic value was encountered that could not be resolved.
+        '415':
           description: While checking pre-conditions, a dynamic value was encountered
-            that could not be resolved.
+            that has an invalid content type.
         '422':
           description: 'A pre-condition to modifying the `secret` setting of the parameter
             failed, for example setting `secret: false` and having a dynamic value
             that resolves to a value that is a secret.  In this case it would be unsafe
             to allow the `secret` setting to change.'
-        '415':
-          description: While checking pre-conditions, a dynamic value was encountered
-            that has an invalid content type.
         '507':
           description: While checking pre-conditions, a dynamic value was encountered
             that was too large to process.
@@ -2251,6 +2321,12 @@ paths:
         required: false
         in: query
         description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
         schema:
           type: integer
       - in: path
@@ -2463,6 +2539,12 @@ paths:
         description: A page number within the paginated result set.
         schema:
           type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
       tags:
       - serviceaccounts
       security:
@@ -2626,6 +2708,12 @@ paths:
         required: false
         in: query
         description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
         schema:
           type: integer
       - in: query
@@ -3633,10 +3721,6 @@ components:
             type: string
             format: uri
           readOnly: true
-        uses_dynamic_values:
-          type: boolean
-          readOnly: true
-          description: If `true` then at least one of the values is dynamic.
         values:
           type: object
           additionalProperties:
@@ -3675,7 +3759,6 @@ components:
       - name
       - templates
       - url
-      - uses_dynamic_values
       - values
     ParameterCreate:
       type: object
@@ -3975,10 +4058,6 @@ components:
             type: string
             format: uri
           readOnly: true
-        uses_dynamic_values:
-          type: boolean
-          readOnly: true
-          description: If `true` then at least one of the values is dynamic.
         values:
           type: object
           additionalProperties:
@@ -4163,7 +4242,7 @@ components:
           nullable: true
           description: This is the content to use when resolving the Value for a static
             non-secret.
-          maxLength: 1024
+          maxLength: 16384
         value:
           type: string
           nullable: true
@@ -4175,11 +4254,21 @@ components:
 
             For values that are not `dynamic` and parameters that are `secret`, the system will retrieve the content from your organization's dedicated vault.
 
-            For values that are `dynamic`, the system will retrieve the content from the integration on-demand.  If the content from the integration is `secret` and the parameter is not, or if the parameter is `secret` and the content from the integration is not, an error response will be given.  If a `dynamic_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.
+            For values that are `dynamic`, the system will retrieve the content from the integration on-demand.  If the content from the integration is `secret` and the parameter is not, an error response will be given.  If a `dynamic_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.
 
             If you request secret masking, no secret content will be included in the result and instead a series of asterisks will be used instead for the value.  If you request wrapping, the secret content will be wrapped in an envelope that is bound to your JWT token.  For more information about secret wrapping, see the docs.
 
             Clients applying this value to a shell environment should set `<parameter_name>=<value>` even if `value` is the empty string.  If `value` is `null`, the client should unset that shell environment variable.
+        secret:
+          type: boolean
+          nullable: true
+          readOnly: true
+          description: Indicates the value content is a secret.  Normally this is
+            `true` when the parameter is a secret, however it is possible for a parameter
+            to be a secret with a dynamic value that is not a secret.  It is not possible
+            to convert a parameter from a secret to a non-secret if any of the values
+            are dynamic and a secret.  Clients can check this condition by leveraging
+            this field.
         created_at:
           type: string
           format: date-time
@@ -4510,7 +4599,7 @@ components:
           nullable: true
           description: This is the content to use when resolving the Value for a static
             non-secret.
-          maxLength: 1024
+          maxLength: 16384
         value:
           type: string
           nullable: true
@@ -4522,11 +4611,21 @@ components:
 
             For values that are not `dynamic` and parameters that are `secret`, the system will retrieve the content from your organization's dedicated vault.
 
-            For values that are `dynamic`, the system will retrieve the content from the integration on-demand.  If the content from the integration is `secret` and the parameter is not, or if the parameter is `secret` and the content from the integration is not, an error response will be given.  If a `dynamic_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.
+            For values that are `dynamic`, the system will retrieve the content from the integration on-demand.  If the content from the integration is `secret` and the parameter is not, an error response will be given.  If a `dynamic_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.
 
             If you request secret masking, no secret content will be included in the result and instead a series of asterisks will be used instead for the value.  If you request wrapping, the secret content will be wrapped in an envelope that is bound to your JWT token.  For more information about secret wrapping, see the docs.
 
             Clients applying this value to a shell environment should set `<parameter_name>=<value>` even if `value` is the empty string.  If `value` is `null`, the client should unset that shell environment variable.
+        secret:
+          type: boolean
+          nullable: true
+          readOnly: true
+          description: Indicates the value content is a secret.  Normally this is
+            `true` when the parameter is a secret, however it is possible for a parameter
+            to be a secret with a dynamic value that is not a secret.  It is not possible
+            to convert a parameter from a secret to a non-secret if any of the values
+            are dynamic and a secret.  Clients can check this condition by leveraging
+            this field.
         created_at:
           type: string
           format: date-time
@@ -4541,6 +4640,7 @@ components:
       - id
       - modified_at
       - parameter
+      - secret
       - url
       - value
     ValueCreate:
@@ -4575,7 +4675,7 @@ components:
           nullable: true
           description: This is the content to use when resolving the Value for a static
             non-secret.
-          maxLength: 1024
+          maxLength: 16384
       required:
       - environment
   securitySchemes:
@@ -4609,3 +4709,5 @@ components:
         \ the JWT, place your JWT in the Authorization header as 'Bearer JWT', where\n\
         JWT is your JWT.  For example:\n\n    Authorization: Bearer eyJhbGciOiJIkuydfy.eyJzdWIiOiIxMjM....\n\
         \        "
+externalDocs:
+  url: https://docs.cloudtruth.com/
