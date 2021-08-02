@@ -107,7 +107,7 @@ projectMappings:
           annotations:
             kubetruth/project_heirarchy: |
               {{ project_heirarchy | to_yaml | indent: 6 | lstrip }}
-            kubtruth/parameter_origins: |
+            kubetruth/parameter_origins: |
               {{ parameter_origins | to_yaml | indent: 6 | lstrip }}
         data:
           {%- for parameter in parameters %}
@@ -127,7 +127,7 @@ projectMappings:
           annotations:
             kubetruth/project_heirarchy: |
               {{ project_heirarchy | to_yaml | indent: 6 | lstrip }}
-            kubtruth/parameter_origins: |
+            kubetruth/parameter_origins: |
               {{ secret_origins | to_yaml | indent: 6 | lstrip }}
         data:
           {%- for secret in secrets %}

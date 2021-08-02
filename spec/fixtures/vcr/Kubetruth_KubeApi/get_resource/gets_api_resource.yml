@@ -42,7 +42,7 @@ http_interactions:
         \"{{ context.resource_name }}\"\n  namespace: \"{{ context.resource_namespace
         }}\"\n  labels:\n    version: \"{{ parameters | sort | to_json | sha256 |
         slice: 0, 7 }}\"\n  annotations:\n    kubetruth/project_heirarchy: |\n      {{
-        project_heirarchy | to_yaml | indent: 6 | lstrip }}\n    kubtruth/parameter_origins:
+        project_heirarchy | to_yaml | indent: 6 | lstrip }}\n    kubetruth/parameter_origins:
         |\n      {{ parameter_origins | to_yaml | indent: 6 | lstrip }}\ndata:\n  {%-
         for parameter in parameters %}\n  {{ parameter[0] | key_safe | stringify }}:
         {{ parameter[1] | stringify }}\n  {%- endfor %}\n{%- endif %}\n","secret":"{%-
@@ -50,7 +50,7 @@ http_interactions:
         Secret\nmetadata:\n  name: \"{{ context.resource_name }}\"\n  namespace: \"{{
         context.resource_namespace }}\"\n  labels:\n    version: \"{{ secrets | sort
         | to_json | sha256 | slice: 0, 7 }}\"\n  annotations:\n    kubetruth/project_heirarchy:
-        |\n      {{ project_heirarchy | to_yaml | indent: 6 | lstrip }}\n    kubtruth/parameter_origins:
+        |\n      {{ project_heirarchy | to_yaml | indent: 6 | lstrip }}\n    kubetruth/parameter_origins:
         |\n      {{ secret_origins | to_yaml | indent: 6 | lstrip }}\ndata:\n  {%-
         for secret in secrets %}\n  {{ secret[0] | key_safe | stringify }}: {{ secret[1]
         | encode64 | stringify }}\n  {%- endfor %}\n{%- endunless %}\n"},"scope":"root","skip":false}}
