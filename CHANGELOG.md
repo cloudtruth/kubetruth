@@ -1,3 +1,11 @@
+1.0.1 (08/02/2021)
+------------------
+
+* open cloudtruth openapi spec [6995a3e](../../commit/6995a3e)
+* fix typo [4a5a36e](../../commit/4a5a36e)
+* install less in container for rake console [afdeae6](../../commit/afdeae6)
+* point coverage badge to correct branch [0523446](../../commit/0523446)
+
 1.0.0 (07/22/2021)
 ------------------
 
