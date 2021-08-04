@@ -160,7 +160,8 @@ liquid variables:
 | `parameter_origins` | The projects each parameter originates from. (useful to debug when using complex `included_projects`) |
 | `secrets` | The CloudTruth secrets from the project. |
 | `secret_origins` | The projects each secret originates from. (useful to debug when using complex `included_projects`)
-| `templates` | The CloudTruth templates from the project keyed by their name.  Evaluated with the environment from the active ProjectMapping
+| `templates` | The CloudTruth templates from the project keyed by their name, e.g. `templates.mytemplate` .  Evaluated with the environment from the active ProjectMapping
+| `templates.names` | The names of the CloudTruth templates for the project
 | `context` | A hash of context variables supplied from ProjectMappings. (useful to override portions of templates without having to replace them completely in an override) |
 
 In addition to the built in liquid filters, kubetruth also define a few custom

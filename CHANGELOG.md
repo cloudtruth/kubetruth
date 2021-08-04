@@ -1,3 +1,8 @@
+1.0.2 (08/04/2021)
+------------------
+
+* add the ability to use cloudtruth templates within a kubetruth template [70ac60f](../../commit/70ac60f)
+
 1.0.1 (08/02/2021)
 ------------------
 
