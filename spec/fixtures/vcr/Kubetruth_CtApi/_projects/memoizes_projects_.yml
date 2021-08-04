@@ -25,7 +25,7 @@ http_interactions:
       Server:
       - undisclosed
       Date:
-      - Tue, 03 Aug 2021 19:32:17 GMT
+      - Tue, 03 Aug 2021 19:32:19 GMT
       Connection:
       - close
       Content-Type:
@@ -43,13 +43,13 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=8rohYF528j6XA3uFQ00eMovQaEelgdkLoyZ1680fH6I1JVmXS60tNztnug5mr1BY;
-        expires=Tue, 02 Aug 2022 19:32:17 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=884o6cmes2crajxzujyobk8dxr11rbs9; expires=Tue, 17 Aug 2021 19:32:17
+      - csrftoken=1sd0OESsxwAyVXwSAbSHB1Ybsi5Ksk0eA3EFdrggj4XYezQd4toFtWJ4ecbJYvBI;
+        expires=Tue, 02 Aug 2022 19:32:19 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=kcvb2ocpimqz0j92xalylpr7t0ce18c7; expires=Tue, 17 Aug 2021 19:32:19
         GMT; Max-Age=1209600; Path=/; Secure
     body:
       encoding: UTF-8
       string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/650a3510-56d7-4af9-93ae-ee9db1c50a18/","id":"650a3510-56d7-4af9-93ae-ee9db1c50a18","name":"MyFirstProject","description":"A
         first project workspace to experiment with","created_at":"2021-08-02T14:22:36.009207Z","modified_at":"2021-08-02T14:22:36.009254Z"},{"url":"https://localhost:8000/api/v1/projects/831751c5-e30c-4489-b3c5-969bb2abebd3/","id":"831751c5-e30c-4489-b3c5-969bb2abebd3","name":"TestProject","description":"","created_at":"2021-08-03T19:31:32.128299Z","modified_at":"2021-08-03T19:31:32.128335Z"}]}'
-  recorded_at: Tue, 03 Aug 2021 19:32:17 GMT
+  recorded_at: Tue, 03 Aug 2021 19:32:19 GMT
 recorded_with: VCR 6.0.0

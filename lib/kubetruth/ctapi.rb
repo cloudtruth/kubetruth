@@ -11,6 +11,10 @@ module Kubetruth
       @@instance = self.new(api_key: api_key, api_url: api_url)
     end
 
+    def self.reset
+      self.configure(api_key: instance.instance_variable_get(:@api_key), api_url: instance.api_url)
+    end
+
     def self.instance
       raise ArgumentError.new("CtApi has not been configured") if @@instance.nil?
       return @@instance
@@ -18,7 +22,7 @@ module Kubetruth
 
     include GemLogger::LoggerSupport
 
-    attr_reader :client, :apis
+    attr_reader :api_url, :client, :apis
 
     class ApiConfiguration < CloudtruthClient::Configuration
 
@@ -40,6 +44,9 @@ module Kubetruth
     end
 
     def initialize(api_key:, api_url:)
+      @environments_mutex = Mutex.new
+      @projects_mutex = Mutex.new
+      @templates_mutex = Mutex.new
       @api_key = api_key
       @api_url = api_url
       uri = URI(@api_url)
@@ -64,10 +71,12 @@ module Kubetruth
     end
 
     def environments
-      @environments ||= begin
-        result = apis[:environments].environments_list
-        logger.debug{"Environments query result: #{result.inspect}"}
-        Hash[result&.results&.collect {|r| [r.name, r.id]}]
+      @environments_mutex.synchronize do
+        @environments ||= begin
+          result = apis[:environments].environments_list
+          logger.debug{"Environments query result: #{result.inspect}"}
+          Hash[result&.results&.collect {|r| [r.name, r.id]}]
+        end
       end
     end
 
@@ -77,32 +86,33 @@ module Kubetruth
 
     def environment_id(environment)
       env_id = self.environments[environment]
-
-      # retry in case environments have been updated upstream since we cached
-      # them
-      if env_id.nil?
-        logger.debug {"Unknown environment, retrying after clearing cache"}
-        @environments = nil
-        env_id = self.environments[environment]
-      end
-
       raise Kubetruth::Error.new("Unknown environment: #{environment}") unless env_id
       env_id.to_s
     end
 
     def projects
-      result = apis[:projects].projects_list
-      logger.debug{"Projects query result: #{result.inspect}"}
-      Hash[result&.results&.collect {|r| [r.name, r.id]}]
+      @projects_mutex.synchronize do
+        @projects ||= begin
+          result = apis[:projects].projects_list
+          logger.debug{"Projects query result: #{result.inspect}"}
+          Hash[result&.results&.collect {|r| [r.name, r.id]}]
+        end
+      end
     end
 
     def project_names
       projects.keys
     end
 
+    def project_id(project)
+      project_id = projects[project]
+      raise Kubetruth::Error.new("Unknown project: #{project}") unless project_id
+      project_id.to_s
+    end
+
     def parameters(project:, environment: "default")
       env_id = environment_id(environment)
-      proj_id = projects[project]
+      proj_id = project_id(project)
       result = apis[:projects].projects_parameters_list(proj_id, environment: env_id)
       logger.debug do
         cleaned = result&.to_hash&.deep_dup
@@ -120,6 +130,42 @@ module Kubetruth
         # for the supplied environment
         Kubetruth::Parameter.new(key: param.name, value: param.values.values.first&.value, secret: param.secret)
       end
+    end
+
+    def templates(project:)
+      @templates_mutex.synchronize do
+        @templates ||= {}
+        @templates[project] ||= begin
+          proj_id = projects[project]
+          result = apis[:projects].projects_templates_list(proj_id)
+          logger.debug { "Templates query result: #{result.inspect}" }
+          Hash[result&.results&.collect do |tmpl|
+            # values is keyed by url, but we forced it to only have a single entry
+            # for the supplied environment
+            [tmpl.name, tmpl.id]
+          end]
+        end
+      end
+    end
+
+    def template_names(project:)
+      templates(project: project).keys
+    end
+
+    def template_id(template, project:)
+      template_id = templates(project: project)[template]
+      raise Kubetruth::Error.new("Unknown template: #{template}") unless template_id
+      template_id.to_s
+    end
+
+    def template(name, project:, environment: "default")
+      env_id = environment_id(environment)
+      proj_id = project_id(project)
+      tmpl_id = template_id(name, project: project)
+      result = apis[:projects].projects_templates_retrieve(tmpl_id, proj_id, environment: env_id)
+      body = result&.body
+      logger.debug { result.body = "<masked>" if result.has_secret; "Template Retrieve query result: #{result.inspect}" }
+      body
     end
 
   end

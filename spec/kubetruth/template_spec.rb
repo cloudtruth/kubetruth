@@ -228,6 +228,35 @@ module Kubetruth
 
     end
 
+    describe Kubetruth::Template::TemplatesDrop do
+
+      before(:each) do
+        @ctapi = double(CtApi)
+        allow(CtApi).to receive(:instance).and_return(@ctapi)
+      end
+
+      it "produces all template names" do
+        drop = described_class.new(project: "proj1", environment: "env1")
+        expect(@ctapi).to receive(:template_names).with(project: "proj1").and_return(["name1"])
+        expect(drop.names).to eq(["name1"])
+      end
+
+      it "returns a template body for given name" do
+        drop = described_class.new(project: "proj1", environment: "env1")
+        expect(@ctapi).to receive(:template).with("foo", project: "proj1", environment: "env1").and_return("body1")
+        top = Template.new("{{drop.foo}}")
+        expect(top.render(drop: drop)).to eq("body1")
+      end
+
+      it "fails for missing template" do
+        drop = described_class.new(project: "proj1", environment: "env1")
+        expect(@ctapi).to receive(:template).and_raise(Kubetruth::Error.new("Unknown template: nothere"))
+        top = Template.new("{{drop.nothere}}")
+        expect { top.render(drop: drop) }.to raise_error(Kubetruth::Error, /Unknown template: nothere/)
+      end
+
+    end
+
     describe "regexp match" do
 
       it "sets matchdata to nil for missing matches" do

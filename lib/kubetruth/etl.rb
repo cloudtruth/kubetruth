@@ -7,6 +7,8 @@ using YAMLSafeLoadStream
 require_relative 'config'
 require_relative 'kubeapi'
 require_relative 'project_collection'
+require_relative 'ctapi'
+require_relative 'template'
 
 module Kubetruth
   class ETL
@@ -117,6 +119,9 @@ module Kubetruth
       async(annotation: "ETL Event Loop") do
         logger.warn("Performing dry-run") if @dry_run
 
+        # Clear out the cache at the start of each polling cycle
+        CtApi.reset
+
         load_config do |namespace, config|
           project_collection = ProjectCollection.new
 
@@ -185,6 +190,7 @@ module Kubetruth
                   parameter_origins: config_origins,
                   secrets: secret_param_hash,
                   secret_origins: secret_origins,
+                  templates: Template::TemplatesDrop.new(project: project.name, environment: project.spec.environment),
                   context: project.spec.context
                 )
 

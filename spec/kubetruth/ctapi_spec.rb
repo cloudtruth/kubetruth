@@ -34,6 +34,13 @@ module Kubetruth
         expect(described_class.instance.instance_variable_get(:@api_url)).to eq("http://localhost")
       end
 
+      it "re-instantiates when reset" do
+        described_class.configure(api_key: "sekret", api_url: "http://localhost")
+        old = described_class.instance
+        described_class.reset
+        expect(old).to_not equal(described_class.instance)
+      end
+
     end
 
     describe "#environments" do
@@ -62,12 +69,6 @@ module Kubetruth
         expect { ctapi.environment_id("badenv") }.to raise_error(Kubetruth::Error, /Unknown environment/)
       end
 
-      it "retries if environment doesn't exist" do
-        expect(ctapi).to receive(:environments).and_call_original.twice
-        expect { ctapi.environment_id("badenv") }.to raise_error(Kubetruth::Error, /Unknown environment/)
-        expect(Logging.contents).to match(/Unknown environment, retrying/)
-      end
-
     end
 
     describe "#projects" do
@@ -77,12 +78,27 @@ module Kubetruth
         expect(ctapi.project_names).to match array_including("MyFirstProject")
       end
 
-      it "doesn't memoize projects " do
-        expect(ctapi.projects).to_not equal(ctapi.projects)
-        expect(ctapi.project_names).to_not equal(ctapi.project_names)
+      it "memoizes projects " do
+        expect(ctapi.projects).to equal(ctapi.projects)
+        expect(ctapi.project_names).to eq(ctapi.project_names) # Hash#keys creates new object
       end
 
     end
+
+    describe "#project_id" do
+
+      it "gets id" do
+        expect(ctapi.projects).to match hash_including("MyFirstProject")
+        expect(ctapi.project_id("MyFirstProject")).to be_present
+        expect(Logging.contents).to_not match(/Unknown project, retrying/)
+      end
+
+      it "raises if project doesn't exist" do
+        expect { ctapi.project_id("nothere") }.to raise_error(Kubetruth::Error, /Unknown project/)
+      end
+
+    end
+
 
     describe "#parameters" do
 
@@ -127,6 +143,68 @@ module Kubetruth
         expect(params.collect(&:value)).to eq(["defaultone", "defaulttwo"])
         params = ctapi.parameters(project: @project_name, environment: "development")
         expect(params.collect(&:value)).to eq(["developmentone", "developmenttwo"])
+      end
+
+    end
+
+    describe "#templates" do
+
+      before(:each) do
+        @project_name = "TestProject"
+        existing = ctapi.apis[:projects].projects_list.results
+        existing.each do |proj|
+          if  proj.name == @project_name
+            ctapi.apis[:projects].projects_destroy(proj.id)
+          end
+        end
+
+        ctapi.apis[:projects].projects_create(CloudtruthClient::ProjectCreate.new(name: @project_name))
+        @project_id = ctapi.projects[@project_name]
+        @one_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "one"))
+        @two_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "two", secret: true))
+        @one_tmpl = ctapi.apis[:projects].projects_templates_create(@project_id, CloudtruthClient::TemplateCreate.new(name: "one", body: "tmpl1 {{one}}"))
+        @two_tmpl = ctapi.apis[:projects].projects_templates_create(@project_id, CloudtruthClient::TemplateCreate.new(name: "two", body: "tmpl2 {{two}}"))
+      end
+
+      it "gets templates" do
+        templates = ctapi.templates(project: @project_name)
+        expect(templates).to match hash_including("one", "two")
+        expect(ctapi.template_names(project: @project_name)).to eq(["one", "two"])
+      end
+
+      it "memoizes templates " do
+        expect(ctapi.templates(project: @project_name)).to equal(ctapi.templates(project: @project_name))
+        expect(ctapi.template_names(project: @project_name)).to eq(ctapi.template_names(project: @project_name)) # Hash#keys creates new object
+      end
+
+      describe "#template_id" do
+
+        it "gets id" do
+          expect(ctapi.template_id("one", project: @project_name)).to be_present
+          expect(Logging.contents).to_not match(/Unknown template, retrying/)
+        end
+
+        it "raises if template doesn't exist" do
+          expect { ctapi.template_id("nothere", project: @project_name  ) }.to raise_error(Kubetruth::Error, /Unknown template/)
+        end
+
+      end
+
+      describe "#template" do
+
+        it "gets template" do
+          ctapi.apis[:projects].projects_parameters_values_create(@one_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), dynamic: false, static_value: "defaultone"))
+          expect(ctapi.template("one", project: @project_name, environment: "default")).to eq("tmpl1 defaultone")
+          expect(Logging.contents).to match(/Template Retrieve query result.*tmpl1 defaultone/)
+        end
+
+        it "masks secrets in log for templates that reference them" do
+          ctapi.apis[:projects].projects_parameters_values_create(@two_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), dynamic: false, static_value: "defaulttwo"))
+          expect(ctapi.template("two", project: @project_name, environment: "default")).to eq("tmpl2 defaulttwo")
+          expect(Logging.contents).to_not match(/Template Retrieve query result.*tmpl2 defaulttwo/)
+          expect(Logging.contents).to match(/Template Retrieve query result.*<masked>/)
+        end
+
       end
 
     end

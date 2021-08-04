@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - kubetruth/1.0.0
+      - kubetruth/1.0.1
       Accept:
       - application/json
       Authorization:
@@ -25,112 +25,7 @@ http_interactions:
       Server:
       - undisclosed
       Date:
-      - Mon, 02 Aug 2021 14:30:11 GMT
-      Connection:
-      - close
-      Content-Type:
-      - application/json
-      Vary:
-      - Accept, Cookie, Origin
-      Allow:
-      - GET, POST, HEAD, OPTIONS
-      X-Frame-Options:
-      - DENY
-      Content-Length:
-      - '354'
-      X-Content-Type-Options:
-      - nosniff
-      Referrer-Policy:
-      - same-origin
-      Set-Cookie:
-      - csrftoken=ORpYI1w37qrDzQi0IHLqRiiRhWnQw90muwyh0Az0PnTnsTHZKJJt82mN7N1RDWC8;
-        expires=Mon, 01 Aug 2022 14:30:11 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=etnt3xvq3mqqbmvj7k6cib55522hgq2u; expires=Mon, 16 Aug 2021 14:30:11
-        GMT; Max-Age=1209600; Path=/; Secure
-    body:
-      encoding: UTF-8
-      string: '{"count":1,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/650a3510-56d7-4af9-93ae-ee9db1c50a18/","id":"650a3510-56d7-4af9-93ae-ee9db1c50a18","name":"MyFirstProject","description":"A
-        first project workspace to experiment with","created_at":"2021-08-02T14:22:36.009207Z","modified_at":"2021-08-02T14:22:36.009254Z"}]}'
-  recorded_at: Mon, 02 Aug 2021 14:30:11 GMT
-- request:
-    method: post
-    uri: https://localhost:8000/api/v1/projects/
-    body:
-      encoding: UTF-8
-      string: '{"name":"TestProject"}'
-    headers:
-      Content-Type:
-      - application/json
-      User-Agent:
-      - kubetruth/1.0.0
-      Accept:
-      - application/json
-      Authorization:
-      - Api-Key <TOKEN>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response:
-    status:
-      code: 201
-      message: Created
-    headers:
-      Server:
-      - undisclosed
-      Date:
-      - Mon, 02 Aug 2021 14:30:13 GMT
-      Connection:
-      - close
-      Content-Type:
-      - application/json
-      Location:
-      - https://localhost:8000/api/v1/projects/4ed87cc3-574e-4a1c-b516-c7f8ca0145d0/
-      Vary:
-      - Accept, Cookie, Origin
-      Allow:
-      - GET, POST, HEAD, OPTIONS
-      X-Frame-Options:
-      - DENY
-      Content-Length:
-      - '255'
-      X-Content-Type-Options:
-      - nosniff
-      Referrer-Policy:
-      - same-origin
-      Set-Cookie:
-      - csrftoken=uz4EEUZLY61iB114DPv3YHsCcHnECB8QVWnZnlZzfXcXji5819u54gx2Pn05sXwF;
-        expires=Mon, 01 Aug 2022 14:30:13 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=kikv4azoodny6t87trr9x8u0e3g11svx; expires=Mon, 16 Aug 2021 14:30:13
-        GMT; Max-Age=1209600; Path=/; Secure
-    body:
-      encoding: UTF-8
-      string: '{"url":"https://localhost:8000/api/v1/projects/4ed87cc3-574e-4a1c-b516-c7f8ca0145d0/","id":"4ed87cc3-574e-4a1c-b516-c7f8ca0145d0","name":"TestProject","description":"","created_at":"2021-08-02T14:30:13.139743Z","modified_at":"2021-08-02T14:30:13.139787Z"}'
-  recorded_at: Mon, 02 Aug 2021 14:30:13 GMT
-- request:
-    method: get
-    uri: https://localhost:8000/api/v1/projects/
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Content-Type:
-      - application/json
-      User-Agent:
-      - kubetruth/1.0.0
-      Accept:
-      - application/json
-      Authorization:
-      - Api-Key <TOKEN>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Server:
-      - undisclosed
-      Date:
-      - Mon, 02 Aug 2021 14:30:14 GMT
+      - Tue, 03 Aug 2021 19:32:22 GMT
       Connection:
       - close
       Content-Type:
@@ -148,124 +43,18 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=ZV6FguiEyPcGAnN1dypmiVFcHKlkKZTcMDBRVuKW8x7C7uGdzrajXmJPjVM8EcuK;
-        expires=Mon, 01 Aug 2022 14:30:14 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=s0ptz28mh6j26db2ge1anxje9gkugx19; expires=Mon, 16 Aug 2021 14:30:14
+      - csrftoken=ZF0gUFrAKEIQ5K1y29S9X1WcmArQ2HNgX4rH4CvUZX65IFSPoa4b3lNXXGFNn0DU;
+        expires=Tue, 02 Aug 2022 19:32:22 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=fzx64xcluzkzf500zq1k0ub2m55wz15m; expires=Tue, 17 Aug 2021 19:32:22
         GMT; Max-Age=1209600; Path=/; Secure
     body:
       encoding: UTF-8
       string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/650a3510-56d7-4af9-93ae-ee9db1c50a18/","id":"650a3510-56d7-4af9-93ae-ee9db1c50a18","name":"MyFirstProject","description":"A
-        first project workspace to experiment with","created_at":"2021-08-02T14:22:36.009207Z","modified_at":"2021-08-02T14:22:36.009254Z"},{"url":"https://localhost:8000/api/v1/projects/4ed87cc3-574e-4a1c-b516-c7f8ca0145d0/","id":"4ed87cc3-574e-4a1c-b516-c7f8ca0145d0","name":"TestProject","description":"","created_at":"2021-08-02T14:30:13.139743Z","modified_at":"2021-08-02T14:30:13.139787Z"}]}'
-  recorded_at: Mon, 02 Aug 2021 14:30:14 GMT
+        first project workspace to experiment with","created_at":"2021-08-02T14:22:36.009207Z","modified_at":"2021-08-02T14:22:36.009254Z"},{"url":"https://localhost:8000/api/v1/projects/831751c5-e30c-4489-b3c5-969bb2abebd3/","id":"831751c5-e30c-4489-b3c5-969bb2abebd3","name":"TestProject","description":"","created_at":"2021-08-03T19:31:32.128299Z","modified_at":"2021-08-03T19:31:32.128335Z"}]}'
+  recorded_at: Tue, 03 Aug 2021 19:32:22 GMT
 - request:
-    method: post
-    uri: https://localhost:8000/api/v1/projects/4ed87cc3-574e-4a1c-b516-c7f8ca0145d0/parameters/
-    body:
-      encoding: UTF-8
-      string: '{"name":"one"}'
-    headers:
-      Content-Type:
-      - application/json
-      User-Agent:
-      - kubetruth/1.0.0
-      Accept:
-      - application/json
-      Authorization:
-      - Api-Key <TOKEN>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response:
-    status:
-      code: 201
-      message: Created
-    headers:
-      Server:
-      - undisclosed
-      Date:
-      - Mon, 02 Aug 2021 14:30:16 GMT
-      Connection:
-      - close
-      Content-Type:
-      - application/json
-      Location:
-      - https://localhost:8000/api/v1/projects/4ed87cc3-574e-4a1c-b516-c7f8ca0145d0/parameters/47657ede-5423-4429-b66d-ee2a841742cb/
-      Vary:
-      - Accept, Cookie, Origin
-      Allow:
-      - GET, POST, HEAD, OPTIONS
-      X-Frame-Options:
-      - DENY
-      Content-Length:
-      - '688'
-      X-Content-Type-Options:
-      - nosniff
-      Referrer-Policy:
-      - same-origin
-      Set-Cookie:
-      - csrftoken=xIm0rrkvPKRIwWyE1d5L7Bc9lhdxoNIHYWAGhMroOp9Snh4F54qljfCHqJ1lp04z;
-        expires=Mon, 01 Aug 2022 14:30:16 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=kd7qlhq79mwrssd6g21g4uhm4t478quo; expires=Mon, 16 Aug 2021 14:30:16
-        GMT; Max-Age=1209600; Path=/; Secure
-    body:
-      encoding: UTF-8
-      string: '{"url":"https://localhost:8000/api/v1/projects/4ed87cc3-574e-4a1c-b516-c7f8ca0145d0/parameters/47657ede-5423-4429-b66d-ee2a841742cb/","id":"47657ede-5423-4429-b66d-ee2a841742cb","name":"one","description":"","secret":false,"templates":[],"values":{"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/":null,"https://localhost:8000/api/v1/environments/0293a31b-70a7-458c-afe4-162fa9febc1e/":null,"https://localhost:8000/api/v1/environments/d5a11b75-2690-4363-83a3-873f3a98cef8/":null,"https://localhost:8000/api/v1/environments/5694a5f3-a09c-40f1-b40b-74f260508516/":null},"created_at":"2021-08-02T14:30:15.845308Z","modified_at":"2021-08-02T14:30:15.845409Z"}'
-  recorded_at: Mon, 02 Aug 2021 14:30:16 GMT
-- request:
-    method: post
-    uri: https://localhost:8000/api/v1/projects/4ed87cc3-574e-4a1c-b516-c7f8ca0145d0/parameters/
-    body:
-      encoding: UTF-8
-      string: '{"name":"two"}'
-    headers:
-      Content-Type:
-      - application/json
-      User-Agent:
-      - kubetruth/1.0.0
-      Accept:
-      - application/json
-      Authorization:
-      - Api-Key <TOKEN>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response:
-    status:
-      code: 201
-      message: Created
-    headers:
-      Server:
-      - undisclosed
-      Date:
-      - Mon, 02 Aug 2021 14:30:17 GMT
-      Connection:
-      - close
-      Content-Type:
-      - application/json
-      Location:
-      - https://localhost:8000/api/v1/projects/4ed87cc3-574e-4a1c-b516-c7f8ca0145d0/parameters/42e9bf9a-6f29-4ab0-a884-3e9ef4deba14/
-      Vary:
-      - Accept, Cookie, Origin
-      Allow:
-      - GET, POST, HEAD, OPTIONS
-      X-Frame-Options:
-      - DENY
-      Content-Length:
-      - '688'
-      X-Content-Type-Options:
-      - nosniff
-      Referrer-Policy:
-      - same-origin
-      Set-Cookie:
-      - csrftoken=Qc6dzBkXRahI611MFXIl8B0aa4i4KsUT7cmLbUqxk3nm6TQAQVjoUtCnexe3o6mm;
-        expires=Mon, 01 Aug 2022 14:30:17 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=0u7njom34i6k6yt2u6yx9z6g4tqsn100; expires=Mon, 16 Aug 2021 14:30:17
-        GMT; Max-Age=1209600; Path=/; Secure
-    body:
-      encoding: UTF-8
-      string: '{"url":"https://localhost:8000/api/v1/projects/4ed87cc3-574e-4a1c-b516-c7f8ca0145d0/parameters/42e9bf9a-6f29-4ab0-a884-3e9ef4deba14/","id":"42e9bf9a-6f29-4ab0-a884-3e9ef4deba14","name":"two","description":"","secret":false,"templates":[],"values":{"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/":null,"https://localhost:8000/api/v1/environments/0293a31b-70a7-458c-afe4-162fa9febc1e/":null,"https://localhost:8000/api/v1/environments/d5a11b75-2690-4363-83a3-873f3a98cef8/":null,"https://localhost:8000/api/v1/environments/5694a5f3-a09c-40f1-b40b-74f260508516/":null},"created_at":"2021-08-02T14:30:17.189703Z","modified_at":"2021-08-02T14:30:17.189744Z"}'
-  recorded_at: Mon, 02 Aug 2021 14:30:17 GMT
-- request:
-    method: get
-    uri: https://localhost:8000/api/v1/environments/
+    method: delete
+    uri: https://localhost:8000/api/v1/projects/831751c5-e30c-4489-b3c5-969bb2abebd3/
     body:
       encoding: US-ASCII
       string: ''
@@ -273,7 +62,109 @@ http_interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - kubetruth/1.0.0
+      - kubetruth/1.0.1
+      Authorization:
+      - Api-Key <TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      Server:
+      - undisclosed
+      Date:
+      - Tue, 03 Aug 2021 19:32:24 GMT
+      Connection:
+      - close
+      Vary:
+      - Accept, Cookie, Origin
+      Allow:
+      - GET, PUT, PATCH, DELETE, HEAD, OPTIONS
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '0'
+      X-Content-Type-Options:
+      - nosniff
+      Referrer-Policy:
+      - same-origin
+      Set-Cookie:
+      - csrftoken=EHRsZ6NryeQQ88OUK9bvnLqMVMEauGDynPYev2I3UuyD9RX1ma9OOj9sbSnnje0U;
+        expires=Tue, 02 Aug 2022 19:32:24 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=85je6ixuo4chkew1voeivcqgw9xcevk4; expires=Tue, 17 Aug 2021 19:32:24
+        GMT; Max-Age=1209600; Path=/; Secure
+    body:
+      encoding: UTF-8
+      string: ''
+  recorded_at: Tue, 03 Aug 2021 19:32:24 GMT
+- request:
+    method: post
+    uri: https://localhost:8000/api/v1/projects/
+    body:
+      encoding: UTF-8
+      string: '{"name":"TestProject"}'
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - kubetruth/1.0.1
+      Accept:
+      - application/json
+      Authorization:
+      - Api-Key <TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Server:
+      - undisclosed
+      Date:
+      - Tue, 03 Aug 2021 19:32:25 GMT
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      Location:
+      - https://localhost:8000/api/v1/projects/5901f8db-2d74-4d93-bcb1-18fc816f2360/
+      Vary:
+      - Accept, Cookie, Origin
+      Allow:
+      - GET, POST, HEAD, OPTIONS
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '255'
+      X-Content-Type-Options:
+      - nosniff
+      Referrer-Policy:
+      - same-origin
+      Set-Cookie:
+      - csrftoken=SCTRc30VDZx2FmlHV2JhdvBnvpxY3PRltVZfyXpSz6iLnaXxkZkodSX0jS8U4aij;
+        expires=Tue, 02 Aug 2022 19:32:25 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=wu9cl9g1f4mf9t9ss4yrgaxx0hcatde7; expires=Tue, 17 Aug 2021 19:32:25
+        GMT; Max-Age=1209600; Path=/; Secure
+    body:
+      encoding: UTF-8
+      string: '{"url":"https://localhost:8000/api/v1/projects/5901f8db-2d74-4d93-bcb1-18fc816f2360/","id":"5901f8db-2d74-4d93-bcb1-18fc816f2360","name":"TestProject","description":"","created_at":"2021-08-03T19:32:25.401699Z","modified_at":"2021-08-03T19:32:25.401735Z"}'
+  recorded_at: Tue, 03 Aug 2021 19:32:25 GMT
+- request:
+    method: get
+    uri: https://localhost:8000/api/v1/projects/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - kubetruth/1.0.1
       Accept:
       - application/json
       Authorization:
@@ -288,7 +179,165 @@ http_interactions:
       Server:
       - undisclosed
       Date:
-      - Mon, 02 Aug 2021 14:30:19 GMT
+      - Tue, 03 Aug 2021 19:32:26 GMT
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      Vary:
+      - Accept, Cookie, Origin
+      Allow:
+      - GET, POST, HEAD, OPTIONS
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '610'
+      X-Content-Type-Options:
+      - nosniff
+      Referrer-Policy:
+      - same-origin
+      Set-Cookie:
+      - csrftoken=3KuKYuxNO1QLbCSPSs5fGpmT0w0yZ0RP2GEs0dRsKfaqLVLEkF9utEj82ENx6XIA;
+        expires=Tue, 02 Aug 2022 19:32:26 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=1qrr5wl6osdfwlrfd74xixnyn0nnvwfd; expires=Tue, 17 Aug 2021 19:32:26
+        GMT; Max-Age=1209600; Path=/; Secure
+    body:
+      encoding: UTF-8
+      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/650a3510-56d7-4af9-93ae-ee9db1c50a18/","id":"650a3510-56d7-4af9-93ae-ee9db1c50a18","name":"MyFirstProject","description":"A
+        first project workspace to experiment with","created_at":"2021-08-02T14:22:36.009207Z","modified_at":"2021-08-02T14:22:36.009254Z"},{"url":"https://localhost:8000/api/v1/projects/5901f8db-2d74-4d93-bcb1-18fc816f2360/","id":"5901f8db-2d74-4d93-bcb1-18fc816f2360","name":"TestProject","description":"","created_at":"2021-08-03T19:32:25.401699Z","modified_at":"2021-08-03T19:32:25.401735Z"}]}'
+  recorded_at: Tue, 03 Aug 2021 19:32:26 GMT
+- request:
+    method: post
+    uri: https://localhost:8000/api/v1/projects/5901f8db-2d74-4d93-bcb1-18fc816f2360/parameters/
+    body:
+      encoding: UTF-8
+      string: '{"name":"one"}'
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - kubetruth/1.0.1
+      Accept:
+      - application/json
+      Authorization:
+      - Api-Key <TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Server:
+      - undisclosed
+      Date:
+      - Tue, 03 Aug 2021 19:32:27 GMT
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      Location:
+      - https://localhost:8000/api/v1/projects/5901f8db-2d74-4d93-bcb1-18fc816f2360/parameters/6919c98e-c254-4bf8-87d1-c1a55fe76c71/
+      Vary:
+      - Accept, Cookie, Origin
+      Allow:
+      - GET, POST, HEAD, OPTIONS
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '688'
+      X-Content-Type-Options:
+      - nosniff
+      Referrer-Policy:
+      - same-origin
+      Set-Cookie:
+      - csrftoken=9RuFOj2u4erAlJQuxPNVfmQF8LW2JKNuI3Xe1TM9d8shun2l7tnu3TGOaaMR9lhV;
+        expires=Tue, 02 Aug 2022 19:32:27 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=7o9791zi76w9tesrav8jn4xwb5m62gr1; expires=Tue, 17 Aug 2021 19:32:27
+        GMT; Max-Age=1209600; Path=/; Secure
+    body:
+      encoding: UTF-8
+      string: '{"url":"https://localhost:8000/api/v1/projects/5901f8db-2d74-4d93-bcb1-18fc816f2360/parameters/6919c98e-c254-4bf8-87d1-c1a55fe76c71/","id":"6919c98e-c254-4bf8-87d1-c1a55fe76c71","name":"one","description":"","secret":false,"templates":[],"values":{"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/":null,"https://localhost:8000/api/v1/environments/0293a31b-70a7-458c-afe4-162fa9febc1e/":null,"https://localhost:8000/api/v1/environments/d5a11b75-2690-4363-83a3-873f3a98cef8/":null,"https://localhost:8000/api/v1/environments/5694a5f3-a09c-40f1-b40b-74f260508516/":null},"created_at":"2021-08-03T19:32:27.245518Z","modified_at":"2021-08-03T19:32:27.245556Z"}'
+  recorded_at: Tue, 03 Aug 2021 19:32:27 GMT
+- request:
+    method: post
+    uri: https://localhost:8000/api/v1/projects/5901f8db-2d74-4d93-bcb1-18fc816f2360/parameters/
+    body:
+      encoding: UTF-8
+      string: '{"name":"two"}'
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - kubetruth/1.0.1
+      Accept:
+      - application/json
+      Authorization:
+      - Api-Key <TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Server:
+      - undisclosed
+      Date:
+      - Tue, 03 Aug 2021 19:32:28 GMT
+      Connection:
+      - close
+      Content-Type:
+      - application/json
+      Location:
+      - https://localhost:8000/api/v1/projects/5901f8db-2d74-4d93-bcb1-18fc816f2360/parameters/432e9053-7464-4ec3-8ccc-b4cacccea388/
+      Vary:
+      - Accept, Cookie, Origin
+      Allow:
+      - GET, POST, HEAD, OPTIONS
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '688'
+      X-Content-Type-Options:
+      - nosniff
+      Referrer-Policy:
+      - same-origin
+      Set-Cookie:
+      - csrftoken=5JC4cidk3QE4mIKZYfvCAiZGf0Y7yPpj7lOpwAWNtItPIT3QYYugH1gOeVVZ7SwY;
+        expires=Tue, 02 Aug 2022 19:32:28 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=hytquf56l5m1vgykmxl4qkoi0bc8t1v2; expires=Tue, 17 Aug 2021 19:32:28
+        GMT; Max-Age=1209600; Path=/; Secure
+    body:
+      encoding: UTF-8
+      string: '{"url":"https://localhost:8000/api/v1/projects/5901f8db-2d74-4d93-bcb1-18fc816f2360/parameters/432e9053-7464-4ec3-8ccc-b4cacccea388/","id":"432e9053-7464-4ec3-8ccc-b4cacccea388","name":"two","description":"","secret":false,"templates":[],"values":{"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/":null,"https://localhost:8000/api/v1/environments/0293a31b-70a7-458c-afe4-162fa9febc1e/":null,"https://localhost:8000/api/v1/environments/d5a11b75-2690-4363-83a3-873f3a98cef8/":null,"https://localhost:8000/api/v1/environments/5694a5f3-a09c-40f1-b40b-74f260508516/":null},"created_at":"2021-08-03T19:32:28.299513Z","modified_at":"2021-08-03T19:32:28.299554Z"}'
+  recorded_at: Tue, 03 Aug 2021 19:32:28 GMT
+- request:
+    method: get
+    uri: https://localhost:8000/api/v1/environments/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - kubetruth/1.0.1
+      Accept:
+      - application/json
+      Authorization:
+      - Api-Key <TOKEN>
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - undisclosed
+      Date:
+      - Tue, 03 Aug 2021 19:32:29 GMT
       Connection:
       - close
       Content-Type:
@@ -306,21 +355,21 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=nla69YBBNcXtUdja7MRaWCQLjBhQb18OYX0nHD16r66hjcd25kVOeFmmPF2hF2mz;
-        expires=Mon, 01 Aug 2022 14:30:19 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=bekexc68ix8bp7ftc4erjtsyogkvg3jh; expires=Mon, 16 Aug 2021 14:30:19
+      - csrftoken=n2DpOVtgE38VvctAH6pEsOkmuxwY3caQ68TRhdUNRpafI5WCownBkHITux7PrJxP;
+        expires=Tue, 02 Aug 2022 19:32:29 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=4xi6zpqi8aw5gith3bg7pi1v488fkn78; expires=Tue, 17 Aug 2021 19:32:29
         GMT; Max-Age=1209600; Path=/; Secure
     body:
       encoding: UTF-8
       string: '{"count":4,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/","id":"3ce72447-641f-418d-a12a-71173a56ffca","name":"default","description":"Default
-        environment, base for all environments.","parent":null,"created_at":"2021-08-02T14:22:36.043828Z","modified_at":"2021-08-02T14:22:36.043884Z"},{"url":"https://localhost:8000/api/v1/environments/0293a31b-70a7-458c-afe4-162fa9febc1e/","id":"0293a31b-70a7-458c-afe4-162fa9febc1e","name":"development","description":"Development
-        deployment environment","parent":"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/","created_at":"2021-08-02T14:22:36.086474Z","modified_at":"2021-08-02T14:22:36.086539Z"},{"url":"https://localhost:8000/api/v1/environments/d5a11b75-2690-4363-83a3-873f3a98cef8/","id":"d5a11b75-2690-4363-83a3-873f3a98cef8","name":"production","description":"Production
+        environment, base for all environments.","parent":null,"created_at":"2021-08-02T14:22:36.043828Z","modified_at":"2021-08-03T19:31:39.869473Z"},{"url":"https://localhost:8000/api/v1/environments/0293a31b-70a7-458c-afe4-162fa9febc1e/","id":"0293a31b-70a7-458c-afe4-162fa9febc1e","name":"development","description":"Development
+        deployment environment","parent":"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/","created_at":"2021-08-02T14:22:36.086474Z","modified_at":"2021-08-03T19:17:02.248188Z"},{"url":"https://localhost:8000/api/v1/environments/d5a11b75-2690-4363-83a3-873f3a98cef8/","id":"d5a11b75-2690-4363-83a3-873f3a98cef8","name":"production","description":"Production
         deployment environment","parent":"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/","created_at":"2021-08-02T14:22:36.142958Z","modified_at":"2021-08-02T14:22:36.143017Z"},{"url":"https://localhost:8000/api/v1/environments/5694a5f3-a09c-40f1-b40b-74f260508516/","id":"5694a5f3-a09c-40f1-b40b-74f260508516","name":"staging","description":"Staging
         deployment environment","parent":"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/","created_at":"2021-08-02T14:22:36.114024Z","modified_at":"2021-08-02T14:22:36.114565Z"}]}'
-  recorded_at: Mon, 02 Aug 2021 14:30:19 GMT
+  recorded_at: Tue, 03 Aug 2021 19:32:29 GMT
 - request:
     method: get
-    uri: https://localhost:8000/api/v1/projects/
+    uri: https://localhost:8000/api/v1/projects/5901f8db-2d74-4d93-bcb1-18fc816f2360/parameters/?environment=3ce72447-641f-418d-a12a-71173a56ffca
     body:
       encoding: US-ASCII
       string: ''
@@ -328,7 +377,7 @@ http_interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - kubetruth/1.0.0
+      - kubetruth/1.0.1
       Accept:
       - application/json
       Authorization:
@@ -343,59 +392,7 @@ http_interactions:
       Server:
       - undisclosed
       Date:
-      - Mon, 02 Aug 2021 14:30:21 GMT
-      Connection:
-      - close
-      Content-Type:
-      - application/json
-      Vary:
-      - Accept, Cookie, Origin
-      Allow:
-      - GET, POST, HEAD, OPTIONS
-      X-Frame-Options:
-      - DENY
-      Content-Length:
-      - '610'
-      X-Content-Type-Options:
-      - nosniff
-      Referrer-Policy:
-      - same-origin
-      Set-Cookie:
-      - csrftoken=dDGLPEYPCP0vsclxk7kXFyQxEDYQyfZkth1Id7V5t7TZ96DVdbUw2wUmpmRKRcnV;
-        expires=Mon, 01 Aug 2022 14:30:21 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=gwez4epuuuzbmo0k3ani8mnewl2atw2n; expires=Mon, 16 Aug 2021 14:30:21
-        GMT; Max-Age=1209600; Path=/; Secure
-    body:
-      encoding: UTF-8
-      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/650a3510-56d7-4af9-93ae-ee9db1c50a18/","id":"650a3510-56d7-4af9-93ae-ee9db1c50a18","name":"MyFirstProject","description":"A
-        first project workspace to experiment with","created_at":"2021-08-02T14:22:36.009207Z","modified_at":"2021-08-02T14:22:36.009254Z"},{"url":"https://localhost:8000/api/v1/projects/4ed87cc3-574e-4a1c-b516-c7f8ca0145d0/","id":"4ed87cc3-574e-4a1c-b516-c7f8ca0145d0","name":"TestProject","description":"","created_at":"2021-08-02T14:30:13.139743Z","modified_at":"2021-08-02T14:30:13.139787Z"}]}'
-  recorded_at: Mon, 02 Aug 2021 14:30:21 GMT
-- request:
-    method: get
-    uri: https://localhost:8000/api/v1/projects/4ed87cc3-574e-4a1c-b516-c7f8ca0145d0/parameters/?environment=3ce72447-641f-418d-a12a-71173a56ffca
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Content-Type:
-      - application/json
-      User-Agent:
-      - kubetruth/1.0.0
-      Accept:
-      - application/json
-      Authorization:
-      - Api-Key <TOKEN>
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-  response:
-    status:
-      code: 200
-      message: OK
-    headers:
-      Server:
-      - undisclosed
-      Date:
-      - Mon, 02 Aug 2021 14:30:23 GMT
+      - Tue, 03 Aug 2021 19:32:31 GMT
       Connection:
       - close
       Content-Type:
@@ -413,12 +410,12 @@ http_interactions:
       Referrer-Policy:
       - same-origin
       Set-Cookie:
-      - csrftoken=PbMicri66EYtBOaYM0sLUpQfvKPJV75rGYY2R64nqljFTzJNF3tR3JlicE2ym0PU;
-        expires=Mon, 01 Aug 2022 14:30:23 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=ivbevelcjd7tykfgaokvu6ffk89uu981; expires=Mon, 16 Aug 2021 14:30:23
+      - csrftoken=Dc18We12pfdslTz61qvRcYOCPFbhKlBSeuPu5LG4CiilQCdMhU6bthA6G79zmRRs;
+        expires=Tue, 02 Aug 2022 19:32:31 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=v4wxyg2x4c4c1jajaahhnfzawsbprpki; expires=Tue, 17 Aug 2021 19:32:31
         GMT; Max-Age=1209600; Path=/; Secure
     body:
       encoding: UTF-8
-      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/4ed87cc3-574e-4a1c-b516-c7f8ca0145d0/parameters/47657ede-5423-4429-b66d-ee2a841742cb/","id":"47657ede-5423-4429-b66d-ee2a841742cb","name":"one","description":"","secret":false,"templates":[],"values":{"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/":null},"created_at":"2021-08-02T14:30:15.845308Z","modified_at":"2021-08-02T14:30:15.845409Z"},{"url":"https://localhost:8000/api/v1/projects/4ed87cc3-574e-4a1c-b516-c7f8ca0145d0/parameters/42e9bf9a-6f29-4ab0-a884-3e9ef4deba14/","id":"42e9bf9a-6f29-4ab0-a884-3e9ef4deba14","name":"two","description":"","secret":false,"templates":[],"values":{"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/":null},"created_at":"2021-08-02T14:30:17.189703Z","modified_at":"2021-08-02T14:30:17.189744Z"}]}'
-  recorded_at: Mon, 02 Aug 2021 14:30:23 GMT
+      string: '{"count":2,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/projects/5901f8db-2d74-4d93-bcb1-18fc816f2360/parameters/6919c98e-c254-4bf8-87d1-c1a55fe76c71/","id":"6919c98e-c254-4bf8-87d1-c1a55fe76c71","name":"one","description":"","secret":false,"templates":[],"values":{"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/":null},"created_at":"2021-08-03T19:32:27.245518Z","modified_at":"2021-08-03T19:32:27.245556Z"},{"url":"https://localhost:8000/api/v1/projects/5901f8db-2d74-4d93-bcb1-18fc816f2360/parameters/432e9053-7464-4ec3-8ccc-b4cacccea388/","id":"432e9053-7464-4ec3-8ccc-b4cacccea388","name":"two","description":"","secret":false,"templates":[],"values":{"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/":null},"created_at":"2021-08-03T19:32:28.299513Z","modified_at":"2021-08-03T19:32:28.299554Z"}]}'
+  recorded_at: Tue, 03 Aug 2021 19:32:31 GMT
 recorded_with: VCR 6.0.0

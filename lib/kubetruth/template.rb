@@ -1,6 +1,7 @@
 require 'liquid'
 require 'digest'
 require 'base64'
+require_relative 'ctapi'
 
 module Kubetruth
   class Template
@@ -35,6 +36,23 @@ module Kubetruth
 
       def encode_with(coder)
         coder.represent_map(nil, @source)
+      end
+
+    end
+
+    class TemplatesDrop < Liquid::Drop
+
+      def initialize(project:, environment:)
+        @project = project
+        @environment = environment
+      end
+
+      def names
+        CtApi.instance.template_names(project: @project)
+      end
+
+      def liquid_method_missing(key)
+        CtApi.instance.template(key, project: @project, environment: @environment)
       end
 
     end

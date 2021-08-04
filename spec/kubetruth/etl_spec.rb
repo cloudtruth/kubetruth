@@ -318,6 +318,8 @@ module Kubetruth
       }
 
       before(:each) do
+        allow(CtApi).to receive(:reset)
+
         @ns = "primary-ns"
         allow(@kubeapi).to receive(:namespace).and_return(@ns)
         allow(ProjectCollection).to receive(:new).and_return(collection)
@@ -448,6 +450,7 @@ module Kubetruth
           expect(kwargs[:parameter_origins]).to eq({"param1"=>"proj1"})
           expect(kwargs[:secrets]).to eq({"param2"=>"value2"})
           expect(kwargs[:secret_origins]).to eq({"param2"=>"proj1"})
+          expect(kwargs[:templates]).to be_an_instance_of(Template::TemplatesDrop)
           expect(kwargs[:context]).to match(hash_including(:resource_name, :resource_namespace))
           ""
         end
@@ -494,6 +497,8 @@ module Kubetruth
       }
 
       before(:each) do
+        allow(CtApi).to receive(:reset)
+
         @ns = "primary-ns"
         allow(@kubeapi).to receive(:namespace).and_return(@ns)
         allow(ProjectCollection).to receive(:new).and_return(collection)
