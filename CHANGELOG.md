@@ -1,3 +1,8 @@
+1.0.3 (08/06/2021)
+------------------
+
+* add an inflate filter to make it easy to convert a flat map to a nested data structure, e.g. `{foo.baz.bum: 2}` => `{foo: {bar: {baz: 2}}}` [0d0050b](../../commit/0d0050b)
+
 1.0.2 (08/04/2021)
 ------------------
 
