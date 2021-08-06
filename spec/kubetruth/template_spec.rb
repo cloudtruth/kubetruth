@@ -130,6 +130,11 @@ module Kubetruth
           expect(to_yaml([1, 2])).to eq("---\n- 1\n- 2\n")
         end
 
+        it "produces header free yaml" do
+          expect(to_yaml([1, 2], true)).to eq("- 1\n- 2\n")
+          expect(to_yaml({"foo" => "bar"}, true)).to eq("foo: bar\n")
+        end
+
       end
 
       describe "#to_json" do
@@ -160,6 +165,66 @@ module Kubetruth
 
         it "does a base64 decode" do
           expect(decode64(Base64.strict_encode64("foo"))).to eq("foo")
+        end
+
+      end
+
+      describe "#inflate" do
+
+        it "works with empty" do
+          expect(inflate({})).to eq({})
+        end
+
+        it "adds structure using delimiter" do
+          data = {
+            "topval" => 0,
+            "top.mid.bottom1" => 1,
+            "top.mid.bottom2" => 2,
+            "top.midval" => 3,
+            "other.someval" => 4
+          }
+          result = {
+            "topval" => 0,
+            "top" => {
+              "mid" => {
+                "bottom1" => 1,
+                "bottom2" => 2
+              },
+              "midval" => 3
+            },
+            "other" => {
+              "someval" => 4
+            }
+          }
+          expect(inflate(data)).to eq(result)
+        end
+
+        it "can use other delimiter" do
+          data = {
+            "top/mid/bottom1" => 1
+          }
+          result = {
+            "top" => {
+              "mid" => {
+                "bottom1" => 1
+              }
+            }
+          }
+          expect(inflate(data, "/")).to eq(result)
+        end
+
+        it "can use regex delimiter" do
+          data = {
+            "top//mid///bottom1" => 1
+          }
+          result = {
+            "top" => {
+              "mid" => {
+                "bottom1" => 1
+              }
+            }
+          }
+          expect(inflate(data, "/+")).to eq(result)
         end
 
       end

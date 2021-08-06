@@ -166,6 +166,7 @@ liquid variables:
 
 In addition to the built in liquid filters, kubetruth also define a few custom
 ones:
+
 | Custom Filters  | Description |
 |-----------------|-------------|
 | `dns_safe` |  Ensures the string is safe for use as a kubernetes resource name (i.e. Namespace/ConfigMap/Secret names) | 
@@ -177,8 +178,9 @@ ones:
 | `to_yaml` |  Converts argument to a yaml representation | 
 | `to_json` |  Converts argument to a json representation | 
 | `encode64` |  The argument bas64 encoded | 
-| `decode64` |  The argument bas64 decoded | 
-| `sha256` |  The sha256 digest of the argument | 
+| `decode64` |  The argument bas64 decoded |
+| `sha256` |  The sha256 digest of the argument |
+| `inflate` |  Converts a map of key/values into a nested data structure based on a delimiter in the key name, e.g. `{foo.baz.bum: 2}` => `{foo: {bar: {baz: 2}}}` |
 
 The default `resource_templates` make use of the `context` attribute to allow
 simpler modification of some common fields.  These include:

@@ -103,8 +103,10 @@ module Kubetruth
         str.to_s.to_json
       end
 
-      def to_yaml(str)
-        str.to_yaml
+      def to_yaml(str, no_header=false)
+        result = str.to_yaml
+        result = result[4..-1] if no_header
+        result
       end
 
       def to_json(str)
@@ -121,6 +123,23 @@ module Kubetruth
 
       def decode64(str)
         Base64.strict_decode64(str)
+      end
+
+      def inflate(map, delimiter='\.')
+        result = {}
+        map.each do |k, v|
+          path = k.split(/#{delimiter}/)
+          scoped = result
+          path.each_with_index do |p, i|
+            if i == (path.size - 1)
+              scoped[p] = v
+            else
+              scoped[p] ||= {}
+              scoped = scoped[p]
+            end
+          end
+        end
+        result
       end
 
     end
