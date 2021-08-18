@@ -349,9 +349,40 @@ Namespace:    default
 
 ## Development
 
-After checking out the repo, run `bundle` to install dependencies. Then, run
-`bundle exec rspec` to run the tests. You can also run `bundle exec rake console` for an
-interactive prompt that will allow you to experiment.
+### Build
+
+1. Clone the repo.
+1. `rake client` to generate the CloudTruth client.
+1. `bundle` to install gem dependencies.
+
+
+At this point, `bundle exec rake console` will open an interactive prompt that will allow you to experiment.
+
+### Test
+
+The test cases can be run "live", connecting to Helm and Minikube, or these dependencies can be stubbed out using the `vcr` gem.
+
+To run the tests "live":
+
+1. Install [Helm](https://helm.sh/docs/intro/install).
+1. Install [Minikube](https://minikube.sigs.k8s.io/docs/start/).
+1. `bundle exec rspec`
+
+To use VCR in lieu of live dependencies:
+
+1. `CI=true bundle exec rspec`
+
+### AppMaps
+
+To generate [AppMaps](https://appland.com/docs/appmap-overview.html) of the Kubetruth client from test cases, you can run the tests (either "live" or with VCR):
+
+`APPMAP=true bundle exec rspec`
+
+An example AppMap:
+
+* [#apply renders templates with variables](./tmp/appmap/rspec/apply_renders_templates_with_variables.appmap.json)
+
+### Install
 
 To install and run via helm in a local cluster:
 ``` 
