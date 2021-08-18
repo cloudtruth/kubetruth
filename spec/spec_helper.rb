@@ -1,4 +1,6 @@
 require "bundler/setup"
+require 'appmap/rspec'
+
 ENV['CLOUDTRUTH_API_KEY'] ||= 'fake_api_key'
 require "kubetruth"
 

@@ -1,5 +1,6 @@
 source "https://rubygems.org"
-gem "appmap"
+
+gem 'appmap', :groups => [:development, :test]
 
 # development dependencies
 group :development do
