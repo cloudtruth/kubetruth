@@ -1,4 +1,5 @@
 source "https://rubygems.org"
+gem "appmap"
 
 # development dependencies
 group :development do

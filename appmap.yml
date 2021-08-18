@@ -1,0 +1,8 @@
+name: kubetruth
+packages:
+  - path: lib
+  - gem: clamp
+  - gem: cloudtruth-client
+  - gem: kubeclient
+  - gem: liquid
+  - gem: async
