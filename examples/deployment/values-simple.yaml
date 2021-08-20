@@ -1,0 +1,37 @@
+# Applying deployment resources requires additional permissions
+rbac:
+  additionalRoleRules:
+    - apiGroups: ["", "extensions", "apps"]
+      resources: ["deployments", "replicasets", "pods", "services"]
+      verbs: ["*"]
+
+# Setup the kubetruth CRD to ignore all projects except for the one named deploytest
+# For the deploytest project, get the resource template from the cloudtruth template named deployment
+projectMappings:
+
+  # Define the root project mapping, skipping all projects except for the
+  # example we care about
+  root:
+    scope: "root"
+    environment: default
+    skip: true
+
+  # Define an override project mapping to enable processing of a single project
+  # for this example.  This will also gain the default `resource_templates` for
+  # generating configmap and secret resource, but if not desired, those can be
+  # skipped by setting them to an empty string.
+  deploytest:
+    scope: "override"
+    skip: false
+    project_selector: "^deploytest$"
+    resource_templates:
+      # Uncomment below to skip the default templates, but note that you'll get
+      # an error unless you remove the configmap reference from the deployment
+      # template
+      #
+      # configmap: ""
+      # secret: ""
+
+      # The kubetruth deployment template is a fetch of the generated cloudtruth
+      # template named deployment
+      deployment: "{{ templates.deployment }}"

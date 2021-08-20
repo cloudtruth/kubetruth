@@ -347,6 +347,10 @@ Namespace:    default
 <snipped>
 ```
 
+#### Additional examples
+
+More examples are available in the [examples](./examples) directory
+
 ## Development
 
 After checking out the repo, run `bundle` to install dependencies. Then, run

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{app_name}}
+  labels:
+    app: {{app_name}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{app_name}}
+  template:
+    metadata:
+      labels:
+        app: {{app_name}}
+    spec:
+      containers:
+        - name: {{image_name}}
+          image: {{image_name}}:{{image_version}}
+          ports:
+            - containerPort: {{app_port}}
+          envFrom:
+            - configMapRef:
+                name: deploytest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{app_name}}
+spec:
+  selector:
+    app: {{app_name}}
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: {{app_port}}
+      targetPort: {{app_port}}
