@@ -1,3 +1,9 @@
+1.0.4 (08/20/2021)
+------------------
+
+* add an example of deploying with kubetruth [7275641](../../commit/7275641)
+* allow replacing/adding rules to the role at install time, skip namespace role when installing cluster role [810c8fd](../../commit/810c8fd)
+
 1.0.3 (08/06/2021)
 ------------------
 
