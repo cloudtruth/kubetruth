@@ -19,7 +19,9 @@ projectMappings:
   # Define an override project mapping to enable processing of a single project
   # for this example.  This will also gain the default `resource_templates` for
   # generating configmap and secret resource, but if not desired, those can be
-  # skipped by setting them to an empty string.
+  # skipped by setting them to an empty string.  In a real world scenario you
+  # would want to add the deployment templates in an override that matches
+  # multiple projects in order to share its behavior across those projects
   deploytest:
     scope: "override"
     skip: false
@@ -53,6 +55,13 @@ projectMappings:
             metadata:
               labels:
                 app: "{{ parameters.app_name }}"
+                # Adding version labels here to demonstrate restart on a
+                # configmap change.  An alternate method would be to make the
+                # configmap name based on the hash thereby forcing the restart
+                # whilst preserving the old configmap
+                #
+                parameters_version: "{{ parameters | sort | to_json | sha256 | slice: 0, 7 }}"
+                secrets_version: "{{ secrets | sort | to_json | sha256 | slice: 0, 7 }}"
             spec:
               containers:
                 - name: "{{ parameters.image_name }}"

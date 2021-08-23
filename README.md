@@ -120,7 +120,10 @@ To use them as files on disk in a pod:
 Note that config map updates don't get seen by a running pod.  You can use
 something like [Reloader](https://github.com/stakater/Reloader) to automate
 restarting the pod on a ConfigMap change, or read config from mounted volumes
-for configmaps/secrets, which do get updated automatically in a running pod.
+for configmaps/secrets, which do get updated automatically in a running pod.  If
+you are also [using kubetruth to deploy](examples/deployment), then you can make
+your deployment manifest include a version string generated from a hash of the
+parameters, thereby forcing a re-deploy when your config changes.
 
 ## Additional configuration
 
