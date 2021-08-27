@@ -1,0 +1,78 @@
+# Setup the kubetruth CRD to ignore all projects except for the one named deploytest
+# For the deploytest project, get the resource template from the cloudtruth template named deployment
+projectMappings:
+
+  # Define the root project mapping, skipping all projects except for the
+  # example we care about
+  root:
+    scope: "root"
+    environment: default
+    skip: true
+
+  # Define an override project mapping to enable processing of a single project
+  # for this example.  In a real world scenario you would want to add the
+  # deployment templates in the root project mapping or in an override that
+  # matches multiple projects in order to share its behavior across those
+  # projects
+  filetest:
+    scope: "override"
+    skip: false
+    project_selector: "^filetest$"
+    resource_templates:
+      # One could also make Secrets be file-based by copying the template from
+      # configmap or, or use the default template by uncommenting below
+      #
+      # secret: ""
+
+      # Transforms parameters into filebased configmap entries
+      #
+      configmap: |
+        {%- if parameters.size > 0 %}
+
+        {%- comment %}
+          Use the inflate filter to convert parameters to a structured form
+          based on a slash delimiter
+        {%- endcomment %}
+
+        {%- assign inflated_params = parameters | inflate: "/" %}
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: "{{ context.resource_name }}"
+          namespace: "{{ context.resource_namespace }}"
+          labels:
+            version: "{{ parameters | sort | to_json | sha256 | slice: 0, 7 }}"
+          annotations:
+            kubetruth/project_heirarchy: |
+              {{ project_heirarchy | to_yaml | indent: 6 | lstrip }}
+            kubetruth/parameter_origins: |
+              {{ parameter_origins | to_yaml | indent: 6 | lstrip }}
+        data:
+
+          {%- comment %}
+            Each top level key should be a yaml or json filename, with its value
+            being the structured data it contains
+          {%- endcomment %}
+
+          {%- for file in inflated_params %}
+          {%- assign file_name = file[0] %}
+          {%- assign file_type = file[0] | split: "." | last | downcase %}
+          {%- assign file_data = file[1] %}
+
+          {%- comment %}
+            Keys (filenames) that do not end in .ya?ml or .json will get ignored
+          {%- endcomment %}
+
+          {%- case file_type %}
+            {%- when "yml", "yaml" %}
+          {{ file_name }}: |
+              {{- file_data | to_yaml | nindent: 4 }}
+            {%- when "json" %}
+          {{ file_name }}: |
+              {{- file_data | to_json | nindent: 4 }}
+            {%- else %}
+              {%- continue %}
+          {%- endcase %}
+
+          {%- endfor %}
+        {%- endif %}
