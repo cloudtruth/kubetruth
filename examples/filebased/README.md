@@ -51,3 +51,36 @@ kubectl logs deployment/kubetruth
 ```
 kubectl describe configmap filetest
 ```
+results in
+
+```
+Name:         filetest
+Namespace:    default
+Labels:       app.kubernetes.io/managed-by=kubetruth
+              version=51988e7
+Annotations:  kubetruth/parameter_origins:
+                ---
+                bar.json/other: filetest
+                foo.yml/bar: filetest
+                foo.yml/baz/boo: filetest
+                foo.yml/baz/bum: filetest
+              kubetruth/project_heirarchy:
+                ---
+                filetest: {}
+
+Data
+====
+foo.yml:
+----
+---
+bar: hi
+baz:
+  boo: yum
+  bum: fun
+
+bar.json:
+----
+{"other":"myval"}
+
+Events:  <none>
+```
