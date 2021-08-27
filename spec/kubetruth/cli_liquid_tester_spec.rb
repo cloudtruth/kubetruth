@@ -58,5 +58,19 @@ module Kubetruth
 
     end
 
+    describe "--variable-file" do
+
+      it "uses supplied file" do
+        expect { cli.run(['-t', '{{foo}}-{{baz}}', '--variable-file', File.expand_path("../fixtures/vars.yml", __dir__)]) }.to output("bar-boo\n").to_stdout
+      end
+
+      it "uses stdin" do
+        simulate_stdin(File.read(File.expand_path("../fixtures/vars.yml", __dir__))) do
+          expect { cli.run(['-t', '{{foo}}-{{baz}}', '--variable-file', '-']) }.to output( "bar-boo\n").to_stdout
+        end
+      end
+
+    end
+
   end
 end
