@@ -55,7 +55,7 @@ helm install --values examples/deployment/values-simple.yaml --set appSettings.a
 
 OR to try the modular variant, install kubetruth like:
 ```
-helm install --values examples/deployment/values-complete.yaml --set appSettings.apiKey=$CLOUDTRUTH_API_KEY kubetruth cloudtruth/kubetruth
+helm install --values examples/deployment/values-modular.yaml --set appSettings.apiKey=$CLOUDTRUTH_API_KEY kubetruth cloudtruth/kubetruth
 ```
 
 ## Check kubetruth is up
