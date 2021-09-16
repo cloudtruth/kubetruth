@@ -1,4 +1,4 @@
-# Using kubetruth to deploy
+# Using kubetruth to configure kubetruth
 
 This example uses kubetruth to configure kubetruth by creating kubetruth
 ProjectMapping CRDs from the CloudTruth project named kubetruth.
