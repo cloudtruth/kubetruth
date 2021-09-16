@@ -103,9 +103,11 @@ module Kubetruth
         str.to_s.to_json
       end
 
-      def to_yaml(str, no_header=false)
+      def to_yaml(str, options = {})
+        options = {} unless options.is_a?(Hash)
+        p options
         result = str.to_yaml
-        result = result[4..-1] if no_header
+        result = result[4..-1] if options['no_header']
         result
       end
 

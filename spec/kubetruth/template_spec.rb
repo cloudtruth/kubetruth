@@ -128,11 +128,17 @@ module Kubetruth
 
         it "produces a yaml string" do
           expect(to_yaml([1, 2])).to eq("---\n- 1\n- 2\n")
+          # also check how liquid handles named parameters
+          expect(described_class.new("{{ var | to_yaml }}").render(var: [1, 2])).to eq("---\n- 1\n- 2\n")
         end
 
         it "produces header free yaml" do
-          expect(to_yaml([1, 2], true)).to eq("- 1\n- 2\n")
-          expect(to_yaml({"foo" => "bar"}, true)).to eq("foo: bar\n")
+          expect(to_yaml([1, 2], "no_header" => false)).to eq("---\n- 1\n- 2\n")
+          expect(to_yaml([1, 2], "no_header" => true)).to eq("- 1\n- 2\n")
+          expect(to_yaml({"foo" => "bar"}, "no_header" => true)).to eq("foo: bar\n")
+          # also verify that liquid handles named parameters
+          expect(described_class.new("{{ var | to_yaml: no_header: true}}").render(var: [1, 2])).to eq("- 1\n- 2\n")
+          expect(described_class.new("{{ var | to_yaml: no_header: false}}").render(var: [1, 2])).to eq("---\n- 1\n- 2\n")
         end
 
       end
