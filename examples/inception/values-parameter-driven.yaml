@@ -1,0 +1,65 @@
+# Setup the kubetruth CRD to ignore all projects except for the one named deploytest
+# For the deploytest project, get the resource template from the cloudtruth template named deployment
+projectMappings:
+
+  # Define the root project mapping, skipping all projects except for the
+  # example we care about
+  root:
+    scope: "root"
+    environment: default
+    skip: true
+
+  # Define an override ProjectMapping to create kubetruth CRDs from the
+  # CloudTruth project named kubetruth
+  kubetruth:
+    scope: "override"
+    skip: false
+    project_selector: "^kubetruth$"
+    resource_templates:
+      # Disable default templates for this project as they aren't needed
+      configmap: ""
+      secret: ""
+
+      crds: |
+        {%- if parameters.size > 0 %} {{ parameters | nindent: "five" }}
+
+        {%- comment %}
+          Use the inflate filter to convert parameters to a structured form
+          based on a dot delimiter.  The namespace can be specified with a slash
+          in the first part of the key, e.g.
+          myoverride.project_selector # uses default/installed namespace
+          mynamespace/myoverride.project_selector # uses mynamespace
+        {%- endcomment %}
+
+        {%- assign inflated_params = parameters | inflate %}
+        {%- for crd in inflated_params %}
+
+        {%- assign name_parts = crd[0] | split: "/" %}
+        {%- assign name = name_parts | last %}
+
+        apiVersion: kubetruth.cloudtruth.com/v1
+        kind: ProjectMapping
+        metadata:
+          name: "{{ name }}"
+          {%- if name_parts.size > 1 %}
+          namespace: "{{ name_parts | first }}"
+          {%- endif %}
+        spec:
+          {% if crd[1] contains "scope" %}scope: "{{ crd[1].scope }}"{% endif %}
+          {% if crd[1] contains "environment" %}environment: "{{ crd[1].environment }}"{% endif %}
+          {% if crd[1] contains "project_selector" %}project_selector: "{{ crd[1].project_selector }}"{% endif %}
+          {% if crd[1] contains "key_selector" %}key_selector: "{{ crd[1].key_selector }}"{% endif %}
+          {% if crd[1] contains "skip" %}skip: {{ crd[1].skip }}{% endif %}
+          {% if crd[1] contains "included_projects" %}included_projects: {{ crd[1].included_projects }}{% endif %}
+          {% if crd[1] contains "context" %}
+          context:
+            {{ crd[1].context | to_yaml: no_header: true | nindent: 4 }}
+          {% endif %}
+          {% if crd[1] contains "resource_templates" %}
+          resource_templates:
+            {{ crd[1].resource_templates | to_yaml: no_header: true | nindent: 4 }}
+          {% endif %}
+
+        {% unless forloop.last %}---{% endunless %}
+        {%- endfor %}
+        {%- endif %}
