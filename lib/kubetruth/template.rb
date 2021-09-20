@@ -105,7 +105,6 @@ module Kubetruth
 
       def to_yaml(str, options = {})
         options = {} unless options.is_a?(Hash)
-        p options
         result = str.to_yaml
         result = result[4..-1] if options['no_header']
         result
@@ -204,7 +203,16 @@ module Kubetruth
 
           msg = "Rendered template:\n"
           r = result.dup
-          both_secrets.each {|k, v| r.gsub!(v, "<masked:#{k}>") }
+
+          # Handle multiline secrets that may have had their indentation changed
+          # (e.g. nindent for a cert) by splitting on whitespace and only
+          # subbing the non-whitespace parts from the template
+          both_secrets.each do |k, v|
+            v.split(/\s+/).delete_if(&:blank?).each do |part|
+              r.gsub!(part, "<masked:#{k}>")
+            end
+          end
+
           r.lines.collect {|l| msg << (INDENT * 2) << l }
           msg
         end
