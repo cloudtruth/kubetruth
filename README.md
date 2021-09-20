@@ -184,6 +184,7 @@ ones:
 | `decode64` |  The argument bas64 decoded |
 | `sha256` |  The sha256 digest of the argument |
 | `inflate` |  Converts a map of key/values into a nested data structure based on a delimiter in the key name, e.g. `{foo.baz.bum: 2}` => `{foo: {bar: {baz: 2}}}` |
+| `typify` |  Converts string values into primitive types (int, float, bool) where applicable for a nested data structure |
 
 The default `resource_templates` make use of the `context` attribute to allow
 simpler modification of some common fields.  These include:

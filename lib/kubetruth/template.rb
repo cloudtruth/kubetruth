@@ -144,6 +144,23 @@ module Kubetruth
         result
       end
 
+      def typify(data)
+        case data
+          when Hash
+            Hash[data.collect {|k,v| [k, typify(v)] }]
+          when Array
+            data.collect {|v| typify(v) }
+          when /^[0-9]+$/
+            data.to_i
+          when /^[0-9\.]+$/
+            data.to_f
+          when /true|false/
+            data == "true"
+          else
+            data
+        end
+      end
+
     end
 
     Liquid::Template.register_filter(CustomLiquidFilters)

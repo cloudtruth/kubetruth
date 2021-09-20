@@ -235,6 +235,74 @@ module Kubetruth
 
       end
 
+      describe "#typify" do
+
+        it "works with empty" do
+          expect(typify(nil)).to eq(nil)
+          expect(typify("")).to eq("")
+          expect(typify(true)).to eq(true)
+          expect(typify(3)).to eq(3)
+          expect(typify(3.4)).to eq(3.4)
+          expect(typify({})).to eq({})
+          expect(typify([])).to eq([])
+        end
+
+        it "converts string to type" do
+          expect(typify("hello")).to eq("hello")
+          expect(typify("true")).to eq(true)
+          expect(typify("false")).to eq(false)
+          expect(typify("3")).to eq(3)
+          expect(typify("3.4")).to eq(3.4)
+        end
+
+        it "recursively typifys structure" do
+          data = {
+            "top" => {
+              "mid" => [
+                {
+                  "bottom" => "1"
+                },
+                {
+                  "bottom" => "1.2"
+                },
+                {
+                  "bottom" => "true"
+                },
+                {
+                  "bottom" => "false"
+                },
+                {
+                  "bottom" => "hello"
+                }
+              ]
+            }
+          }
+          result = {
+            "top" => {
+              "mid" => [
+                {
+                  "bottom" => 1
+                },
+                {
+                  "bottom" => 1.2
+                },
+                {
+                  "bottom" => true
+                },
+                {
+                  "bottom" => false
+                },
+                {
+                  "bottom" => "hello"
+                }
+              ]
+            }
+          }
+          expect(typify(data)).to eq(result)
+        end
+
+      end
+
     end
 
     describe Kubetruth::Template::TemplateHashDrop do
