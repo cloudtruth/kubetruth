@@ -314,6 +314,268 @@ paths:
               schema:
                 $ref: '#/components/schemas/Environment'
           description: ''
+  /api/v1/environments/{environment_pk}/tags/:
+    get:
+      operationId: environments_tags_list
+      description: |-
+        Tags allow you to name stable points in time for your configuration.
+
+        Any query API that accepts an `as_of` option will also accept a `tag` option,
+        however they are mutually exclusive.
+      parameters:
+      - in: query
+        name: description__icontains
+        schema:
+          type: string
+      - in: path
+        name: environment_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: name
+        schema:
+          type: string
+      - in: query
+        name: name__icontains
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: timestamp
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: timestamp__gte
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: timestamp__lte
+        schema:
+          type: string
+          format: date-time
+      tags:
+      - environments
+      security:
+      - JWTAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTagList'
+          description: ''
+    post:
+      operationId: environments_tags_create
+      description: |-
+        Tags allow you to name stable points in time for your configuration.
+
+        Any query API that accepts an `as_of` option will also accept a `tag` option,
+        however they are mutually exclusive.
+      parameters:
+      - in: path
+        name: environment_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - environments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TagCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TagCreate'
+        required: true
+      security:
+      - JWTAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+  /api/v1/environments/{environment_pk}/tags/{id}/:
+    get:
+      operationId: environments_tags_retrieve
+      description: |-
+        Tags allow you to name stable points in time for your configuration.
+
+        Any query API that accepts an `as_of` option will also accept a `tag` option,
+        however they are mutually exclusive.
+      parameters:
+      - in: path
+        name: environment_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          description: A unique identifier for the tag.
+        required: true
+      tags:
+      - environments
+      security:
+      - JWTAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+    put:
+      operationId: environments_tags_update
+      description: |-
+        Tags allow you to name stable points in time for your configuration.
+
+        Any query API that accepts an `as_of` option will also accept a `tag` option,
+        however they are mutually exclusive.
+      parameters:
+      - in: path
+        name: environment_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          description: A unique identifier for the tag.
+        required: true
+      tags:
+      - environments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Tag'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Tag'
+        required: true
+      security:
+      - JWTAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+    patch:
+      operationId: environments_tags_partial_update
+      description: |-
+        Tags allow you to name stable points in time for your configuration.
+
+        Any query API that accepts an `as_of` option will also accept a `tag` option,
+        however they are mutually exclusive.
+      parameters:
+      - in: path
+        name: environment_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          description: A unique identifier for the tag.
+        required: true
+      tags:
+      - environments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTag'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTag'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTag'
+      security:
+      - JWTAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+    delete:
+      operationId: environments_tags_destroy
+      description: |-
+        Tags allow you to name stable points in time for your configuration.
+
+        Any query API that accepts an `as_of` option will also accept a `tag` option,
+        however they are mutually exclusive.
+      parameters:
+      - in: path
+        name: environment_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          description: A unique identifier for the tag.
+        required: true
+      tags:
+      - environments
+      security:
+      - JWTAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/environments/{id}/:
     get:
       operationId: environments_retrieve
@@ -605,6 +867,7 @@ paths:
     delete:
       operationId: integrations_aws_destroy
       description: ''
+      summary: Delete an AWS integration.
       parameters:
       - in: path
         name: id
@@ -613,6 +876,20 @@ paths:
           format: uuid
           description: The unique identifier for the integration.
         required: true
+      - in: query
+        name: in_use
+        schema:
+          type: string
+          enum:
+          - fail
+          - leave
+          - remove
+        description: |-
+          (Optional) Desired behavior if the integration has in-use values.
+
+          - `fail` will return HTTP error 409 if there are any values using the integration.
+          - `leave` (default) will leave values in place and future queries may fail; you can control future value query behavior with the `lookup_error` query parameter on those requests.
+          - `remove` will remove the all values using the integration when the integration is removed.
       tags:
       - integrations
       security:
@@ -620,7 +897,10 @@ paths:
       - ApiKeyAuth: []
       responses:
         '204':
-          description: No response body
+          description: Integration removed.
+        '409':
+          description: The integration is used by one (or more) Value(s) and cannot
+            be removed.
   /api/v1/integrations/explore/:
     get:
       operationId: integrations_explore_list
@@ -775,6 +1055,7 @@ paths:
     delete:
       operationId: integrations_github_destroy
       description: ''
+      summary: Delete a GitHub integration.
       parameters:
       - in: path
         name: id
@@ -783,6 +1064,20 @@ paths:
           format: uuid
           description: The unique identifier for the integration.
         required: true
+      - in: query
+        name: in_use
+        schema:
+          type: string
+          enum:
+          - fail
+          - leave
+          - remove
+        description: |-
+          (Optional) Desired behavior if the integration has in-use values.
+
+          - `fail` will return HTTP error 409 if there are any values using the integration.
+          - `leave` (default) will leave values in place and future queries may fail; you can control future value query behavior with the `lookup_error` query parameter on those requests.
+          - `remove` will remove the all values using the integration when the integration is removed.
       tags:
       - integrations
       security:
@@ -790,7 +1085,10 @@ paths:
       - ApiKeyAuth: []
       responses:
         '204':
-          description: No response body
+          description: Integration removed.
+        '409':
+          description: The integration is used by one (or more) Value(s) and cannot
+            be removed.
   /api/v1/invitations/:
     get:
       operationId: invitations_list
@@ -1596,51 +1894,46 @@ paths:
         format will be omitted.
       parameters:
       - in: query
+        name: as_of
+        schema:
+          type: string
+          format: date-time
+        description: Specify a point in time to retrieve configuration from. Cannot
+          be specified with `tag`.
+      - in: query
         name: contains
         schema:
           type: string
-        description: (Optional) Only include parameters whose names contain the provided
+        description: Only include parameters with names that contain the provided
           string.
       - in: query
         name: endswith
         schema:
           type: string
-        description: (Optional) Only include parameters whose names end with the provided
+        description: Only include parameters with names that end with the provided
           string.
       - in: query
         name: environment
         schema:
           type: string
-          format: uuid
-        description: (Optional) ID of the environment to use to instantiate this template
+        description: Name or id of the environment to use to retrieve parameter values.
       - in: query
         name: explicit_export
         schema:
           type: boolean
-        description: If true, explicitly marks parameters with export, e.g. export
-          FOO=bar.  Defaults to false.
+          default: false
+        description: Explicitly marks parameters with export, e.g. `export FOO=bar`.
       - in: query
         name: mask_secrets
         schema:
           type: boolean
-        description: If true, masks all secrets in the template (defaults to false)
+          default: false
+        description: Masks all secrets in the template with `*****`.
       - in: query
         name: output
         schema:
           type: string
         description: 'Format to output: One of ''docker'', ''dotenv'', ''shell''.'
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
       - in: path
         name: project_pk
         schema:
@@ -1651,13 +1944,20 @@ paths:
         name: startswith
         schema:
           type: string
-        description: (Optional) Only include parameters whose names start with the
-          provided string.
+        description: Only include parameters with names that start with the provided
+          string.
+      - in: query
+        name: tag
+        schema:
+          type: string
+        description: Specify a tag to retrieve configuration from.  Cannot be specified
+          with `as_of`.
       - in: query
         name: wrap
         schema:
           type: boolean
-        description: Indicates all secrets are wrapped.  For more information on secret
+          default: false
+        description: Indicates all secrets are wrapped. For more information on secret
           wrapping, see the documentation.
       tags:
       - projects
@@ -1677,16 +1977,24 @@ paths:
       description: ''
       parameters:
       - in: query
+        name: as_of
+        schema:
+          type: string
+          format: date-time
+        description: Specify a point in time to retrieve configuration from. Cannot
+          be specified with `tag`.
+      - in: query
         name: environment
         schema:
           type: string
-          format: uuid
-        description: (Optional) ID of the environment to get parameter values for.
+        description: Name or id (uuid) of the environment to get parameter values
+          for.  Cannot be used with `values`.
       - in: query
         name: mask_secrets
         schema:
           type: boolean
-        description: If true, masks all secrets (defaults to false).
+          default: false
+        description: If true, masks all secrets.
       - in: query
         name: name
         schema:
@@ -1703,6 +2011,16 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: partial_success
+        schema:
+          type: boolean
+          default: false
+        description: |-
+          Determine if the response is allowed to include a partial success.
+
+          A partial success can occur if one or more external values cannot be retrieved, for example when an in-use integration is removed using the `leave` option, leaving the values untouched. When `true`, any error that occurs during external value retrieval will be placed into a field named `external_error` in the affected Value, and the `value` field will be empty.  When `false`, any such error will cause the entire request to fail.
+          Partial success allows clients to tolerate invalid external values better.
       - in: path
         name: project_pk
         schema:
@@ -1710,11 +2028,25 @@ paths:
           format: uuid
         required: true
       - in: query
+        name: tag
+        schema:
+          type: string
+        description: Specify a tag to retrieve configuration from.  Cannot be specified
+          with `as_of`.
+      - in: query
+        name: values
+        schema:
+          type: boolean
+          default: true
+        description: 'If false, values are not returned: the `values` array will have
+          no entries. This speeds up retrieval if value content is not needed.  Cannot
+          be used with `environment`.'
+      - in: query
         name: wrap
         schema:
           type: boolean
-        description: If true, wraps all secrets (defaults to false) - see documentation
-          for more details.
+          default: false
+        description: If true, wraps all secrets - see documentation for more details.
       tags:
       - projects
       security:
@@ -1761,30 +2093,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/Parameter'
           description: ''
-  /api/v1/projects/{project_pk}/parameters/{parameter_pk}/values/:
+  /api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/:
     get:
-      operationId: projects_parameters_values_list
-      description: "\n        Retrieve previously set values of a parameter in one\
-        \ or all environments.\n        To see all the _effective_ values for a parameter\
-        \ across every environment,\n        use the Parameters API (see the `values`\
-        \ field).\n    "
-      summary: Retrieve values.
+      operationId: projects_parameters_rules_list
+      description: ''
       parameters:
-      - in: query
-        name: environment
-        schema:
-          type: string
-        description: ID of the environment to limit the result to.  If this is not
-          specified then the result will contain a value for any environment in which
-          it is set.  You cannot use this option to retrieve the _effective_ value
-          of a parameter in an environment for which is is not explicitly set.  To
-          see _effective_ values use the Parameters API (see the `values` field).
-      - in: query
-        name: mask_secrets
-        schema:
-          type: boolean
-        description: (Optional) If true, mask secret values in responses (defaults
-          to false).
       - name: page
         required: false
         in: query
@@ -1812,10 +2125,316 @@ paths:
         description: The project id.
         required: true
       - in: query
+        name: type
+        schema:
+          type: string
+          enum:
+          - max
+          - max_len
+          - min
+          - min_len
+          - regex
+      tags:
+      - projects
+      security:
+      - JWTAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedParameterRuleList'
+          description: ''
+    post:
+      operationId: projects_parameters_rules_create
+      description: ''
+      parameters:
+      - in: path
+        name: parameter_pk
+        schema:
+          type: string
+          format: uuid
+        description: The parameter id.
+        required: true
+      - in: path
+        name: project_pk
+        schema:
+          type: string
+          format: uuid
+        description: The project id.
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParameterRuleCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ParameterRuleCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ParameterRuleCreate'
+        required: true
+      security:
+      - JWTAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterRule'
+          description: ''
+  /api/v1/projects/{project_pk}/parameters/{parameter_pk}/rules/{id}/:
+    get:
+      operationId: projects_parameters_rules_retrieve
+      description: ''
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this parameter rule.
+        required: true
+      - in: path
+        name: parameter_pk
+        schema:
+          type: string
+          format: uuid
+        description: The parameter id.
+        required: true
+      - in: path
+        name: project_pk
+        schema:
+          type: string
+          format: uuid
+        description: The project id.
+        required: true
+      tags:
+      - projects
+      security:
+      - JWTAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterRule'
+          description: ''
+    put:
+      operationId: projects_parameters_rules_update
+      description: ''
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this parameter rule.
+        required: true
+      - in: path
+        name: parameter_pk
+        schema:
+          type: string
+          format: uuid
+        description: The parameter id.
+        required: true
+      - in: path
+        name: project_pk
+        schema:
+          type: string
+          format: uuid
+        description: The project id.
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParameterRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ParameterRule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ParameterRule'
+        required: true
+      security:
+      - JWTAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterRule'
+          description: ''
+    patch:
+      operationId: projects_parameters_rules_partial_update
+      description: ''
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this parameter rule.
+        required: true
+      - in: path
+        name: parameter_pk
+        schema:
+          type: string
+          format: uuid
+        description: The parameter id.
+        required: true
+      - in: path
+        name: project_pk
+        schema:
+          type: string
+          format: uuid
+        description: The project id.
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedParameterRule'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedParameterRule'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedParameterRule'
+      security:
+      - JWTAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterRule'
+          description: ''
+    delete:
+      operationId: projects_parameters_rules_destroy
+      description: ''
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this parameter rule.
+        required: true
+      - in: path
+        name: parameter_pk
+        schema:
+          type: string
+          format: uuid
+        description: The parameter id.
+        required: true
+      - in: path
+        name: project_pk
+        schema:
+          type: string
+          format: uuid
+        description: The project id.
+        required: true
+      tags:
+      - projects
+      security:
+      - JWTAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/projects/{project_pk}/parameters/{parameter_pk}/values/:
+    get:
+      operationId: projects_parameters_values_list
+      description: "\n        Retrieve previously set values of a parameter in one\
+        \ or all environments.\n        To see all the _effective_ values for a parameter\
+        \ across every environment,\n        use the Parameters API (see the `values`\
+        \ field).\n    "
+      summary: Retrieve values.
+      parameters:
+      - in: query
+        name: as_of
+        schema:
+          type: string
+          format: date-time
+        description: Specify a point in time to retrieve configuration from. Cannot
+          be specified with `tag`.
+      - in: query
+        name: environment
+        schema:
+          type: string
+        description: Name or id of the environment to limit the result to. If this
+          is not specified then the result will contain a value for any environment
+          in which it is set. You cannot use this option to retrieve the _effective_
+          value of a parameter in an environment for which is is not explicitly set.
+          To see _effective_ values use the Parameters API (see the `values` field).
+      - in: query
+        name: mask_secrets
+        schema:
+          type: boolean
+          default: false
+        description: Mask secret values in responses with `*****`.
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: path
+        name: parameter_pk
+        schema:
+          type: string
+          format: uuid
+        description: The parameter id.
+        required: true
+      - in: query
+        name: partial_success
+        schema:
+          type: boolean
+          default: false
+        description: |-
+          Determine if the response is allowed to include a partial success.
+
+          A partial success can occur if one or more external values cannot be retrieved, for example when an in-use integration is removed using the `leave` option, leaving the values untouched. When `true`, any error that occurs during external value retrieval will be placed into a field named `external_error` in the affected Value, and the `value` field will be empty.  When `false`, any such error will cause the entire request to fail.
+          Partial success allows clients to tolerate invalid external values better.
+      - in: path
+        name: project_pk
+        schema:
+          type: string
+          format: uuid
+        description: The project id.
+        required: true
+      - in: query
+        name: tag
+        schema:
+          type: string
+        description: Specify a tag to retrieve configuration from.  Cannot be specified
+          with `as_of`.
+      - in: query
         name: wrap
         schema:
           type: boolean
-        description: 'For writes, indicates `static_value` is wrapped; for reads,
+          default: false
+        description: 'For writes, indicates `internal_value` is wrapped; for reads,
           indicates `value` is wrapped. For more information on secret wrapping, see
           the documentation. '
       tags:
@@ -1853,8 +2472,8 @@ paths:
         name: wrap
         schema:
           type: boolean
-        description: 'Indicates the `static_value` is a wrapped secret. For more information
-          on secret wrapping, see the documentation. '
+        description: 'Indicates the `internal_value` is a wrapped secret. For more
+          information on secret wrapping, see the documentation. '
       tags:
       - projects
       requestBody:
@@ -1885,6 +2504,13 @@ paths:
       description: Retrieve the value of a parameter in an environment.
       summary: Retrieve a value.
       parameters:
+      - in: query
+        name: as_of
+        schema:
+          type: string
+          format: date-time
+        description: Specify a point in time to retrieve configuration from. Cannot
+          be specified with `tag`.
       - in: path
         name: id
         schema:
@@ -1896,8 +2522,8 @@ paths:
         name: mask_secrets
         schema:
           type: boolean
-        description: (Optional) If true, mask secret values in responses (defaults
-          to false).
+          default: false
+        description: Mask secret values in responses with `*****`.
       - in: path
         name: parameter_pk
         schema:
@@ -1905,6 +2531,16 @@ paths:
           format: uuid
         description: The parameter id.
         required: true
+      - in: query
+        name: partial_success
+        schema:
+          type: boolean
+          default: false
+        description: |-
+          Determine if the response is allowed to include a partial success.
+
+          A partial success can occur if one or more external values cannot be retrieved, for example when an in-use integration is removed using the `leave` option, leaving the values untouched. When `true`, any error that occurs during external value retrieval will be placed into a field named `external_error` in the affected Value, and the `value` field will be empty.  When `false`, any such error will cause the entire request to fail.
+          Partial success allows clients to tolerate invalid external values better.
       - in: path
         name: project_pk
         schema:
@@ -1913,10 +2549,17 @@ paths:
         description: The project id.
         required: true
       - in: query
+        name: tag
+        schema:
+          type: string
+        description: Specify a tag to retrieve configuration from.  Cannot be specified
+          with `as_of`.
+      - in: query
         name: wrap
         schema:
           type: boolean
-        description: 'For writes, indicates `static_value` is wrapped; for reads,
+          default: false
+        description: 'For writes, indicates `internal_value` is wrapped; for reads,
           indicates `value` is wrapped. For more information on secret wrapping, see
           the documentation. '
       tags:
@@ -1961,8 +2604,8 @@ paths:
         name: wrap
         schema:
           type: boolean
-        description: 'Indicates the `static_value` is a wrapped secret. For more information
-          on secret wrapping, see the documentation. '
+        description: 'Indicates the `internal_value` is a wrapped secret. For more
+          information on secret wrapping, see the documentation. '
       tags:
       - projects
       requestBody:
@@ -2016,8 +2659,8 @@ paths:
         name: wrap
         schema:
           type: boolean
-        description: 'Indicates the `static_value` is a wrapped secret. For more information
-          on secret wrapping, see the documentation. '
+        description: 'Indicates the `internal_value` is a wrapped secret. For more
+          information on secret wrapping, see the documentation. '
       tags:
       - projects
       requestBody:
@@ -2081,11 +2724,18 @@ paths:
       description: ''
       parameters:
       - in: query
+        name: as_of
+        schema:
+          type: string
+          format: date-time
+        description: Specify a point in time to retrieve configuration from. Cannot
+          be specified with `tag`.
+      - in: query
         name: environment
         schema:
           type: string
-          format: uuid
-        description: (Optional) ID of the environment to get parameter values for.
+        description: Name or id (uuid) of the environment to get parameter values
+          for.  Cannot be used with `values`.
       - in: path
         name: id
         schema:
@@ -2097,7 +2747,18 @@ paths:
         name: mask_secrets
         schema:
           type: boolean
-        description: If true, masks all secrets (defaults to false).
+          default: false
+        description: If true, masks all secrets.
+      - in: query
+        name: partial_success
+        schema:
+          type: boolean
+          default: false
+        description: |-
+          Determine if the response is allowed to include a partial success.
+
+          A partial success can occur if one or more external values cannot be retrieved, for example when an in-use integration is removed using the `leave` option, leaving the values untouched. When `true`, any error that occurs during external value retrieval will be placed into a field named `external_error` in the affected Value, and the `value` field will be empty.  When `false`, any such error will cause the entire request to fail.
+          Partial success allows clients to tolerate invalid external values better.
       - in: path
         name: project_pk
         schema:
@@ -2105,11 +2766,25 @@ paths:
           format: uuid
         required: true
       - in: query
+        name: tag
+        schema:
+          type: string
+        description: Specify a tag to retrieve configuration from.  Cannot be specified
+          with `as_of`.
+      - in: query
+        name: values
+        schema:
+          type: boolean
+          default: true
+        description: 'If false, values are not returned: the `values` array will have
+          no entries. This speeds up retrieval if value content is not needed.  Cannot
+          be used with `environment`.'
+      - in: query
         name: wrap
         schema:
           type: boolean
-        description: If true, wraps all secrets (defaults to false) - see documentation
-          for more details.
+          default: false
+        description: If true, wraps all secrets - see documentation for more details.
       tags:
       - projects
       security:
@@ -2164,21 +2839,21 @@ paths:
                 $ref: '#/components/schemas/Parameter'
           description: ''
         '400':
-          description: While checking pre-conditions, a dynamic value was encountered
+          description: While checking pre-conditions, an external value was encountered
             that could not be resolved.
         '404':
           description: The given project id could not be found, or while checking
-            pre-conditions, a dynamic value was encountered that could not be resolved.
+            pre-conditions, an external value was encountered that could not be resolved.
         '415':
-          description: While checking pre-conditions, a dynamic value was encountered
+          description: While checking pre-conditions, an external value was encountered
             that has an invalid content type.
         '422':
           description: 'A pre-condition to modifying the `secret` setting of the parameter
-            failed, for example setting `secret: false` and having a dynamic value
+            failed, for example setting `secret: false` and having an external value
             that resolves to a value that is a secret.  In this case it would be unsafe
             to allow the `secret` setting to change.'
         '507':
-          description: While checking pre-conditions, a dynamic value was encountered
+          description: While checking pre-conditions, an external value was encountered
             that was too large to process.
     patch:
       operationId: projects_parameters_partial_update
@@ -2221,21 +2896,21 @@ paths:
                 $ref: '#/components/schemas/Parameter'
           description: ''
         '400':
-          description: While checking pre-conditions, a dynamic value was encountered
+          description: While checking pre-conditions, an external value was encountered
             that could not be resolved.
         '404':
           description: The given project id could not be found, or while checking
-            pre-conditions, a dynamic value was encountered that could not be resolved.
+            pre-conditions, an external value was encountered that could not be resolved.
         '415':
-          description: While checking pre-conditions, a dynamic value was encountered
+          description: While checking pre-conditions, an external value was encountered
             that has an invalid content type.
         '422':
           description: 'A pre-condition to modifying the `secret` setting of the parameter
-            failed, for example setting `secret: false` and having a dynamic value
+            failed, for example setting `secret: false` and having an external value
             that resolves to a value that is a secret.  In this case it would be unsafe
             to allow the `secret` setting to change.'
         '507':
-          description: While checking pre-conditions, a dynamic value was encountered
+          description: While checking pre-conditions, an external value was encountered
             that was too large to process.
     delete:
       operationId: projects_parameters_destroy
@@ -2262,28 +2937,130 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/v1/projects/{project_pk}/template-preview/:
-    post:
-      operationId: projects_template_preview_create
-      description: Endpoint for previewing a template.
+  /api/v1/projects/{project_pk}/parameters/{id}/timeline/:
+    get:
+      operationId: projects_parameters_timeline_retrieve
+      description: |-
+        Summary information about how a parameter has changed over time.
+
+        The time range of historical information available depends on your subscription.
+        Any changes to the parameter itself, including rules and values, is included.
       parameters:
       - in: query
-        name: environment
+        name: as_of
+        schema:
+          type: string
+          format: date-time
+        description: Specify a point in time to retrieve configuration from. Cannot
+          be specified with `tag`.
+      - in: path
+        name: id
         schema:
           type: string
           format: uuid
-        description: (Optional) ID of the environment to use to instantiate this template
-      - in: query
-        name: mask_secrets
-        schema:
-          type: boolean
-        description: If true, masks all secrets in the template (defaults to false)
+          description: A unique identifier for the parameter.
+        required: true
       - in: path
         name: project_pk
         schema:
           type: string
           format: uuid
         required: true
+      - in: query
+        name: tag
+        schema:
+          type: string
+        description: Specify a tag to retrieve configuration from.  Cannot be specified
+          with `as_of`.
+      tags:
+      - projects
+      security:
+      - JWTAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterTimeline'
+          description: ''
+  /api/v1/projects/{project_pk}/parameters/timelines/:
+    get:
+      operationId: projects_parameters_timelines_retrieve
+      description: |-
+        Information about how the parameters of a project have changed over time.
+
+        The time range of historical information available depends on your subscription.
+        Any changes to the project's parameters, including rules and values, is included.
+      parameters:
+      - in: query
+        name: as_of
+        schema:
+          type: string
+          format: date-time
+        description: Specify a point in time to retrieve configuration from. Cannot
+          be specified with `tag`.
+      - in: path
+        name: project_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: tag
+        schema:
+          type: string
+        description: Specify a tag to retrieve configuration from.  Cannot be specified
+          with `as_of`.
+      tags:
+      - projects
+      security:
+      - JWTAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParameterTimeline'
+          description: ''
+  /api/v1/projects/{project_pk}/template-preview/:
+    post:
+      operationId: projects_template_preview_create
+      description: Endpoint for previewing a template.  Post the template content
+        in the request body.
+      parameters:
+      - in: query
+        name: as_of
+        schema:
+          type: string
+          format: date-time
+        description: Specify a point in time to retrieve configuration from. Cannot
+          be specified with `tag`.
+      - in: query
+        name: environment
+        schema:
+          type: string
+        description: Name or id of the environment to use to instantiate this template.
+          If not specified then the default environment is used.
+      - in: query
+        name: mask_secrets
+        schema:
+          type: boolean
+          default: false
+        description: Masks all secrets in the template with `*****`.
+      - in: path
+        name: project_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: tag
+        schema:
+          type: string
+        description: Specify a tag to retrieve configuration from.  Cannot be specified
+          with `as_of`.
       tags:
       - projects
       requestBody:
@@ -2302,11 +3079,17 @@ paths:
       - JWTAuth: []
       - ApiKeyAuth: []
       responses:
-        '201':
+        '200':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TemplatePreview'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateLookupError'
           description: ''
   /api/v1/projects/{project_pk}/templates/:
     get:
@@ -2379,7 +3162,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TemplateCreate'
+                $ref: '#/components/schemas/Template'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateLookupError'
           description: ''
   /api/v1/projects/{project_pk}/templates/{id}/:
     get:
@@ -2391,7 +3180,8 @@ paths:
         schema:
           type: string
           format: uuid
-        description: (Optional) ID of the environment to use to instantiate this template
+        description: Name or id of the environment to use to evaluate this template.
+          If not specified then the original content is returned in the body.
       - in: path
         name: id
         schema:
@@ -2403,7 +3193,8 @@ paths:
         name: mask_secrets
         schema:
           type: boolean
-        description: If true, masks all secrets in the template (defaults to false)
+          default: false
+        description: Masks all secrets in the template with `*****`.
       - in: path
         name: project_pk
         schema:
@@ -2421,6 +3212,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Template'
+          description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateLookupError'
           description: ''
     put:
       operationId: projects_templates_update
@@ -2463,6 +3260,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Template'
           description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateLookupError'
+          description: ''
     patch:
       operationId: projects_templates_partial_update
       description: ''
@@ -2503,6 +3306,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Template'
           description: ''
+        '422':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateLookupError'
+          description: ''
     delete:
       operationId: projects_templates_destroy
       description: ''
@@ -2528,6 +3337,93 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/v1/projects/{project_pk}/templates/{id}/timeline/:
+    get:
+      operationId: projects_templates_timeline_retrieve
+      description: |-
+        Information about how a template has changed over time.
+
+        The time range of historical information available depends on your subscription.
+        Any changes to the template itself is included.
+      parameters:
+      - in: query
+        name: as_of
+        schema:
+          type: string
+          format: date-time
+        description: Specify a point in time to retrieve configuration from. Cannot
+          be specified with `tag`.
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+          description: A unique identifier for the template.
+        required: true
+      - in: path
+        name: project_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: tag
+        schema:
+          type: string
+        description: Specify a tag to retrieve configuration from.  Cannot be specified
+          with `as_of`.
+      tags:
+      - projects
+      security:
+      - JWTAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateTimeline'
+          description: ''
+  /api/v1/projects/{project_pk}/templates/timelines/:
+    get:
+      operationId: projects_templates_timelines_retrieve
+      description: |-
+        Information about how the templates of a project have changed over time.
+
+        The time range of historical information available depends on your subscription.
+        Any changes to the project's templates is included.
+      parameters:
+      - in: query
+        name: as_of
+        schema:
+          type: string
+          format: date-time
+        description: Specify a point in time to retrieve configuration from. Cannot
+          be specified with `tag`.
+      - in: path
+        name: project_pk
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: tag
+        schema:
+          type: string
+        description: Specify a tag to retrieve configuration from.  Cannot be specified
+          with `as_of`.
+      tags:
+      - projects
+      security:
+      - JWTAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateTimeline'
+          description: ''
   /api/v1/serviceaccounts/:
     get:
       operationId: serviceaccounts_list
@@ -2854,12 +3750,24 @@ components:
           nullable: true
           readOnly: true
           description: The earliest audit record timestamp available.
+        max_days:
+          type: integer
+          readOnly: true
+          description: The maximum number of days the system will save auditing records,
+            based on your subscription.
+        max_records:
+          type: integer
+          readOnly: true
+          description: The maximum number of auditing records the system will save
+            based on your subscription.
         total:
           type: integer
           readOnly: true
           description: The total number of audit records available.
       required:
       - earliest
+      - max_days
+      - max_records
       - total
     AwsEnabledRegionsEnum:
       enum:
@@ -3178,6 +4086,18 @@ components:
           type: integer
       required:
       - gh_installation_id
+    HistoryModelEnum:
+      enum:
+      - Parameter
+      - ParameterRule
+      - Value
+      type: string
+    HistoryTypeEnum:
+      enum:
+      - create
+      - update
+      - delete
+      type: string
     IntegrationExplorer:
       type: object
       description: Describes the content available at a given location.
@@ -3333,14 +4253,11 @@ components:
       type: string
     ObjectTypeEnum:
       enum:
+      - DataIntegration
       - Environment
-      - Integration
-      - Invitation
-      - Membership
-      - Organization
       - Parameter
+      - ParameterRule
       - Project
-      - ServiceAccount
       - Template
       - Value
       type: string
@@ -3371,12 +4288,15 @@ components:
           readOnly: true
         subscription_id:
           type: string
+          nullable: true
           readOnly: true
         subscription_plan_id:
           type: string
+          nullable: true
           readOnly: true
         subscription_plan_name:
           type: string
+          nullable: true
           readOnly: true
         created_at:
           type: string
@@ -3586,6 +4506,26 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Parameter'
+    PaginatedParameterRuleList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParameterRule'
     PaginatedProjectList:
       type: object
       properties:
@@ -3626,6 +4566,26 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ServiceAccount'
+    PaginatedTagList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
     PaginatedTemplateList:
       type: object
       properties:
@@ -3711,16 +4671,32 @@ components:
         secret:
           type: boolean
           description: Indicates if this content is secret or not.  When a parameter
-            is considered to be a secret, any static values are stored in a dedicated
-            vault for your organization for maximum security.  Dynamic values are
+            is considered to be a secret, any internal values are stored in a dedicated
+            vault for your organization for maximum security.  External values are
             inspected on-demand to ensure they align with the parameter's secret setting
-            and if they do not, those dynamic values are not allowed to be used.
-        templates:
+            and if they do not, those external values are not allowed to be used.
+        type:
+          $ref: '#/components/schemas/ParameterTypeEnum'
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParameterRule'
+          readOnly: true
+          description: Rules applied to this parameter.
+        referencing_templates:
           type: array
           items:
             type: string
             format: uri
           readOnly: true
+          description: Templates that reference this Parameter.
+        referencing_values:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          description: Dynamic values that reference this Parameter.
         values:
           type: object
           additionalProperties:
@@ -3757,7 +4733,9 @@ components:
       - id
       - modified_at
       - name
-      - templates
+      - referencing_templates
+      - referencing_values
+      - rules
       - url
       - values
     ParameterCreate:
@@ -3776,10 +4754,12 @@ components:
         secret:
           type: boolean
           description: Indicates if this content is secret or not.  When a parameter
-            is considered to be a secret, any static values are stored in a dedicated
-            vault for your organization for maximum security.  Dynamic values are
+            is considered to be a secret, any internal values are stored in a dedicated
+            vault for your organization for maximum security.  External values are
             inspected on-demand to ensure they align with the parameter's secret setting
-            and if they do not, those dynamic values are not allowed to be used.
+            and if they do not, those external values are not allowed to be used.
+        type:
+          $ref: '#/components/schemas/ParameterTypeEnum'
       required:
       - name
     ParameterExport:
@@ -3789,6 +4769,177 @@ components:
           type: string
       required:
       - body
+    ParameterRule:
+      type: object
+      description: |-
+        A type of `ModelSerializer` that uses hyperlinked relationships with compound keys instead
+        of primary key relationships.  Specifically:
+
+        * A 'url' field is included instead of the 'id' field.
+        * Relationships to other instances are hyperlinks, instead of primary keys.
+
+        NOTE: this only works with DRF 3.1.0 and above.
+      properties:
+        url:
+          type: string
+          format: uri
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        parameter:
+          type: string
+          format: uri
+          readOnly: true
+          description: The parameter this rule is for.
+        type:
+          $ref: '#/components/schemas/ParameterRuleTypeEnum'
+        constraint:
+          type: string
+          maxLength: 1024
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - constraint
+      - created_at
+      - id
+      - modified_at
+      - parameter
+      - type
+      - url
+    ParameterRuleCreate:
+      type: object
+      description: |-
+        A type of `ModelSerializer` that uses hyperlinked relationships with compound keys instead
+        of primary key relationships.  Specifically:
+
+        * A 'url' field is included instead of the 'id' field.
+        * Relationships to other instances are hyperlinks, instead of primary keys.
+
+        NOTE: this only works with DRF 3.1.0 and above.
+      properties:
+        type:
+          $ref: '#/components/schemas/ParameterRuleTypeEnum'
+        constraint:
+          type: string
+          maxLength: 1024
+      required:
+      - constraint
+      - type
+    ParameterRuleTypeEnum:
+      enum:
+      - min
+      - max
+      - min_len
+      - max_len
+      - regex
+      type: string
+    ParameterTimeline:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of records in this response.
+        next_as_of:
+          type: string
+          format: date-time
+          description: If present, additional history can be retrieved using this
+            timestamp in the next call for the as_of query parameter value.
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParameterTimelineEntry'
+      required:
+      - count
+      - results
+    ParameterTimelineEntry:
+      type: object
+      description: Details about a single change.
+      properties:
+        history_date:
+          type: string
+          format: date-time
+        history_type:
+          allOf:
+          - $ref: '#/components/schemas/HistoryTypeEnum'
+          readOnly: true
+        history_user:
+          type: string
+          description: The unique identifier of a user.
+          nullable: true
+        history_environments:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParameterTimelineEntryEnvironment'
+          readOnly: true
+          description: The affected environment(s).
+        history_model:
+          allOf:
+          - $ref: '#/components/schemas/HistoryModelEnum'
+          readOnly: true
+          description: The component of the parameter that changed.
+        history_parameter:
+          allOf:
+          - $ref: '#/components/schemas/ParameterTimelineEntryParameter'
+          readOnly: true
+          description: The affected parameter.
+      required:
+      - history_date
+      - history_environments
+      - history_model
+      - history_parameter
+      - history_type
+    ParameterTimelineEntryEnvironment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: A unique identifier for the environment.
+        name:
+          type: string
+          description: The environment name.
+          maxLength: 256
+        override:
+          type: boolean
+          readOnly: true
+          description: Indicates if the value change was direct or if it flowed into
+            the environment. If `true` then the value was actually set directly into
+            this environment. If `false` then the environment has no value set directly
+            so it inherited the value from its parent.
+      required:
+      - id
+      - name
+      - override
+    ParameterTimelineEntryParameter:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: A unique identifier for the parameter.
+        name:
+          type: string
+          description: The parameter name.
+          maxLength: 256
+      required:
+      - id
+      - name
+    ParameterTypeEnum:
+      enum:
+      - string
+      - integer
+      - bool
+      type: string
     PatchedAwsIntegration:
       type: object
       properties:
@@ -4008,12 +5159,15 @@ components:
           readOnly: true
         subscription_id:
           type: string
+          nullable: true
           readOnly: true
         subscription_plan_id:
           type: string
+          nullable: true
           readOnly: true
         subscription_plan_name:
           type: string
+          nullable: true
           readOnly: true
         created_at:
           type: string
@@ -4048,16 +5202,32 @@ components:
         secret:
           type: boolean
           description: Indicates if this content is secret or not.  When a parameter
-            is considered to be a secret, any static values are stored in a dedicated
-            vault for your organization for maximum security.  Dynamic values are
+            is considered to be a secret, any internal values are stored in a dedicated
+            vault for your organization for maximum security.  External values are
             inspected on-demand to ensure they align with the parameter's secret setting
-            and if they do not, those dynamic values are not allowed to be used.
-        templates:
+            and if they do not, those external values are not allowed to be used.
+        type:
+          $ref: '#/components/schemas/ParameterTypeEnum'
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParameterRule'
+          readOnly: true
+          description: Rules applied to this parameter.
+        referencing_templates:
           type: array
           items:
             type: string
             format: uri
           readOnly: true
+          description: Templates that reference this Parameter.
+        referencing_values:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          description: Dynamic values that reference this Parameter.
         values:
           type: object
           additionalProperties:
@@ -4081,6 +5251,43 @@ components:
             \ been set in any environment for this\n            parameter.\n\n   \
             \         key: Environment url\n            value: optional Value record\n\
             \        "
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        modified_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedParameterRule:
+      type: object
+      description: |-
+        A type of `ModelSerializer` that uses hyperlinked relationships with compound keys instead
+        of primary key relationships.  Specifically:
+
+        * A 'url' field is included instead of the 'id' field.
+        * Relationships to other instances are hyperlinks, instead of primary keys.
+
+        NOTE: this only works with DRF 3.1.0 and above.
+      properties:
+        url:
+          type: string
+          format: uri
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        parameter:
+          type: string
+          format: uri
+          readOnly: true
+          description: The parameter this rule is for.
+        type:
+          $ref: '#/components/schemas/ParameterRuleTypeEnum'
+        constraint:
+          type: string
+          maxLength: 1024
         created_at:
           type: string
           format: date-time
@@ -4149,6 +5356,36 @@ components:
           format: date-time
           readOnly: true
           description: The most recent date and time the service account was used.
+    PatchedTag:
+      type: object
+      description: The details of a tag.
+      properties:
+        url:
+          type: string
+          format: uri
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: A unique identifier for the tag.
+        name:
+          type: string
+          readOnly: true
+          description: The tag name. Tag names may contain alphanumeric, hyphen, underscore,
+            or period characters. Tag names are case sensitive. The name cannot be
+            modified.
+        description:
+          type: string
+          description: A description of the tag.  You may find it helpful to document
+            how this tag is used to assist others when they need to maintain software
+            that uses this content.
+        timestamp:
+          type: string
+          format: date-time
+          description: The point in time this tag represents.
+        usage:
+          $ref: '#/components/schemas/TagReadUsage'
     PatchedTemplate:
       type: object
       description: A parameter template in a given project, optionally instantiated
@@ -4177,12 +5414,34 @@ components:
           description: The content of the template.  Use mustache-style templating
             delimiters of `{{` and `}}` to reference parameter values by name for
             substitution into the template result.
-        parameters:
+        referenced_parameters:
           type: array
           items:
             type: string
             format: uri
           readOnly: true
+          description: Parameters that this template references.
+        referenced_templates:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          description: Other templates that this template references.
+        referencing_templates:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          description: Other templates that reference this template.
+        referencing_values:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          description: The dynamic values that reference this template.
         has_secret:
           type: boolean
           readOnly: true
@@ -4213,36 +5472,64 @@ components:
           format: uri
           readOnly: true
           description: The environment this value is set in.
+        environment_name:
+          type: string
+          readOnly: true
+          description: The environment name for this value.  This is a convenience
+            to avoid another query against the server to resolve the environment url
+            into a name.
+        earliest_tag:
+          type: string
+          nullable: true
+          readOnly: true
+          description: The earliest tag name this value appears in (within the value's
+            environment).
         parameter:
           type: string
           format: uri
           readOnly: true
           description: The parameter this value is for.
-        dynamic:
+        external:
           type: boolean
-          description: A dynamic parameter leverages a CloudTruth integration to retrieve
-            content on-demand from an external source.  When this is `false` the value
-            is stored by CloudTruth.  When this is `true`, the `fqn` field must be
-            set.
-        dynamic_fqn:
+          description: An external parameter leverages a CloudTruth integration to
+            retrieve content on-demand from an external source.  When this is `false`
+            the value is stored by CloudTruth and considered to be _internal_.  When
+            this is `true`, the `external_fqn` field must be set.
+        external_fqn:
           type: string
           description: The FQN, or Fully-Qualified Name, is the path through the integration
             to get to the desired content.  This must be present and reference a valid
-            integration when the value is `dynamic`.
+            integration when the value is `external`.
           maxLength: 1024
-        dynamic_filter:
+        external_filter:
           type: string
-          description: If `dynamic`, the content returned by the integration can be
-            reduced by applying a JMESpath expression.  This is valid as long as the
-            content is structured and of a supported format.  We support JMESpath
-            expressions on `json`, `yaml`, and `dotenv` content.
+          description: If the value is `external`, the content returned by the integration
+            can be reduced by applying a JMESpath expression.  This is valid as long
+            as the content is structured and of a supported format.  JMESpath expressions
+            are supported on `json`, `yaml`, and `dotenv` content.
           maxLength: 1024
-        static_value:
+        external_error:
           type: string
           nullable: true
-          description: This is the content to use when resolving the Value for a static
-            non-secret.
+          readOnly: true
+          description: If the value is external, and an error occurs retrieving it,
+            the reason for the retrieval error will be placed into this field.  The
+            query parameter `partial_success` can be used to control whether this
+            condition causes an HTTP error response or not.
+        internal_value:
+          type: string
+          nullable: true
+          description: This is the content to use when resolving the Value for an
+            internal non-secret, or when storing a secret.  When storing a secret,
+            this content is stored in your organization's dedicated vault and this
+            field is cleared.  This field is required if the value is being created
+            or updated and is `internal`.  This field cannot be specified when creating
+            or updating an `external` value.
           maxLength: 16384
+        interpolated:
+          type: boolean
+          description: 'If `true`, apply template substitution rules to this value.  If
+            `false`, this value is a literal value.  Note: secrets cannot be interpolated.'
         value:
           type: string
           nullable: true
@@ -4250,11 +5537,13 @@ components:
           description: |-
             This is the actual content of the Value for the given parameter in the given environment.  Depending on the settings in the Value, the following things occur to calculate the `value`:
 
-            For values that are not `dynamic` and parameters that are not `secret`, the system will use the content in `static_value` to satisfy the request.
+            For values that are not `external` and parameters that are not `secret`, the system will use the content in `internal_value` to satisfy the request.
 
-            For values that are not `dynamic` and parameters that are `secret`, the system will retrieve the content from your organization's dedicated vault.
+            For values that are not `external` and parameters that are `secret`, the system will retrieve the content from your organization's dedicated vault.
 
-            For values that are `dynamic`, the system will retrieve the content from the integration on-demand.  If the content from the integration is `secret` and the parameter is not, an error response will be given.  If a `dynamic_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.
+            For values that are `external`, the system will retrieve the content from the integration on-demand.  You can control the error handling behavior of the server through the `partial_success` query parameter.
+
+            If the content from the integration is `secret` and the parameter is not, an error will occur.  If an `external_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.
 
             If you request secret masking, no secret content will be included in the result and instead a series of asterisks will be used instead for the value.  If you request wrapping, the secret content will be wrapped in an envelope that is bound to your JWT token.  For more information about secret wrapping, see the docs.
 
@@ -4265,10 +5554,24 @@ components:
           readOnly: true
           description: Indicates the value content is a secret.  Normally this is
             `true` when the parameter is a secret, however it is possible for a parameter
-            to be a secret with a dynamic value that is not a secret.  It is not possible
-            to convert a parameter from a secret to a non-secret if any of the values
-            are dynamic and a secret.  Clients can check this condition by leveraging
-            this field.
+            to be a secret with a external value that is not a secret.  It is not
+            possible to convert a parameter from a secret to a non-secret if any of
+            the values are external and a secret.  Clients can check this condition
+            by leveraging this field.
+        referenced_parameters:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          description: The parameters this value references, if interpolated.
+        referenced_templates:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          description: The templates this value references, if interpolated.
         created_at:
           type: string
           format: date-time
@@ -4427,6 +5730,85 @@ components:
       - modified_at
       - url
       - user
+    Tag:
+      type: object
+      description: The details of a tag.
+      properties:
+        url:
+          type: string
+          format: uri
+          readOnly: true
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: A unique identifier for the tag.
+        name:
+          type: string
+          readOnly: true
+          description: The tag name. Tag names may contain alphanumeric, hyphen, underscore,
+            or period characters. Tag names are case sensitive. The name cannot be
+            modified.
+        description:
+          type: string
+          description: A description of the tag.  You may find it helpful to document
+            how this tag is used to assist others when they need to maintain software
+            that uses this content.
+        timestamp:
+          type: string
+          format: date-time
+          description: The point in time this tag represents.
+        usage:
+          $ref: '#/components/schemas/TagReadUsage'
+      required:
+      - id
+      - name
+      - timestamp
+      - url
+      - usage
+    TagCreate:
+      type: object
+      description: Details for creating a tag.
+      properties:
+        name:
+          type: string
+          description: The tag name. Tag names may contain alphanumeric, hyphen, underscore,
+            or period characters. Tag names are case sensitive. The name cannot be
+            modified.
+          pattern: ^[\w.-]+$
+          maxLength: 64
+        description:
+          type: string
+          description: A description of the tag.  You may find it helpful to document
+            how this tag is used to assist others when they need to maintain software
+            that uses this content.
+        timestamp:
+          type: string
+          format: date-time
+          nullable: true
+          description: The point in time this tag represents. If not specified then
+            the current time will be used.
+      required:
+      - name
+    TagReadUsage:
+      type: object
+      description: The read usage details of a tag.
+      properties:
+        last_read:
+          type: string
+          format: date-time
+          nullable: true
+          description: The last time a configuration was retrieved with this tag.
+        last_read_by:
+          type: string
+          description: The last user (id) to use this tag to read configuration.
+          maxLength: 256
+        total_reads:
+          type: integer
+          description: The number of times the tag has been used to read configuration.
+      required:
+      - last_read
+      - total_reads
     Template:
       type: object
       description: A parameter template in a given project, optionally instantiated
@@ -4455,12 +5837,34 @@ components:
           description: The content of the template.  Use mustache-style templating
             delimiters of `{{` and `}}` to reference parameter values by name for
             substitution into the template result.
-        parameters:
+        referenced_parameters:
           type: array
           items:
             type: string
             format: uri
           readOnly: true
+          description: Parameters that this template references.
+        referenced_templates:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          description: Other templates that this template references.
+        referencing_templates:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          description: Other templates that reference this template.
+        referencing_values:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          description: The dynamic values that reference this template.
         has_secret:
           type: boolean
           readOnly: true
@@ -4479,7 +5883,10 @@ components:
       - id
       - modified_at
       - name
-      - parameters
+      - referenced_parameters
+      - referenced_templates
+      - referencing_templates
+      - referencing_values
       - url
     TemplateCreate:
       type: object
@@ -4502,6 +5909,38 @@ components:
             substitution into the template result.
       required:
       - name
+    TemplateLookupError:
+      type: object
+      description: Indicates errors occurred while retrieving values to substitute
+        into the template.
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateLookupErrorEntry'
+      required:
+      - detail
+    TemplateLookupErrorEntry:
+      type: object
+      properties:
+        parameter_id:
+          type: string
+          format: uuid
+          description: The parameter id.
+        parameter_name:
+          type: string
+          description: The parameter name.
+        error_code:
+          type: string
+          description: The error code.
+        error_detail:
+          type: string
+          description: Details about the error.
+      required:
+      - error_code
+      - error_detail
+      - parameter_id
+      - parameter_name
     TemplatePreview:
       type: object
       properties:
@@ -4509,6 +5948,73 @@ components:
           type: string
       required:
       - body
+    TemplateTimeline:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: The number of records in this response.
+        next_as_of:
+          type: string
+          format: date-time
+          description: If present, additional history can be retrieved using this
+            timestamp in the next call for the as_of query parameter value.
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateTimelineEntry'
+      required:
+      - count
+      - results
+    TemplateTimelineEntry:
+      type: object
+      description: Details about a single change.
+      properties:
+        history_date:
+          type: string
+          format: date-time
+        history_type:
+          allOf:
+          - $ref: '#/components/schemas/HistoryTypeEnum'
+          readOnly: true
+        history_user:
+          type: string
+          description: The unique identifier of a user.
+          nullable: true
+        history_template:
+          allOf:
+          - $ref: '#/components/schemas/TemplateTimelineEntryTemplate'
+          readOnly: true
+          description: The template record as it was when archived for history.
+      required:
+      - history_date
+      - history_template
+      - history_type
+    TemplateTimelineEntryTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+          description: A unique identifier for the template.
+        name:
+          type: string
+          description: The template name.
+          maxLength: 256
+        description:
+          type: string
+          description: A description of the template.  You may find it helpful to
+            document how this template is used to assist others when they need to
+            maintain software that uses this content.
+        body:
+          type: string
+          description: The content of the template.  Use mustache-style templating
+            delimiters of `{{` and `}}` to reference parameter values by name for
+            substitution into the template result.
+      required:
+      - id
+      - name
     User:
       type: object
       properties:
@@ -4570,36 +6076,64 @@ components:
           format: uri
           readOnly: true
           description: The environment this value is set in.
+        environment_name:
+          type: string
+          readOnly: true
+          description: The environment name for this value.  This is a convenience
+            to avoid another query against the server to resolve the environment url
+            into a name.
+        earliest_tag:
+          type: string
+          nullable: true
+          readOnly: true
+          description: The earliest tag name this value appears in (within the value's
+            environment).
         parameter:
           type: string
           format: uri
           readOnly: true
           description: The parameter this value is for.
-        dynamic:
+        external:
           type: boolean
-          description: A dynamic parameter leverages a CloudTruth integration to retrieve
-            content on-demand from an external source.  When this is `false` the value
-            is stored by CloudTruth.  When this is `true`, the `fqn` field must be
-            set.
-        dynamic_fqn:
+          description: An external parameter leverages a CloudTruth integration to
+            retrieve content on-demand from an external source.  When this is `false`
+            the value is stored by CloudTruth and considered to be _internal_.  When
+            this is `true`, the `external_fqn` field must be set.
+        external_fqn:
           type: string
           description: The FQN, or Fully-Qualified Name, is the path through the integration
             to get to the desired content.  This must be present and reference a valid
-            integration when the value is `dynamic`.
+            integration when the value is `external`.
           maxLength: 1024
-        dynamic_filter:
+        external_filter:
           type: string
-          description: If `dynamic`, the content returned by the integration can be
-            reduced by applying a JMESpath expression.  This is valid as long as the
-            content is structured and of a supported format.  We support JMESpath
-            expressions on `json`, `yaml`, and `dotenv` content.
+          description: If the value is `external`, the content returned by the integration
+            can be reduced by applying a JMESpath expression.  This is valid as long
+            as the content is structured and of a supported format.  JMESpath expressions
+            are supported on `json`, `yaml`, and `dotenv` content.
           maxLength: 1024
-        static_value:
+        external_error:
           type: string
           nullable: true
-          description: This is the content to use when resolving the Value for a static
-            non-secret.
+          readOnly: true
+          description: If the value is external, and an error occurs retrieving it,
+            the reason for the retrieval error will be placed into this field.  The
+            query parameter `partial_success` can be used to control whether this
+            condition causes an HTTP error response or not.
+        internal_value:
+          type: string
+          nullable: true
+          description: This is the content to use when resolving the Value for an
+            internal non-secret, or when storing a secret.  When storing a secret,
+            this content is stored in your organization's dedicated vault and this
+            field is cleared.  This field is required if the value is being created
+            or updated and is `internal`.  This field cannot be specified when creating
+            or updating an `external` value.
           maxLength: 16384
+        interpolated:
+          type: boolean
+          description: 'If `true`, apply template substitution rules to this value.  If
+            `false`, this value is a literal value.  Note: secrets cannot be interpolated.'
         value:
           type: string
           nullable: true
@@ -4607,11 +6141,13 @@ components:
           description: |-
             This is the actual content of the Value for the given parameter in the given environment.  Depending on the settings in the Value, the following things occur to calculate the `value`:
 
-            For values that are not `dynamic` and parameters that are not `secret`, the system will use the content in `static_value` to satisfy the request.
+            For values that are not `external` and parameters that are not `secret`, the system will use the content in `internal_value` to satisfy the request.
 
-            For values that are not `dynamic` and parameters that are `secret`, the system will retrieve the content from your organization's dedicated vault.
+            For values that are not `external` and parameters that are `secret`, the system will retrieve the content from your organization's dedicated vault.
 
-            For values that are `dynamic`, the system will retrieve the content from the integration on-demand.  If the content from the integration is `secret` and the parameter is not, an error response will be given.  If a `dynamic_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.
+            For values that are `external`, the system will retrieve the content from the integration on-demand.  You can control the error handling behavior of the server through the `partial_success` query parameter.
+
+            If the content from the integration is `secret` and the parameter is not, an error will occur.  If an `external_filter` is present then the content will have a JMESpath query applied, and that becomes the resulting value.
 
             If you request secret masking, no secret content will be included in the result and instead a series of asterisks will be used instead for the value.  If you request wrapping, the secret content will be wrapped in an envelope that is bound to your JWT token.  For more information about secret wrapping, see the docs.
 
@@ -4622,10 +6158,24 @@ components:
           readOnly: true
           description: Indicates the value content is a secret.  Normally this is
             `true` when the parameter is a secret, however it is possible for a parameter
-            to be a secret with a dynamic value that is not a secret.  It is not possible
-            to convert a parameter from a secret to a non-secret if any of the values
-            are dynamic and a secret.  Clients can check this condition by leveraging
-            this field.
+            to be a secret with a external value that is not a secret.  It is not
+            possible to convert a parameter from a secret to a non-secret if any of
+            the values are external and a secret.  Clients can check this condition
+            by leveraging this field.
+        referenced_parameters:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          description: The parameters this value references, if interpolated.
+        referenced_templates:
+          type: array
+          items:
+            type: string
+            format: uri
+          readOnly: true
+          description: The templates this value references, if interpolated.
         created_at:
           type: string
           format: date-time
@@ -4636,10 +6186,15 @@ components:
           readOnly: true
       required:
       - created_at
+      - earliest_tag
       - environment
+      - environment_name
+      - external_error
       - id
       - modified_at
       - parameter
+      - referenced_parameters
+      - referenced_templates
       - secret
       - url
       - value
@@ -4651,31 +6206,39 @@ components:
           type: string
           format: uri
           description: The environment this value is set in.
-        dynamic:
+        external:
           type: boolean
-          description: A dynamic parameter leverages a CloudTruth integration to retrieve
-            content on-demand from an external source.  When this is `false` the value
-            is stored by CloudTruth.  When this is `true`, the `fqn` field must be
-            set.
-        dynamic_fqn:
+          description: An external parameter leverages a CloudTruth integration to
+            retrieve content on-demand from an external source.  When this is `false`
+            the value is stored by CloudTruth and considered to be _internal_.  When
+            this is `true`, the `external_fqn` field must be set.
+        external_fqn:
           type: string
           description: The FQN, or Fully-Qualified Name, is the path through the integration
             to get to the desired content.  This must be present and reference a valid
-            integration when the value is `dynamic`.
+            integration when the value is `external`.
           maxLength: 1024
-        dynamic_filter:
+        external_filter:
           type: string
-          description: If `dynamic`, the content returned by the integration can be
-            reduced by applying a JMESpath expression.  This is valid as long as the
-            content is structured and of a supported format.  We support JMESpath
-            expressions on `json`, `yaml`, and `dotenv` content.
+          description: If the value is `external`, the content returned by the integration
+            can be reduced by applying a JMESpath expression.  This is valid as long
+            as the content is structured and of a supported format.  JMESpath expressions
+            are supported on `json`, `yaml`, and `dotenv` content.
           maxLength: 1024
-        static_value:
+        internal_value:
           type: string
           nullable: true
-          description: This is the content to use when resolving the Value for a static
-            non-secret.
+          description: This is the content to use when resolving the Value for an
+            internal non-secret, or when storing a secret.  When storing a secret,
+            this content is stored in your organization's dedicated vault and this
+            field is cleared.  This field is required if the value is being created
+            or updated and is `internal`.  This field cannot be specified when creating
+            or updating an `external` value.
           maxLength: 16384
+        interpolated:
+          type: boolean
+          description: 'If `true`, apply template substitution rules to this value.  If
+            `false`, this value is a literal value.  Note: secrets cannot be interpolated.'
       required:
       - environment
   securitySchemes:

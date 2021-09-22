@@ -128,7 +128,19 @@ module Kubetruth
       result&.results&.collect do |param|
         # values is keyed by url, but we forced it to only have a single entry
         # for the supplied environment
-        Kubetruth::Parameter.new(key: param.name, value: param.values.values.first&.value, secret: param.secret)
+        # preserve types so we can generate accurate structured data vs using typify filter
+        value = param.values.values.first&.value
+        if ! value.nil?
+          case param.type
+            when CloudtruthClient::ParameterTypeEnum::BOOL
+              value = (value == "true")
+            when CloudtruthClient::ParameterTypeEnum::INTEGER
+              value = value.to_i
+            else
+              value = value.to_s
+          end
+        end
+        Kubetruth::Parameter.new(key: param.name, value: value, secret: param.secret)
       end
     end
 

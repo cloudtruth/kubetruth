@@ -20,6 +20,21 @@ module Kubetruth
       instance
     }
 
+    def create_project_fixture
+      @project_name = "TestProject"
+      existing = ctapi.apis[:projects].projects_list.results
+      existing.each do |proj|
+        if  proj.name == @project_name
+          ctapi.apis[:projects].projects_destroy(proj.id)
+        end
+      end
+
+      ctapi.apis[:projects].projects_create(CloudtruthClient::ProjectCreate.new(name: @project_name))
+      @project_id = ctapi.projects[@project_name]
+      @one_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "one"))
+      @two_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "two"))
+    end
+
     describe "instance" do
 
       it "fails if not configured" do
@@ -73,9 +88,13 @@ module Kubetruth
 
     describe "#projects" do
 
+      before(:each) do
+        create_project_fixture
+      end
+
       it "gets projects" do
-        expect(ctapi.projects).to match hash_including("MyFirstProject")
-        expect(ctapi.project_names).to match array_including("MyFirstProject")
+        expect(ctapi.projects).to match hash_including(@project_name)
+        expect(ctapi.project_names).to match array_including(@project_name)
       end
 
       it "memoizes projects " do
@@ -87,9 +106,13 @@ module Kubetruth
 
     describe "#project_id" do
 
+      before(:each) do
+        create_project_fixture
+      end
+
       it "gets id" do
-        expect(ctapi.projects).to match hash_including("MyFirstProject")
-        expect(ctapi.project_id("MyFirstProject")).to be_present
+        expect(ctapi.projects).to match hash_including(@project_name)
+        expect(ctapi.project_id(@project_name)).to be_present
         expect(Logging.contents).to_not match(/Unknown project, retrying/)
       end
 
@@ -99,22 +122,10 @@ module Kubetruth
 
     end
 
-
     describe "#parameters" do
 
       before(:each) do
-        @project_name = "TestProject"
-        existing = ctapi.apis[:projects].projects_list.results
-        existing.each do |proj|
-          if  proj.name == @project_name
-            ctapi.apis[:projects].projects_destroy(proj.id)
-          end
-        end
-
-        ctapi.apis[:projects].projects_create(CloudtruthClient::ProjectCreate.new(name: @project_name))
-        @project_id = ctapi.projects[@project_name]
-        @one_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "one"))
-        @two_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "two"))
+        create_project_fixture
       end
 
       it "gets parameters" do
@@ -125,7 +136,7 @@ module Kubetruth
 
       it "doesn't expose secret in debug log" do
         three_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "three", secret: true))
-        ctapi.apis[:projects].projects_parameters_values_create(three_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), dynamic: false, static_value: "defaultthree"))
+        ctapi.apis[:projects].projects_parameters_values_create(three_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "defaultthree"))
         params = ctapi.parameters(project: @project_name)
         secrets = params.find {|p| p.secret }
         expect(secrets.size).to_not eq(0)
@@ -134,10 +145,10 @@ module Kubetruth
       end
 
       it "uses environment to get values" do
-        ctapi.apis[:projects].projects_parameters_values_create(@one_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), dynamic: false, static_value: "defaultone"))
-        ctapi.apis[:projects].projects_parameters_values_create(@one_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("development"), dynamic: false, static_value: "developmentone"))
-        ctapi.apis[:projects].projects_parameters_values_create(@two_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), dynamic: false, static_value: "defaulttwo"))
-        ctapi.apis[:projects].projects_parameters_values_create(@two_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("development"), dynamic: false, static_value: "developmenttwo"))
+        ctapi.apis[:projects].projects_parameters_values_create(@one_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "defaultone"))
+        ctapi.apis[:projects].projects_parameters_values_create(@one_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("development"), external: false, internal_value: "developmentone"))
+        ctapi.apis[:projects].projects_parameters_values_create(@two_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "defaulttwo"))
+        ctapi.apis[:projects].projects_parameters_values_create(@two_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("development"), external: false, internal_value: "developmenttwo"))
 
         params = ctapi.parameters(project: @project_name, environment: "default")
         expect(params.collect(&:value)).to eq(["defaultone", "defaulttwo"])
@@ -145,23 +156,23 @@ module Kubetruth
         expect(params.collect(&:value)).to eq(["developmentone", "developmenttwo"])
       end
 
+      it "gets types with parameters" do
+        bool_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "bool_param", type: CloudtruthClient::ParameterTypeEnum::BOOL))
+        int_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "int_param", type: CloudtruthClient::ParameterTypeEnum::INTEGER))
+        ctapi.apis[:projects].projects_parameters_values_create(bool_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "true"))
+        ctapi.apis[:projects].projects_parameters_values_create(int_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "3"))
+
+        params = ctapi.parameters(project: @project_name)
+        expect(params.find {|p| p.key == "bool_param" }.value).to eq(true)
+        expect(params.find {|p| p.key == "int_param" }.value).to eq(3)
+      end
+
     end
 
     describe "#templates" do
 
       before(:each) do
-        @project_name = "TestProject"
-        existing = ctapi.apis[:projects].projects_list.results
-        existing.each do |proj|
-          if  proj.name == @project_name
-            ctapi.apis[:projects].projects_destroy(proj.id)
-          end
-        end
-
-        ctapi.apis[:projects].projects_create(CloudtruthClient::ProjectCreate.new(name: @project_name))
-        @project_id = ctapi.projects[@project_name]
-        @one_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "one"))
-        @two_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "two", secret: true))
+        create_project_fixture
         @one_tmpl = ctapi.apis[:projects].projects_templates_create(@project_id, CloudtruthClient::TemplateCreate.new(name: "one", body: "tmpl1 {{one}}"))
         @two_tmpl = ctapi.apis[:projects].projects_templates_create(@project_id, CloudtruthClient::TemplateCreate.new(name: "two", body: "tmpl2 {{two}}"))
       end
@@ -193,15 +204,18 @@ module Kubetruth
       describe "#template" do
 
         it "gets template" do
-          ctapi.apis[:projects].projects_parameters_values_create(@one_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), dynamic: false, static_value: "defaultone"))
+          ctapi.apis[:projects].projects_parameters_values_create(@one_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "defaultone"))
           expect(ctapi.template("one", project: @project_name, environment: "default")).to eq("tmpl1 defaultone")
           expect(Logging.contents).to match(/Template Retrieve query result.*tmpl1 defaultone/)
         end
 
         it "masks secrets in log for templates that reference them" do
-          ctapi.apis[:projects].projects_parameters_values_create(@two_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), dynamic: false, static_value: "defaulttwo"))
-          expect(ctapi.template("two", project: @project_name, environment: "default")).to eq("tmpl2 defaulttwo")
-          expect(Logging.contents).to_not match(/Template Retrieve query result.*tmpl2 defaulttwo/)
+          @three_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "three", secret: true))
+          ctapi.apis[:projects].projects_parameters_values_create(@three_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "defaultthree"))
+          @three_tmpl = ctapi.apis[:projects].projects_templates_create(@project_id, CloudtruthClient::TemplateCreate.new(name: "three", body: "tmpl3 {{three}}"))
+
+          expect(ctapi.template("three", project: @project_name, environment: "default")).to eq("tmpl3 defaultthree")
+          expect(Logging.contents).to_not match(/Template Retrieve query result.*tmpl3 defaultthree/)
           expect(Logging.contents).to match(/Template Retrieve query result.*<masked>/)
         end
 

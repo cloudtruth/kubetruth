@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://localhost:8000/api/v1/environments/
+    uri: https://api.cloudtruth.io/api/v1/environments/
     body:
       encoding: US-ASCII
       string: ''
@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - kubetruth/1.0.1
+      - kubetruth/1.0.4
       Accept:
       - application/json
       Authorization:
@@ -22,37 +22,46 @@ http_interactions:
       code: 200
       message: OK
     headers:
-      Server:
-      - undisclosed
       Date:
-      - Tue, 03 Aug 2021 19:32:16 GMT
-      Connection:
-      - close
+      - Wed, 22 Sep 2021 15:29:14 GMT
       Content-Type:
       - application/json
+      Content-Length:
+      - '3328'
+      Connection:
+      - keep-alive
+      Set-Cookie:
+      - AWSALB=8E+RfskhMWz772KCNFGMU0e7S8dYV97x9VVYen52gIYAY+xq0uJqg3OoRC5ardDx37R9Ws4DKmVHGa6hk/c/xvnKn9b+IGeexzZWWMJJJ9Ey3gYS9bISXrDfhjui;
+        Expires=Wed, 29 Sep 2021 15:29:14 GMT; Path=/
+      - AWSALBCORS=8E+RfskhMWz772KCNFGMU0e7S8dYV97x9VVYen52gIYAY+xq0uJqg3OoRC5ardDx37R9Ws4DKmVHGa6hk/c/xvnKn9b+IGeexzZWWMJJJ9Ey3gYS9bISXrDfhjui;
+        Expires=Wed, 29 Sep 2021 15:29:14 GMT; Path=/; SameSite=None; Secure
+      - AWSALBTG=wqvnP9y5REmy34PFHJJ5wMkkD7hUVOjx9rFwitGwUOZlhGbZwKduH/UUDF0JGw+UWAnNrzXALeXkOZF40pYqhxau1k9L/Rz/X4hebJZmt0IkdHpvyslZE6HhrrVgu6MCwFt+hHXzsDJCyWSxJ2cpr3o+O6xZWM0WkXDmocWBiro8;
+        Expires=Wed, 29 Sep 2021 15:29:14 GMT; Path=/
+      - AWSALBTGCORS=wqvnP9y5REmy34PFHJJ5wMkkD7hUVOjx9rFwitGwUOZlhGbZwKduH/UUDF0JGw+UWAnNrzXALeXkOZF40pYqhxau1k9L/Rz/X4hebJZmt0IkdHpvyslZE6HhrrVgu6MCwFt+hHXzsDJCyWSxJ2cpr3o+O6xZWM0WkXDmocWBiro8;
+        Expires=Wed, 29 Sep 2021 15:29:14 GMT; Path=/; SameSite=None; Secure
+      - csrftoken=k83C46pVcy80PEj0EXYqZh6jfj4IdSAAaIw7atKL9OuEk5BNRgKpNFkiPEELwwKc;
+        expires=Wed, 21 Sep 2022 15:29:14 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=dogynno0adxod801bcztfq6qq6jde3p2; expires=Wed, 06 Oct 2021 15:29:14
+        GMT; Max-Age=1209600; Path=/; Secure
+      Server:
+      - undisclosed
       Vary:
       - Accept, Cookie, Origin
       Allow:
       - GET, POST, HEAD, OPTIONS
       X-Frame-Options:
       - DENY
-      Content-Length:
-      - '1516'
       X-Content-Type-Options:
       - nosniff
       Referrer-Policy:
       - same-origin
-      Set-Cookie:
-      - csrftoken=zBtjISHrF6asmKHYRSYtLe5xzSZkZBs3RrwPr1Zrp3XL5nGvEvywfyDSlKJsFr3M;
-        expires=Tue, 02 Aug 2022 19:32:16 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=u7pf2n7e6tjjb71ya600rv54n1tp53pw; expires=Tue, 17 Aug 2021 19:32:16
-        GMT; Max-Age=1209600; Path=/; Secure
     body:
       encoding: UTF-8
-      string: '{"count":4,"next":null,"previous":null,"results":[{"url":"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/","id":"3ce72447-641f-418d-a12a-71173a56ffca","name":"default","description":"Default
-        environment, base for all environments.","parent":null,"created_at":"2021-08-02T14:22:36.043828Z","modified_at":"2021-08-03T19:31:39.869473Z"},{"url":"https://localhost:8000/api/v1/environments/0293a31b-70a7-458c-afe4-162fa9febc1e/","id":"0293a31b-70a7-458c-afe4-162fa9febc1e","name":"development","description":"Development
-        deployment environment","parent":"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/","created_at":"2021-08-02T14:22:36.086474Z","modified_at":"2021-08-03T19:17:02.248188Z"},{"url":"https://localhost:8000/api/v1/environments/d5a11b75-2690-4363-83a3-873f3a98cef8/","id":"d5a11b75-2690-4363-83a3-873f3a98cef8","name":"production","description":"Production
-        deployment environment","parent":"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/","created_at":"2021-08-02T14:22:36.142958Z","modified_at":"2021-08-02T14:22:36.143017Z"},{"url":"https://localhost:8000/api/v1/environments/5694a5f3-a09c-40f1-b40b-74f260508516/","id":"5694a5f3-a09c-40f1-b40b-74f260508516","name":"staging","description":"Staging
-        deployment environment","parent":"https://localhost:8000/api/v1/environments/3ce72447-641f-418d-a12a-71173a56ffca/","created_at":"2021-08-02T14:22:36.114024Z","modified_at":"2021-08-02T14:22:36.114565Z"}]}'
-  recorded_at: Tue, 03 Aug 2021 19:32:16 GMT
+      string: '{"count":9,"next":null,"previous":null,"results":[{"url":"https://api.cloudtruth.io/api/v1/environments/e8bc190d-0354-4e66-91c9-64501e501ec5/","id":"e8bc190d-0354-4e66-91c9-64501e501ec5","name":"default","description":"The
+        auto-generated default environment.","parent":null,"created_at":"2021-07-20T18:14:09.023022Z","modified_at":"2021-09-22T15:27:37.933625Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/c4de304d-5dd4-4a41-80ec-9a469f1aa4f5/","id":"c4de304d-5dd4-4a41-80ec-9a469f1aa4f5","name":"development","description":"","parent":"https://api.cloudtruth.io/api/v1/environments/e8bc190d-0354-4e66-91c9-64501e501ec5/","created_at":"2021-07-20T18:14:09.035255Z","modified_at":"2021-09-22T14:27:50.149570Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/12b9c81b-9002-423b-9ca7-22cece646d07/","id":"12b9c81b-9002-423b-9ca7-22cece646d07","name":"dev-matt","description":"","parent":"https://api.cloudtruth.io/api/v1/environments/c4de304d-5dd4-4a41-80ec-9a469f1aa4f5/","created_at":"2021-07-21T19:53:37.534082Z","modified_at":"2021-07-26T22:01:23.472634Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/2281d9da-8376-4f45-baf2-372a71260dfa/","id":"2281d9da-8376-4f45-baf2-372a71260dfa","name":"europe","description":"","parent":"https://api.cloudtruth.io/api/v1/environments/cde7cf9d-8bf2-46cb-9e97-dee9b99e4335/","created_at":"2021-07-21T19:53:47.438517Z","modified_at":"2021-07-26T22:01:29.331661Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/c99d6ab9-4674-4f76-bb43-da0b19124e18/","id":"c99d6ab9-4674-4f76-bb43-da0b19124e18","name":"local","description":"for
+        local development","parent":"https://api.cloudtruth.io/api/v1/environments/e8bc190d-0354-4e66-91c9-64501e501ec5/","created_at":"2021-07-21T19:53:50.000541Z","modified_at":"2021-07-26T22:01:32.150839Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/ef133a2e-3c9c-4229-a509-e56332baff40/","id":"ef133a2e-3c9c-4229-a509-e56332baff40","name":"ops","description":"The
+        ops environment - infrastructure that acts as the entry point to the other
+        environment''s infrastructure","parent":"https://api.cloudtruth.io/api/v1/environments/e8bc190d-0354-4e66-91c9-64501e501ec5/","created_at":"2021-07-21T20:05:10.325110Z","modified_at":"2021-07-26T22:01:35.184068Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/cde7cf9d-8bf2-46cb-9e97-dee9b99e4335/","id":"cde7cf9d-8bf2-46cb-9e97-dee9b99e4335","name":"production","description":"for
+        real","parent":"https://api.cloudtruth.io/api/v1/environments/e8bc190d-0354-4e66-91c9-64501e501ec5/","created_at":"2021-07-20T18:14:09.058957Z","modified_at":"2021-09-15T19:15:15.144679Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/e4399ff4-a962-451b-adfb-7e504ad6bb6d/","id":"e4399ff4-a962-451b-adfb-7e504ad6bb6d","name":"staging","description":"","parent":"https://api.cloudtruth.io/api/v1/environments/e8bc190d-0354-4e66-91c9-64501e501ec5/","created_at":"2021-07-20T18:14:09.047049Z","modified_at":"2021-07-26T18:46:21.385162Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/3afc0523-4722-4fa1-aaea-5d49beaa284d/","id":"3afc0523-4722-4fa1-aaea-5d49beaa284d","name":"usa","description":"","parent":"https://api.cloudtruth.io/api/v1/environments/cde7cf9d-8bf2-46cb-9e97-dee9b99e4335/","created_at":"2021-07-21T20:05:24.767679Z","modified_at":"2021-07-26T18:44:51.186840Z"}]}'
+  recorded_at: Wed, 22 Sep 2021 15:29:14 GMT
 recorded_with: VCR 6.0.0
