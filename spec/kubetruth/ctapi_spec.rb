@@ -13,7 +13,7 @@ module Kubetruth
       # Spin up a local dev server and create a user with an api key to use
       # here, or use cloudtruth actual
       key = ENV['CLOUDTRUTH_API_KEY']
-      url = ENV['CLOUDTRUTH_API_URL'] || "https://localhost:8000"
+      url = ENV['CLOUDTRUTH_API_URL'] || "https://api.cloudtruth.io" # "https://localhost:8000"
       instance = ::Kubetruth::CtApi.new(api_key: key, api_url: url)
       instance.client.config.debugging = false # ssl debug logging is messy, so only turn this on as desired
       instance.client.config.ssl_verify = false

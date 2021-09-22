@@ -329,10 +329,7 @@ module Kubetruth
     describe "#apply" do
 
       let(:collection) { ProjectCollection.new }
-      let(:root_spec_crd) {
-        default_root_spec = YAML.load_file(File.expand_path("../../helm/kubetruth/values.yaml", __dir__)).deep_symbolize_keys
-        default_root_spec[:projectMappings][:root]
-      }
+      let(:root_spec_crd) { default_root_spec }
       let(:config) {
         Kubetruth::Config.new([root_spec_crd])
       }

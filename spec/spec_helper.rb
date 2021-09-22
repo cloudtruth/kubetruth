@@ -35,6 +35,11 @@ def fixture_dir
   @fixture_dir ||= File.expand_path("../fixtures", __FILE__)
 end
 
+def default_root_spec
+  default_root_spec = YAML.load_file(File.expand_path("../helm/kubetruth/values.yaml", __dir__)).deep_symbolize_keys
+  default_root_spec[:projectMappings][:root]
+end
+
 def logger
   ::Logging.logger.root
 end

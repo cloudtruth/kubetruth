@@ -50,6 +50,7 @@ module Kubetruth
       key_selector: '',
       environment: 'default',
       skip: false,
+      log_level: nil,
       included_projects: [],
       context: {},
       resource_templates: []
