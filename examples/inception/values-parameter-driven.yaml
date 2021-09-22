@@ -21,7 +21,7 @@ projectMappings:
       secret: ""
 
       crds: |
-        {%- if parameters.size > 0 %} {{ parameters | nindent: "five" }}
+        {%- if parameters.size > 0 %}
 
         {%- comment %}
           Use the inflate filter to convert parameters to a structured form
