@@ -207,6 +207,26 @@ module Kubetruth
 
     end
 
+    describe "#with_log_level" do
+
+      it "does not set nil log level" do
+        expect(Kubetruth::Logging.root_log_level).to eq("debug")
+        etl.with_log_level(nil) do
+          expect(Kubetruth::Logging.root_log_level).to eq("debug")
+        end
+        expect(Kubetruth::Logging.root_log_level).to eq("debug")
+      end
+
+      it "temporarily sets log level" do
+        expect(Kubetruth::Logging.root_log_level).to eq("debug")
+        etl.with_log_level("error") do
+          expect(Kubetruth::Logging.root_log_level).to eq("error")
+        end
+        expect(Kubetruth::Logging.root_log_level).to eq("debug")
+      end
+
+    end
+
     describe "#kube_apply" do
 
       it "calls kube to create new resource" do
@@ -510,7 +530,7 @@ module Kubetruth
                                                             ])
           project
         end
-        expect(collection).to receive(:names).and_return(["proj1"])
+        allow(collection).to receive(:names).and_return(["proj1"])
         allow(etl).to receive(:kube_apply)
       end
 
@@ -545,6 +565,38 @@ module Kubetruth
 
         etl.apply()
       end
+
+      it "sets log level when supplied by root pm in config" do
+        Kubetruth::Logging.root_log_level = "error" # undo debug logging set by test harness
+        config.root_spec.log_level = "error"
+
+        allow(etl).to receive(:load_config).and_yield(@ns, config)
+        allow(config.root_spec.resource_templates["configmap"]).to receive(:render).and_return("")
+
+        etl.apply()
+        expect(Logging.contents).to_not match(/DEBUG/)
+        Logging.clear
+
+        config.root_spec.log_level = "debug"
+        etl.apply()
+        expect(Logging.contents).to match(/DEBUG/)
+      end
+
+      it "sets log level when supplied by override pm in config" do
+        Kubetruth::Logging.root_log_level = "error" # undo debug logging set by test harness
+
+        override_crd = {scope: "override", project_selector: "proj1", log_level: "debug"}
+        config = Kubetruth::Config.new([root_spec_crd, override_crd])
+
+        allow(etl).to receive(:load_config).and_yield(@ns, config)
+        allow(config.root_spec.resource_templates["configmap"]).to receive(:render).and_return("")
+
+        etl.apply()
+        expect(Logging.contents).to_not match(/DEBUG.*Config ProjectSpec for root mapping/)
+        expect(Logging.contents).to match(/INFO.*ETL Processing project 'proj1'/)
+        expect(Logging.contents).to match(/DEBUG.*Template Evaluating template/)
+      end
+
 
     end
 

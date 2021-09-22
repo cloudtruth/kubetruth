@@ -32,6 +32,10 @@ spec:
                 skip:
                   type: boolean
                   description: Skips the generation of resources for the selected projects
+                log_level:
+                  type: string
+                  description: The level of logging to use
+                  enum: ["debug", "info", "warn", "error", "fatal"]
                 included_projects:
                   type: array
                   items:

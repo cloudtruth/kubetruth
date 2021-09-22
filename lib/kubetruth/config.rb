@@ -14,6 +14,7 @@ module Kubetruth
       :key_selector,
       :environment,
       :skip,
+      :log_level,
       :included_projects,
       :context,
       :resource_templates,

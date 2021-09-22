@@ -39,5 +39,24 @@ module Kubetruth
 
     end
 
+    describe "#root_log_level" do
+
+      it "gets and sets root log level" do
+        expect(described_class.root_log_level).to eq("debug")
+        described_class.root_log_level = "error"
+        expect(described_class.root_log_level).to eq("error")
+      end
+
+      it "logs at set log level" do
+        described_class.root_log_level = "info"
+        logger.info("infolog")
+        expect(Logging.contents).to include("infolog")
+        logger.debug("debuglog")
+        expect(Logging.contents).to_not include("debuglog")
+      end
+
+    end
+
   end
+
 end

@@ -115,6 +115,16 @@ module Kubetruth
       configs
     end
 
+    def with_log_level(level)
+      original_root_log_level = Kubetruth::Logging.root_log_level
+      begin
+        Kubetruth::Logging.root_log_level = level if level
+        yield
+      ensure
+        Kubetruth::Logging.root_log_level = original_root_log_level
+      end
+    end
+
     def apply
       async(annotation: "ETL Event Loop") do
         logger.warn("Performing dry-run") if @dry_run
@@ -123,89 +133,93 @@ module Kubetruth
         CtApi.reset
 
         load_config do |namespace, config|
-          project_collection = ProjectCollection.new
+          with_log_level(config.root_spec.log_level) do
+            project_collection = ProjectCollection.new
 
-          # Load all projects that are used
-          all_specs = [config.root_spec] + config.override_specs
-          project_selectors = all_specs.collect(&:project_selector)
-          included_projects = all_specs.collect(&:included_projects).flatten.uniq
+            # Load all projects that are used
+            all_specs = [config.root_spec] + config.override_specs
+            project_selectors = all_specs.collect(&:project_selector)
+            included_projects = all_specs.collect(&:included_projects).flatten.uniq
 
-          project_collection.names.each do |project_name|
-            active = included_projects.any? {|p| p == project_name }
-            active ||= project_selectors.any? {|s| s =~ project_name }
-            if active
-              project_spec = config.spec_for_project(project_name)
-              project_collection.create_project(name: project_name, spec: project_spec)
-            end
-          end
-
-          project_collection.projects.values.each do |project|
-
-            match = project.name.match(project.spec.project_selector)
-            if match.nil?
-              logger.info "Skipping project '#{project.name}' as it does not match any selectors"
-              next
-            end
-
-            if project.spec.skip
-              logger.info "Skipping project '#{project.name}'"
-              next
-            end
-
-            async(annotation: "Project: #{project.name}") do
-
-              # constructing the hash will cause any overrides to happen in the right
-              # order (includer wins over last included over first included)
-              params = project.all_parameters
-              parts = params.group_by(&:secret)
-              config_params, secret_params = (parts[false] || []), (parts[true] || [])
-              config_param_hash = params_to_hash(config_params)
-              secret_param_hash = params_to_hash(secret_params)
-
-              parameter_origins = project.parameter_origins
-              param_origins_parts = parameter_origins.group_by {|k, v| config_param_hash.has_key?(k) }
-              config_origins = Hash[param_origins_parts[true] || []]
-              secret_origins = Hash[param_origins_parts[false] || []]
-
-              config_param_hash = config_param_hash.reject do |k, v|
-                logger.debug { "Excluding parameter with nil value: #{k}" } if v.nil?
-                v.nil?
+            project_collection.names.each do |project_name|
+              active = included_projects.any? {|p| p == project_name }
+              active ||= project_selectors.any? {|s| s =~ project_name }
+              if active
+                project_spec = config.spec_for_project(project_name)
+                project_collection.create_project(name: project_name, spec: project_spec)
               end
-              secret_param_hash = secret_param_hash.reject do |k, v|
-                logger.debug { "Excluding secret parameter with nil value: #{k}" } if v.nil?
-                v.nil?
-              end
+            end
 
-              project.spec.resource_templates.each_with_index do |pair, i|
-                template_name, template = *pair
-                logger.debug { "Processing template '#{template_name}' (#{i+1}/#{project.spec.resource_templates.size})" }
-                resource_yml = template.render(
-                  template: template_name,
-                  kubetruth_namespace: kubeapi.namespace,
-                  mapping_namespace: namespace,
-                  project: project.name,
-                  project_heirarchy: project.heirarchy,
-                  debug: logger.debug?,
-                  parameters: config_param_hash,
-                  parameter_origins: config_origins,
-                  secrets: secret_param_hash,
-                  secret_origins: secret_origins,
-                  templates: Template::TemplatesDrop.new(project: project.name, environment: project.spec.environment),
-                  context: project.spec.context
-                )
+            project_collection.projects.values.each do |project|
+              with_log_level(project.spec.log_level) do
+                logger.info "Processing project '#{project.name}'"
 
-                template_id = "mapping: #{project.spec.name}, mapping_namespace: #{namespace}, project: #{project.name}, template: #{template_name}"
-                parsed_ymls = YAML.safe_load_stream(resource_yml, template_id)
-                logger.debug {"Skipping empty template"} if parsed_ymls.empty?
-                parsed_ymls.each do |parsed_yml|
-                  async(annotation: "Apply Template: #{template_id}") do
-                    kube_apply(parsed_yml)
-                  end
+                match = project.name.match(project.spec.project_selector)
+                if match.nil?
+                  logger.info "Skipping project '#{project.name}' as it does not match any selectors"
+                  next
                 end
 
+                if project.spec.skip
+                  logger.info "Skipping project '#{project.name}'"
+                  next
+                end
+
+                async(annotation: "Project: #{project.name}") do
+
+                  # constructing the hash will cause any overrides to happen in the right
+                  # order (includer wins over last included over first included)
+                  params = project.all_parameters
+                  parts = params.group_by(&:secret)
+                  config_params, secret_params = (parts[false] || []), (parts[true] || [])
+                  config_param_hash = params_to_hash(config_params)
+                  secret_param_hash = params_to_hash(secret_params)
+
+                  parameter_origins = project.parameter_origins
+                  param_origins_parts = parameter_origins.group_by {|k, v| config_param_hash.has_key?(k) }
+                  config_origins = Hash[param_origins_parts[true] || []]
+                  secret_origins = Hash[param_origins_parts[false] || []]
+
+                  config_param_hash = config_param_hash.reject do |k, v|
+                    logger.debug { "Excluding parameter with nil value: #{k}" } if v.nil?
+                    v.nil?
+                  end
+                  secret_param_hash = secret_param_hash.reject do |k, v|
+                    logger.debug { "Excluding secret parameter with nil value: #{k}" } if v.nil?
+                    v.nil?
+                  end
+
+                  project.spec.resource_templates.each_with_index do |pair, i|
+                    template_name, template = *pair
+                    logger.debug { "Processing template '#{template_name}' (#{i+1}/#{project.spec.resource_templates.size})" }
+                    resource_yml = template.render(
+                      template: template_name,
+                      kubetruth_namespace: kubeapi.namespace,
+                      mapping_namespace: namespace,
+                      project: project.name,
+                      project_heirarchy: project.heirarchy,
+                      debug: logger.debug?,
+                      parameters: config_param_hash,
+                      parameter_origins: config_origins,
+                      secrets: secret_param_hash,
+                      secret_origins: secret_origins,
+                      templates: Template::TemplatesDrop.new(project: project.name, environment: project.spec.environment),
+                      context: project.spec.context
+                    )
+
+                    template_id = "mapping: #{project.spec.name}, mapping_namespace: #{namespace}, project: #{project.name}, template: #{template_name}"
+                    parsed_ymls = YAML.safe_load_stream(resource_yml, template_id)
+                    logger.debug {"Skipping empty template"} if parsed_ymls.empty?
+                    parsed_ymls.each do |parsed_yml|
+                      async(annotation: "Apply Template: #{template_id}") do
+                        kube_apply(parsed_yml)
+                      end
+                    end
+
+                  end
+                end
               end
             end
-
           end
         end
       end.wait

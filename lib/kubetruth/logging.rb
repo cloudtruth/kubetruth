@@ -67,6 +67,14 @@ module Kubetruth
       sio&.clear
     end
 
+    def self.root_log_level=(level)
+      ::Logging.logger.root.level = level
+    end
+
+    def self.root_log_level
+      ::Logging.levelify(::Logging::LNAMES[::Logging.logger.root.level])
+    end
+
     def self.setup_logging(level: :info, color: true)
       init_logger
 
