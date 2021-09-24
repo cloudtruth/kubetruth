@@ -219,7 +219,7 @@ module Kubetruth
 
         result
 
-      rescue Liquid::Error => e
+      rescue StandardError => e
         msg = "Template failed to render with error message:\n"
         msg << (INDENT * 2) << e.message << "\n"
         if e.is_a?(Liquid::UndefinedVariable)

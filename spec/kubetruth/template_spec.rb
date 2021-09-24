@@ -430,8 +430,10 @@ module Kubetruth
 
       it "fails fast" do
         expect { described_class.new("{{foo") }.to raise_error(Kubetruth::Template::Error)
+        expect { described_class.new("{{+}}").render }.to raise_error(Kubetruth::Template::Error)
         expect { described_class.new("{{foo}}").render }.to raise_error(Kubetruth::Template::Error)
         expect { described_class.new("{{foo | nofilter}}").render(foo: "bar") }.to raise_error(Kubetruth::Template::Error)
+        expect { described_class.new("{{foo | nindent: 2}}").render(foo: 5.5) }.to raise_error(Kubetruth::Template::Error)
       end
 
       it "does procs" do
