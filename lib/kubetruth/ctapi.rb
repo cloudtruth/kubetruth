@@ -110,10 +110,12 @@ module Kubetruth
       project_id.to_s
     end
 
-    def parameters(project:, environment: "default")
+    def parameters(project:, environment: "default", tag: nil)
       env_id = environment_id(environment)
       proj_id = project_id(project)
-      result = apis[:projects].projects_parameters_list(proj_id, environment: env_id)
+      opts = {environment: env_id}
+      opts[:tag] = tag if tag.present?
+      result = apis[:projects].projects_parameters_list(proj_id, **opts)
       logger.debug do
         cleaned = result&.to_hash&.deep_dup
         cleaned&.[](:results)&.each do |param|

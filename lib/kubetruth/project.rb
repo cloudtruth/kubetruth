@@ -5,7 +5,7 @@ module Kubetruth
 
     def parameters
       @parameters ||= begin
-        params = collection.ctapi.parameters(project: name, environment: spec.environment)
+        params = collection.ctapi.parameters(project: name, environment: spec.environment, tag: spec.tag)
         logger.debug do
           cleaned = params.deep_dup
           cleaned.each {|p| p.value = "<masked>" if p.secret}

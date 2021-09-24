@@ -12,7 +12,7 @@ module Kubetruth
     let(:ctapi) {
       # Spin up a local dev server and create a user with an api key to use
       # here, or use cloudtruth actual
-      key = ENV['CLOUDTRUTH_API_KEY']
+      key = "JyF0h8u9.xn0iqbVf5r7djhXPWG1jnxdtSVEdSubo" # ENV['CLOUDTRUTH_API_KEY']
       url = ENV['CLOUDTRUTH_API_URL'] || "https://api.cloudtruth.io" # "https://localhost:8000"
       instance = ::Kubetruth::CtApi.new(api_key: key, api_url: url)
       instance.client.config.debugging = false # ssl debug logging is messy, so only turn this on as desired
@@ -132,6 +132,28 @@ module Kubetruth
         params = ctapi.parameters(project: @project_name)
         expect(params).to match array_including(Parameter)
         expect(params.collect(&:key)).to eq(["one", "two"])
+      end
+
+      it "gets parameters by tag" do
+        one_param_value = ctapi.apis[:projects].projects_parameters_values_create(@one_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "defaultone"))
+        two_param_value = ctapi.apis[:projects].projects_parameters_values_create(@two_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "defaulttwo"))
+        params = ctapi.parameters(project: @project_name)
+        expect(params.collect(&:value).sort).to eq(["defaultone", "defaulttwo"])
+
+        tag = ctapi.apis[:environments].environments_tags_list(ctapi.environment_id("default"), name: "test_tag").results.first
+        if tag
+          ctapi.apis[:environments].environments_tags_partial_update(ctapi.environment_id("default"), tag.id, patched_tag: CloudtruthClient::PatchedTag.new(timestamp: Time.now))
+        else
+          tag = ctapi.apis[:environments].environments_tags_create(ctapi.environment_id("default"), CloudtruthClient::TagCreate.new(name: "test_tag"))
+        end
+
+        ctapi.apis[:projects].projects_parameters_values_partial_update(one_param_value.id, @one_param.id, @project_id, patched_value: CloudtruthClient::PatchedValue.new(internal_value: "newdefaultone"))
+
+        params = ctapi.parameters(project: @project_name)
+        expect(params.collect(&:value).sort).to eq(["defaulttwo", "newdefaultone"])
+
+        params = ctapi.parameters(project: @project_name, tag: "test_tag")
+        expect(params.collect(&:value).sort).to eq(["defaultone", "defaulttwo"])
       end
 
       it "doesn't expose secret in debug log" do

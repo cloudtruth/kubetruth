@@ -27,6 +27,9 @@ spec:
         environment:
           type: string
           description: A environment to use to determine parameter values
+        tag:
+          type: string
+          description: The version tag used when querying for parameters
         skip:
           type: boolean
           description: Skips the generation of resources for the selected projects.  Useful for excluding projects that should only be included into others.
