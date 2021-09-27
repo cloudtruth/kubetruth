@@ -16,6 +16,7 @@ module Kubetruth
 
     def initialize(dry_run: false)
       @dry_run = dry_run
+      @wrote_crds = false
     end
 
     def kubeapi
@@ -28,6 +29,12 @@ module Kubetruth
     end
 
     def watch_crds_to_interrupt(&block)
+      if @wrote_crds
+        logger.info {"Skipping Poller sleep to handle the recent application of kubetruth CRDs"}
+        @wrote_crds = false
+        return
+      end
+
       begin
         begin
           watcher = kubeapi.watch_project_mappings
@@ -256,11 +263,17 @@ module Kubetruth
           # work as there a bunch of fields we don't control, so we just rely on
           # the server-side apply to do the right thing.
           logger.info "Updating kubernetes resource #{ident}"
-          kubeapi.apply_resource(parsed_yml) unless @dry_run
+          unless @dry_run
+            applied_resource = kubeapi.apply_resource(parsed_yml)
+            @wrote_crds = true if kind == "ProjectMapping" && applied_resource.metadata&.resourceVersion != resource.metadata&.resourceVersion
+          end
         end
       rescue Kubeclient::ResourceNotFoundError
         logger.info "Creating kubernetes resource #{ident}"
-        kubeapi.apply_resource(parsed_yml) unless @dry_run
+        unless @dry_run
+          kubeapi.apply_resource(parsed_yml)
+          @wrote_crds = true if kind == "ProjectMapping"
+        end
       end
     end
 

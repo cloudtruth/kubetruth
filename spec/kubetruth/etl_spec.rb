@@ -131,6 +131,28 @@ module Kubetruth
 
       end
 
+      it "skips next sleep when crds get written" do
+        watcher = double()
+        expect(@kubeapi).to receive(:watch_project_mappings).and_return(watcher)
+        allow(watcher).to receive(:each)
+        allow(watcher).to receive(:finish)
+        expect(etl).to receive(:interruptible_sleep).and_raise(ForceExit)
+
+        count = 0
+        begin
+          etl.with_polling(0.2) do
+            if count == 0
+              etl.instance_variable_set(:@wrote_crds, true)
+            end
+            count += 1
+          end
+        rescue ForceExit
+        end
+
+        expect(etl.instance_variable_get(:@wrote_crds)).to eq(false)
+        expect(count).to eq(2)
+      end
+
     end
 
     describe "#load_config" do
@@ -246,6 +268,7 @@ module Kubetruth
         expect(@kubeapi).to receive(:apply_resource).with(parsed_yml)
         etl.kube_apply(parsed_yml)
         expect(Logging.contents).to match(/Creating kubernetes resource/)
+        expect(etl.instance_variable_get(:@wrote_crds)).to eq(false)
       end
 
       it "calls to kube to update existing resource" do
@@ -265,6 +288,7 @@ module Kubetruth
         expect(@kubeapi).to receive(:apply_resource).with(parsed_yml)
         etl.kube_apply(parsed_yml)
         expect(Logging.contents).to match(/Updating kubernetes resource/)
+        expect(etl.instance_variable_get(:@wrote_crds)).to eq(false)
       end
 
       it "skips call to kube for existing resource not under management" do
@@ -322,6 +346,49 @@ module Kubetruth
         expect(@kubeapi).to receive(:apply_resource).with(parsed_yml)
         etl.kube_apply(parsed_yml)
         expect(Logging.contents).to match(/Creating kubernetes resource/)
+      end
+
+      it "registers project mapping writes on new resource" do
+        resource_yml = <<~EOF
+          apiVersion: v1
+          kind: ProjectMapping
+          metadata:
+            name: "pm1"
+          spec:
+            "scope": "override"
+        EOF
+        parsed_yml = YAML.load(resource_yml)
+        resource = Kubeclient::Resource.new(parsed_yml.merge(metadata: {resourceVersion: "123"}))
+
+        expect(etl.instance_variable_get(:@wrote_crds)).to eq(false)
+        expect(@kubeapi).to receive(:get_resource).and_raise(Kubeclient::ResourceNotFoundError.new(1, "", 2))
+        expect(@kubeapi).to receive(:apply_resource).and_return(resource)
+        etl.kube_apply(parsed_yml)
+        expect(etl.instance_variable_get(:@wrote_crds)).to eq(true)
+      end
+
+      it "registers project mapping writes on updated resource" do
+        resource_yml = <<~EOF
+          apiVersion: v1
+          kind: ProjectMapping
+          metadata:
+            name: "pm1"
+          spec:
+            "scope": "override"
+        EOF
+        parsed_yml = YAML.load(resource_yml)
+        resource = Kubeclient::Resource.new(parsed_yml.merge(metadata: {resourceVersion: "123"}))
+
+        expect(etl.instance_variable_get(:@wrote_crds)).to eq(false)
+        expect(@kubeapi).to receive(:get_resource).and_return(resource)
+        expect(@kubeapi).to receive(:apply_resource).and_return(resource)
+        etl.kube_apply(parsed_yml)
+        expect(etl.instance_variable_get(:@wrote_crds)).to eq(false)
+
+        resource.metadata.resourceVersion = "456"
+        expect(@kubeapi).to receive(:apply_resource).and_return(resource)
+        etl.kube_apply(parsed_yml)
+        expect(etl.instance_variable_get(:@wrote_crds)).to eq(true)
       end
 
     end
