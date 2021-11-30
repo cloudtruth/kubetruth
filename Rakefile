@@ -221,6 +221,8 @@ end
 
 task :console do
   local = get_var(:local, prompt: false, required: false, default: false)
+  image_name = get_var(:image_name, default: "#{APP[:name]}", prompt: false, required: false)
+
   if local
     $LOAD_PATH.unshift File.expand_path("lib", __dir__)
     require "bundler/setup"
@@ -229,11 +231,16 @@ task :console do
     Pry.start
   else
     Rake::Task["build_development"].invoke
-    sh "docker run -it kubetruth:development console"
+    sh "docker run -it #{image_name}:development console"
   end
 end
 
-file "#{CLIENT_DIR}/Gemfile" => "openapi.yml" do
+file "#{CLIENT_DIR}/openapi.yml" do
+  mkdir_p "client"
+  File.write("#{CLIENT_DIR}/openapi.yml",  URI.parse("https://api.cloudtruth.io/api/schema/").read)
+end
+
+file "#{CLIENT_DIR}/Gemfile" => "#{CLIENT_DIR}/openapi.yml" do
 
   if ENV['MINIKUBE_ACTIVE_DOCKERD']
     puts "Cannot generate the rest client in the minikube docker environment"
@@ -241,13 +248,12 @@ file "#{CLIENT_DIR}/Gemfile" => "openapi.yml" do
     exit 1
   end
 
-  rm_rf "client"
   # may need --user #{Process.uid}:#{Process.gid} for some Hosts
   sh *%W[
     docker run --rm
       -v #{Dir.pwd}:/data
       openapitools/openapi-generator-cli generate
-        -i /data/openapi.yml
+        -i /data/client/openapi.yml
         -g ruby
         -o /data/client
         --library faraday
