@@ -126,6 +126,29 @@ module Kubetruth
         Base64.strict_decode64(str)
       end
 
+      def deflate(hash, delimiter='.')
+        result = {}
+
+        hash.each do |k, v|
+          case v
+            when String, Numeric, TrueClass, FalseClass
+              result[k] = v
+            when Array
+              result[k] = JSON.generate(v)
+            when Hash
+              m = deflate(v, delimiter)
+              m.each do |mk, mv|
+                result["#{k}#{delimiter}#{mk}"] = mv
+              end
+            else
+              result[k] = v.to_s
+          end
+        end
+
+        return result
+      end
+
+
       def inflate(map, delimiter='\.')
         result = {}
         map.each do |k, v|

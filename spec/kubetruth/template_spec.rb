@@ -235,6 +235,60 @@ module Kubetruth
 
       end
 
+      describe "#deflate" do
+
+        it "works with empty" do
+          expect(inflate({})).to eq({})
+        end
+
+        it "adds structure using delimiter" do
+          result = {
+            "topstr" => "hi",
+            "topnum" => 3,
+            "toptrue" => true,
+            "topfalse" => false,
+            "toplist" => "[1,2,3]",
+            "top.mid.bottom1" => 1,
+            "top.mid.bottom2" => 2,
+            "top.midval" => 3,
+            "other.someval" => 4
+          }
+          data = {
+            "topstr" => "hi",
+            "topnum" => 3,
+            "toptrue" => true,
+            "topfalse" => false,
+            "toplist" => [1, 2, 3],
+            "top" => {
+              "mid" => {
+                "bottom1" => 1,
+                "bottom2" => 2
+              },
+              "midval" => 3
+            },
+            "other" => {
+              "someval" => 4
+            }
+          }
+          expect(deflate(data)).to eq(result)
+        end
+
+        it "can use other delimiter" do
+          result = {
+            "top/mid/bottom1" => 1
+          }
+          data = {
+            "top" => {
+              "mid" => {
+                "bottom1" => 1
+              }
+            }
+          }
+          expect(deflate(data, "/")).to eq(result)
+        end
+
+      end
+
       describe "#typify" do
 
         it "works with empty" do
