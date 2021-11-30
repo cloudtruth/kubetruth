@@ -12,7 +12,7 @@ module Kubetruth
     let(:ctapi) {
       # Spin up a local dev server and create a user with an api key to use
       # here, or use cloudtruth actual
-      key = "JyF0h8u9.xn0iqbVf5r7djhXPWG1jnxdtSVEdSubo" # ENV['CLOUDTRUTH_API_KEY']
+      key = ENV['CLOUDTRUTH_API_KEY']
       url = ENV['CLOUDTRUTH_API_URL'] || "https://api.cloudtruth.io" # "https://localhost:8000"
       instance = ::Kubetruth::CtApi.new(api_key: key, api_url: url)
       instance.client.config.debugging = false # ssl debug logging is messy, so only turn this on as desired
@@ -142,7 +142,7 @@ module Kubetruth
 
         tag = ctapi.apis[:environments].environments_tags_list(ctapi.environment_id("default"), name: "test_tag").results.first
         if tag
-          ctapi.apis[:environments].environments_tags_partial_update(ctapi.environment_id("default"), tag.id, patched_tag: CloudtruthClient::PatchedTag.new(timestamp: Time.now))
+          ctapi.apis[:environments].environments_tags_partial_update(ctapi.environment_id("default"), tag.id, patched_tag: CloudtruthClient::PatchedTagUpdate.new(timestamp: Time.now))
         else
           tag = ctapi.apis[:environments].environments_tags_create(ctapi.environment_id("default"), CloudtruthClient::TagCreate.new(name: "test_tag"))
         end
@@ -195,14 +195,14 @@ module Kubetruth
 
       before(:each) do
         create_project_fixture
-        @one_tmpl = ctapi.apis[:projects].projects_templates_create(@project_id, CloudtruthClient::TemplateCreate.new(name: "one", body: "tmpl1 {{one}}"))
-        @two_tmpl = ctapi.apis[:projects].projects_templates_create(@project_id, CloudtruthClient::TemplateCreate.new(name: "two", body: "tmpl2 {{two}}"))
+        @one_tmpl = ctapi.apis[:projects].projects_templates_create(@project_id, CloudtruthClient::TemplateCreate.new(name: "tone", body: "tmpl1 {{one}}"))
+        @two_tmpl = ctapi.apis[:projects].projects_templates_create(@project_id, CloudtruthClient::TemplateCreate.new(name: "ttwo", body: "tmpl2 {{two}}"))
       end
 
       it "gets templates" do
         templates = ctapi.templates(project: @project_name)
-        expect(templates).to match hash_including("one", "two")
-        expect(ctapi.template_names(project: @project_name)).to eq(["one", "two"])
+        expect(templates).to match hash_including("tone", "ttwo")
+        expect(ctapi.template_names(project: @project_name)).to eq(["tone", "ttwo"])
       end
 
       it "memoizes templates " do
@@ -213,7 +213,7 @@ module Kubetruth
       describe "#template_id" do
 
         it "gets id" do
-          expect(ctapi.template_id("one", project: @project_name)).to be_present
+          expect(ctapi.template_id("tone", project: @project_name)).to be_present
           expect(Logging.contents).to_not match(/Unknown template, retrying/)
         end
 
@@ -227,16 +227,16 @@ module Kubetruth
 
         it "gets template" do
           ctapi.apis[:projects].projects_parameters_values_create(@one_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "defaultone"))
-          expect(ctapi.template("one", project: @project_name, environment: "default")).to eq("tmpl1 defaultone")
+          expect(ctapi.template("tone", project: @project_name, environment: "default")).to eq("tmpl1 defaultone")
           expect(Logging.contents).to match(/Template Retrieve query result.*tmpl1 defaultone/)
         end
 
         it "masks secrets in log for templates that reference them" do
           @three_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "three", secret: true))
           ctapi.apis[:projects].projects_parameters_values_create(@three_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "defaultthree"))
-          @three_tmpl = ctapi.apis[:projects].projects_templates_create(@project_id, CloudtruthClient::TemplateCreate.new(name: "three", body: "tmpl3 {{three}}"))
+          @three_tmpl = ctapi.apis[:projects].projects_templates_create(@project_id, CloudtruthClient::TemplateCreate.new(name: "tthree", body: "tmpl3 {{three}}"))
 
-          expect(ctapi.template("three", project: @project_name, environment: "default")).to eq("tmpl3 defaultthree")
+          expect(ctapi.template("tthree", project: @project_name, environment: "default")).to eq("tmpl3 defaultthree")
           expect(Logging.contents).to_not match(/Template Retrieve query result.*tmpl3 defaultthree/)
           expect(Logging.contents).to match(/Template Retrieve query result.*<masked>/)
         end
