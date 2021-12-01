@@ -305,18 +305,22 @@ EOF
 
 To setup an environment per namespace:
 ```
-# Disable output from the primary (optional)
+# Optionally disable output from the primary.  This is only neccessary if
+# kubetruth is installed to a namespace that you don't want to generate
+# resources in
 kubectl patch pm kubetruth-root --type json --patch '[{"op": "replace", "path": "/spec/skip", "value": "true"}]'
 
 # Tag each namespace that you'd like to have its own environment
+# The name should be the same name as the primary root mapping created by the
+# kubetruth installer
 kubectl --namespace <your_namespace> apply -f - <<EOF
 apiVersion: kubetruth.cloudtruth.com/v1
 kind: ProjectMapping
 metadata:
-  name: kubetruth-root
+  name: <your_root_mapping_name>
 spec:
   scope: root
-  environment: loadtest
+  environment: <your_environment>
   skip: false
 EOF
 ```
