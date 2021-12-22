@@ -1,6 +1,7 @@
 1.1.0 (12/22/2021)
 ------------------
 
+* rename mconcat to merge [be0b068](../../commit/be0b068)
 * add active_templates in crd to make it easier to selectively enable of templates [3399bce](../../commit/3399bce)
 * make typify handle collections, add mconcat and re_replace filters [ffc8563](../../commit/ffc8563)
 * fix multi env/ns docs [0f3c4ee](../../commit/0f3c4ee)

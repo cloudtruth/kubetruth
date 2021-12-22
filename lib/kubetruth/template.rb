@@ -192,7 +192,7 @@ module Kubetruth
         end
       end
 
-      def mconcat(lhs_map, rhs_map)
+      def merge(lhs_map, rhs_map)
         lhs_map.merge(rhs_map)
       end
 

@@ -376,13 +376,13 @@ module Kubetruth
 
       end
 
-      describe "#mconcat" do
+      describe "#merge" do
 
         it "merges two maps" do
           m1 = {"x" => "y", "a" => "z"}
           m2 = {"a" => "b", "y" => "z"}
-          expect(mconcat(m1, m2)).to eq(m1.merge(m2))
-          expect(described_class.new("{{ m1 | mconcat: m2 | to_json }}").render(m1: m1, m2: m2)).to eq(m1.merge(m2).to_json)
+          expect(merge(m1, m2)).to eq(m1.merge(m2))
+          expect(described_class.new("{{ m1 | merge: m2 | to_json }}").render(m1: m1, m2: m2)).to eq(m1.merge(m2).to_json)
         end
 
       end

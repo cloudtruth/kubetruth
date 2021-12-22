@@ -189,7 +189,7 @@ ones:
 | `inflate` |  Converts a map of key/values into a nested data structure based on a delimiter in the key name, e.g. `{foo.baz.bum: 2}` => `{foo: {bar: {baz: 2}}}` Inverse of deflate|
 | `deflate` |  Converts a nested data structure into a single level map using a delimiter to indicate level in the key name, e.g. `{foo: {bar: {baz: 2}}}` => `{foo.baz.bum: 2}`  Inverse of inflate |
 | `typify` |  Converts string values into primitive types (int, float, bool) where applicable for a nested data structure |
-| `mconcat` |  Combines two hashes into one, a.l.a ruby merge |
+| `merge` |  Combines two hashes into one, a.l.a ruby merge |
 | `re_replace` |  Regexp search and replace, a.l.a ruby gsub, e.g. `"foo" | re_replace: "o+", "X"` |
 
 The default `resource_templates` make use of the `context` attribute to allow
