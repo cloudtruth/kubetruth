@@ -148,7 +148,6 @@ module Kubetruth
         return result
       end
 
-
       def inflate(map, delimiter='\.')
         result = {}
         map.each do |k, v|
@@ -166,12 +165,22 @@ module Kubetruth
         result
       end
 
-      def typify(data)
+      def typify(data, parser="json")
         case data
           when Hash
             Hash[data.collect {|k,v| [k, typify(v)] }]
           when Array
             data.collect {|v| typify(v) }
+          when /^\s*\[.*\]\s*$/, /^\s*\{.*\}\s*$/
+            parsed = case parser
+            when /json/i
+              JSON.load(data)
+            when /ya?ml/i
+              YAML.load(data)
+            else
+              raise "Invalid typify parser"
+            end
+            typify(parsed)
           when /^[0-9]+$/
             data.to_i
           when /^[0-9\.]+$/
@@ -181,6 +190,21 @@ module Kubetruth
           else
             data
         end
+      end
+
+      def mconcat(lhs_map, rhs_map)
+        lhs_map.merge(rhs_map)
+      end
+
+      REGEXP_FLAGS = {
+        'i' => Regexp::IGNORECASE,
+        'm' => Regexp::MULTILINE,
+        'e' => Regexp::EXTENDED
+      }
+
+      def re_replace(string, pattern, replacement, flags="")
+        allflags = flags.chars.inject(0) {|sum, n| sum | REGEXP_FLAGS[n] }
+        string.gsub(Regexp.new(pattern, allflags), replacement)
       end
 
     end
