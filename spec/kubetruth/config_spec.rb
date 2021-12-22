@@ -42,6 +42,27 @@ module Kubetruth
       it "sets mappings" do
         expect(config.instance_variable_get(:@project_mapping_crds)).to eq([])
       end
+ 
+    end
+
+    describe "templates" do
+
+      it "returns all templates when active_templates nil" do
+        spec = described_class::ProjectSpec.new(
+          resource_templates: {"name1" => "template1"}
+        )
+
+        expect(spec.templates).to equal(spec[:resource_templates])
+      end
+
+      it "filters by active_templates" do
+        spec = described_class::ProjectSpec.new(
+          active_templates: %w[name2 name3],
+          resource_templates: {"name1" => "template1", "name2" => "template2", "name3" => "template3", "name4" => "template4"}
+        )
+
+        expect(spec.templates.keys).to eq(["name2" , "name3"])
+      end
 
     end
 

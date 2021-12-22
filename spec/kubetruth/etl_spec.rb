@@ -419,7 +419,7 @@ module Kubetruth
 
       it "renders multiple templates" do
         allow(etl).to receive(:load_config).and_yield(@ns, config)
-
+        
         expect(collection).to receive(:names).and_return(["proj1"])
 
         expect(etl).to receive(:kube_apply).with(hash_including("kind" => "ConfigMap"))
@@ -427,6 +427,19 @@ module Kubetruth
 
         etl.apply()
       end
+
+      it "renders only active templates" do
+        config.root_spec.active_templates = ["secret"]
+        allow(etl).to receive(:load_config).and_yield(@ns, config)
+
+        expect(collection).to receive(:names).and_return(["proj1"])
+
+        expect(etl).to_not receive(:kube_apply).with(hash_including("kind" => "ConfigMap"))
+        expect(etl).to receive(:kube_apply).with(hash_including("kind" => "Secret"))
+
+        etl.apply()
+      end
+
 
       it "renders a stream of templates" do
         config.root_spec.resource_templates = {"name1" => Template.new("stream_item: one\n---\nstream_item: two\n")}
@@ -572,10 +585,7 @@ module Kubetruth
     describe "default templates" do
 
       let(:collection) { ProjectCollection.new }
-      let(:root_spec_crd) {
-        default_root_spec = YAML.load_file(File.expand_path("../../helm/kubetruth/values.yaml", __dir__)).deep_symbolize_keys
-        default_root_spec[:projectMappings][:root]
-      }
+      let(:root_spec_crd) { default_root_spec }
       let(:config) {
         Kubetruth::Config.new([root_spec_crd])
       }

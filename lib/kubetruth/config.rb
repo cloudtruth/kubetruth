@@ -18,6 +18,7 @@ module Kubetruth
       :log_level,
       :included_projects,
       :context,
+      :active_templates,
       :resource_templates,
       keyword_init: true
     ) do
@@ -42,6 +43,11 @@ module Kubetruth
         end
       end
 
+      def templates
+        return resource_templates if active_templates.nil?
+        resource_templates.select {|k, v| active_templates.include?(k) }
+      end
+  
     end
 
     DEFAULT_SPEC = {
@@ -55,6 +61,7 @@ module Kubetruth
       log_level: nil,
       included_projects: [],
       context: {},
+      active_templates: nil,
       resource_templates: []
     }.freeze
 

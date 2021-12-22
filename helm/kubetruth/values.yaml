@@ -108,6 +108,7 @@ projectMappings:
       resource_name: "{{ project | dns_safe }}"
       resource_namespace: "{{ mapping_namespace }}"
       skip_secrets: false
+    active_templates:
     resource_templates:
       configmap: |
         {%- if parameters.size > 0 %}

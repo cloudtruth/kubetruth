@@ -384,7 +384,7 @@ module Kubetruth
         expect(crds.keys.first).to eq(kubeapi.namespace)
         expect(crds.values.first).to match(hash_including("#{helm_name}-root"))
         expect(crds.values.first["#{helm_name}-root"][:name]).to eq("#{helm_name}-root")
-        expect(crds.values.first["#{helm_name}-root"].keys.sort).to eq((default_root_spec.keys << :name).sort)
+        expect(default_root_spec.keys).to include(*crds.values.first["#{helm_name}-root"].keys)
       end
 
       it "can watch project mappings" do

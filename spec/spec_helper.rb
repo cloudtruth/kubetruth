@@ -75,7 +75,7 @@ RSpec.configure do |config|
   end
 
   config.after(:each) do |example|
-    if example.exception
+    if ENV['DEBUG'] || example.exception
       puts
       puts "Debug log for failing spec: #{example.full_description}"
       puts Kubetruth::Logging.contents

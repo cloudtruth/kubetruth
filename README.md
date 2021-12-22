@@ -52,6 +52,7 @@ Parameterize the helm install with `--set *` or `--values yourConfig.yaml` to co
 | projectMappings.root.log_level | Sets the kubetruth logging level while handling the selected projects | enum(debug, info, warn, error, fatal) | `as set by cli` | no |
 | projectMappings.root.included_projects | Include the parameters from other projects into the selected ones.  This can be recursive in a depth first fashion, so if A imports B and B imports C, then A will get B's and C's parameters.  For key conflicts, if A includes B and B includes C, then the precendence is A overrides B overrides C.  If A includes \[B, C], then the precendence is A overrides C overrides B. | list | [] | no |
 | projectMappings.root.context | Additional variables made available to the resource templates.  Can also be templates | map | [default](helm/kubetruth/values.yaml#L93-L129) | no |
+| projectMappings.root.active_templates | Selects the templates that should be active, includes all templates when nil, none when empty | list | nil | no |
 | projectMappings.root.resource_templates | The templates to use in generating kubernetes resources (ConfigMap/Secrets/other) | map | [default](helm/kubetruth/values.yaml#L93-L129) | no |
 | projectMappings.<override_name>.* | Define override mappings to override settings from the root selector for specific projects. When doing this on the command-line (e.g. for `helm install`), it may be more convenient to use `--values <file>` instead of `--set` for large data sets | map | {} | no |
 
@@ -185,8 +186,11 @@ ones:
 | `encode64` |  The argument bas64 encoded | 
 | `decode64` |  The argument bas64 decoded |
 | `sha256` |  The sha256 digest of the argument |
-| `inflate` |  Converts a map of key/values into a nested data structure based on a delimiter in the key name, e.g. `{foo.baz.bum: 2}` => `{foo: {bar: {baz: 2}}}` |
+| `inflate` |  Converts a map of key/values into a nested data structure based on a delimiter in the key name, e.g. `{foo.baz.bum: 2}` => `{foo: {bar: {baz: 2}}}` Inverse of deflate|
+| `deflate` |  Converts a nested data structure into a single level map using a delimiter to indicate level in the key name, e.g. `{foo: {bar: {baz: 2}}}` => `{foo.baz.bum: 2}`  Inverse of inflate |
 | `typify` |  Converts string values into primitive types (int, float, bool) where applicable for a nested data structure |
+| `mconcat` |  Combines two hashes into one, a.l.a ruby merge |
+| `re_replace` |  Regexp search and replace, a.l.a ruby gsub, e.g. `"foo" | re_replace: "o+", "X"` |
 
 The default `resource_templates` make use of the `context` attribute to allow
 simpler modification of some common fields.  These include:

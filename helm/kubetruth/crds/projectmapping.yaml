@@ -48,6 +48,11 @@ spec:
                   type: object
                   additionalProperties: true
                   description: Context variables that can be used by templates.  The values can also be templates
+                active_templates:
+                  type: array
+                  items:
+                    type: string
+                  description: Selects the templates that should be active, includes all templates when nil, none when empty
                 resource_templates:
                   type: object
                   additionalProperties:
