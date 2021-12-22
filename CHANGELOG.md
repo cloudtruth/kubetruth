@@ -1,3 +1,33 @@
+1.1.0 (12/22/2021)
+------------------
+
+* add active_templates in crd to make it easier to selectively enable of templates [3399bce](../../commit/3399bce)
+* make typify handle collections, add mconcat and re_replace filters [ffc8563](../../commit/ffc8563)
+* fix multi env/ns docs [0f3c4ee](../../commit/0f3c4ee)
+* update test fixtures for new openapi spec [230f662](../../commit/230f662)
+* add liquid filter deflate for completeness (inverse of inflate) [1c31661](../../commit/1c31661)
+* update client generation [29b9ab7](../../commit/29b9ab7)
+* add security policy [82ebf82](../../commit/82ebf82)
+* update config action [e8880f7](../../commit/e8880f7)
+* skip sleep after a CRD write so the next iteration can immediately process CRD changes [5751ae4](../../commit/5751ae4)
+* catch more error types when rendering template to make it obvious the error is in a template [9036e07](../../commit/9036e07)
+* add support for gating parameter values by version tag [74c3cc6](../../commit/74c3cc6)
+* fix tests [3246b96](../../commit/3246b96)
+* enable setting of log level from project mapping crds [8cca242](../../commit/8cca242)
+* fix typo [095587c](../../commit/095587c)
+* preserve parameter types returned from cloudtruth api, update openapi [865f16f](../../commit/865f16f)
+* fix multiline secret asking [a055741](../../commit/a055741)
+* add the typify filter [0089877](../../commit/0089877)
+* fix title [6f272c2](../../commit/6f272c2)
+* add example for using kubetruth to generate CRDs that control kubetruth [25b09d3](../../commit/25b09d3)
+* make filter options explicitly named [9fef257](../../commit/9fef257)
+* format template error message so cause is up front [a61671c](../../commit/a61671c)
+* fix typo [1eee1f6](../../commit/1eee1f6)
+* show output in filebased example [18c9756](../../commit/18c9756)
+* add a file based configmap example [5f2a51b](../../commit/5f2a51b)
+* add the ability for the liquid tester cli to read template variables from a file [a09e02c](../../commit/a09e02c)
+* document restarts on configmap/secret changes [d917455](../../commit/d917455)
+
 1.0.4 (08/20/2021)
 ------------------
 
