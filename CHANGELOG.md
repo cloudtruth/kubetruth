@@ -1,7 +1,11 @@
-1.1.0 (12/22/2021)
+1.1.0 (01/04/2022)
 ------------------
 
-* rename mconcat to merge [be0b068](../../commit/be0b068)
+* fix typing due to api change [f3914d4](../../commit/f3914d4)
+* tweak dev environment [8a207a6](../../commit/8a207a6)
+* add example on using kubetruth to patch existing deployments [6da7071](../../commit/6da7071)
+* allow an alternate management label on kube resources [2315f9e](../../commit/2315f9e)
+* rename mconcat to merge [b66107a](../../commit/b66107a)
 * add active_templates in crd to make it easier to selectively enable of templates [3399bce](../../commit/3399bce)
 * make typify handle collections, add mconcat and re_replace filters [ffc8563](../../commit/ffc8563)
 * fix multi env/ns docs [0f3c4ee](../../commit/0f3c4ee)
