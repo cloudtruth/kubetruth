@@ -5,6 +5,9 @@ group :development do
   gem "rake"
   gem "pry"
   gem "pry-byebug"
+  gem "ruby-debug-ide"
+  gem "debase"
+  gem "solargraph"
 end
 
 # test dependencies

@@ -266,7 +266,8 @@ task :client => "#{CLIENT_DIR}/Gemfile"
 task :install do
   build_type = get_var(:build_type, prompt: false, required: false, default: "development")
   namespace = get_var(:namespace, prompt: false, required: false)
-  values_file = get_var(:values_file, prompt: false, required: false, default: "local/values.yaml")
+  values_file = get_var(:values_file, prompt: false, required: false)
+  helm_args = get_var(:helm_args, prompt: false, required: false)
 
   system("minikube version", [:out, :err] => "/dev/null") || fail("dev dependency not installed - minikube")
   system("minikube status", [:out, :err] => "/dev/null") || fail("dev dependency not running - minikube")
@@ -285,7 +286,9 @@ task :install do
 
   cmd = "helm install"
   cmd << " --create-namespace --namespace #{namespace}" if namespace
-  cmd << " --values #{values_file}" if File.exist?(values_file)
+  cmd << " --set image.repository=kubetruth --set image.tag=#{build_type} --set image.pullPolicy=Never"
+  cmd << " --values #{values_file}" if values_file && File.exist?(values_file)
+  cmd << " #{helm_args}"
   cmd << " kubetruth helm/kubetruth/"
   sh cmd
 end
