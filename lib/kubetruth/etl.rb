@@ -246,8 +246,6 @@ module Kubetruth
         namespace = parsed_yml["metadata"]["namespace"] = kubeapi.namespace
       end
 
-      kubeapi.set_managed(parsed_yml)
-
       ident = "'#{namespace}:#{kind}:#{name}'"
       logger.info("Applying kubernetes resource #{ident}")
 
@@ -265,6 +263,8 @@ module Kubetruth
           # the server-side apply to do the right thing.
           logger.info "Updating kubernetes resource #{ident}"
           unless @dry_run
+            # copy the existing managed labels when updating since labels get replaced, not merged
+            kubeapi.copy_managed(resource, parsed_yml)
             applied_resource = kubeapi.apply_resource(parsed_yml)
             @wrote_crds = true if kind == "ProjectMapping" && applied_resource.metadata&.resourceVersion != resource.metadata&.resourceVersion
           end
@@ -272,6 +272,8 @@ module Kubetruth
       rescue Kubeclient::ResourceNotFoundError
         logger.info "Creating kubernetes resource #{ident}"
         unless @dry_run
+          # Set managed labels when creating.
+          kubeapi.set_managed(parsed_yml)
           kubeapi.apply_resource(parsed_yml)
           @wrote_crds = true if kind == "ProjectMapping"
         end

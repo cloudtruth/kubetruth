@@ -24,6 +24,10 @@ module Kubetruth
 
     MANAGED_LABEL_KEY = "app.kubernetes.io/managed-by"
     MANAGED_LABEL_VALUE = "kubetruth"
+    # an alternate label in case user already uses managed-by, we may want to
+    # make it more specific for patch only behavior (vs full ownership)
+    EDITABLE_LABEL_KEY = "app.kubernetes.io/editable-by"
+    EDITABLE_LABEL_VALUE = "kubetruth"
 
     def initialize(namespace: nil, token: nil, api_url: nil)
 
@@ -88,13 +92,25 @@ module Kubetruth
 
     def under_management?(resource)
       labels = resource&.[]("metadata")&.[]("labels")
-      labels.nil? ? false : resource["metadata"]["labels"][MANAGED_LABEL_KEY] == MANAGED_LABEL_VALUE
+      return false if labels.nil?
+      result = labels[MANAGED_LABEL_KEY] == MANAGED_LABEL_VALUE
+      result ||= labels[EDITABLE_LABEL_KEY] == EDITABLE_LABEL_VALUE
+      return result
     end
 
     def set_managed(resource)
       resource["metadata"] ||= {}
       resource["metadata"]["labels"] ||= {}
       resource["metadata"]["labels"][MANAGED_LABEL_KEY] = MANAGED_LABEL_VALUE
+    end
+
+
+    def copy_managed(source, dest)
+      source_labels = source&.[]("metadata")&.[]("labels") || {}
+      dest["metadata"] ||= {}
+      dest["metadata"]["labels"] ||= {}
+      dest["metadata"]["labels"][MANAGED_LABEL_KEY] = MANAGED_LABEL_VALUE if source_labels[MANAGED_LABEL_KEY] == MANAGED_LABEL_VALUE
+      dest["metadata"]["labels"][EDITABLE_LABEL_KEY] = EDITABLE_LABEL_VALUE if source_labels[EDITABLE_LABEL_KEY] == EDITABLE_LABEL_VALUE
     end
 
     def get_resource(resource_name, name, namespace: nil, apiVersion: nil)

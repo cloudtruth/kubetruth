@@ -264,6 +264,13 @@ module Kubetruth
         expect(kubeapi.under_management?(resource)).to eq(true)
       end
 
+      it "handles alternate labels" do
+        resource = Kubeclient::Resource.new
+        resource.metadata = {}
+        resource.metadata.labels = {KubeApi::EDITABLE_LABEL_KEY => KubeApi::EDITABLE_LABEL_VALUE}
+        expect(kubeapi.under_management?(resource)).to eq(true)
+      end
+
     end
 
     describe "set_managed" do
@@ -288,6 +295,51 @@ module Kubetruth
         resource.metadata.labels = {KubeApi::MANAGED_LABEL_KEY => KubeApi::MANAGED_LABEL_VALUE}
         kubeapi.set_managed(resource)
         expect(resource.metadata.labels.to_h).to eq({KubeApi::MANAGED_LABEL_KEY.to_sym => KubeApi::MANAGED_LABEL_VALUE})
+      end
+
+    end
+
+    describe "copy_managed" do
+
+      it "handles empty labels" do
+        src, dest = Kubeclient::Resource.new, Kubeclient::Resource.new
+        kubeapi.copy_managed(src, dest)
+        expect(dest.metadata.labels.to_h).to eq({})
+      end
+
+      it "handles missing labels" do
+        src, dest = Kubeclient::Resource.new, Kubeclient::Resource.new
+        src.metadata = {}
+        src.metadata.labels = {foo: "bar"}
+        kubeapi.copy_managed(src, dest)
+        expect(dest.metadata.labels.to_h).to eq({})
+      end
+
+      it "handles managed label" do
+        src, dest = Kubeclient::Resource.new, Kubeclient::Resource.new
+        src = Kubeclient::Resource.new
+        src.metadata = {}
+        src.metadata.labels = {KubeApi::MANAGED_LABEL_KEY => KubeApi::MANAGED_LABEL_VALUE}
+        kubeapi.copy_managed(src, dest)
+        expect(dest.metadata.labels.to_h).to eq({KubeApi::MANAGED_LABEL_KEY.to_sym => KubeApi::MANAGED_LABEL_VALUE})
+      end
+
+      it "handles editable label" do
+        src, dest = Kubeclient::Resource.new, Kubeclient::Resource.new
+        src = Kubeclient::Resource.new
+        src.metadata = {}
+        src.metadata.labels = {KubeApi::EDITABLE_LABEL_KEY => KubeApi::EDITABLE_LABEL_VALUE}
+        kubeapi.copy_managed(src, dest)
+        expect(dest.metadata.labels.to_h).to eq({KubeApi::EDITABLE_LABEL_KEY.to_sym => KubeApi::EDITABLE_LABEL_VALUE})
+      end
+
+      it "skips labels with wrong value" do
+        src, dest = Kubeclient::Resource.new, Kubeclient::Resource.new
+        src = Kubeclient::Resource.new
+        src.metadata = {}
+        src.metadata.labels = {KubeApi::MANAGED_LABEL_KEY => "foo", KubeApi::EDITABLE_LABEL_KEY => "foo"}
+        kubeapi.copy_managed(src, dest)
+        expect(dest.metadata.labels.to_h).to eq({})
       end
 
     end
