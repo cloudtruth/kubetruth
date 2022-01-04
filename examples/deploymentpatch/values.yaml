@@ -1,0 +1,69 @@
+# Applying deployment resources requires additional permissions
+rbac:
+  additionalRoleRules:
+    - apiGroups: ["", "extensions", "apps"]
+      resources: ["deployments", "replicasets", "pods", "services"]
+      verbs: ["*"]
+
+# Setup the kubetruth CRD to ignore all projects except for the one named deploytest
+# For the deploytest project, get the resource template from the cloudtruth template named deployment
+projectMappings:
+
+  # Define the root project mapping, skipping all projects except for the
+  # example we care about
+  root:
+    scope: "root"
+    environment: default
+    skip: true
+
+  # Define an override project mapping to enable processing of a single project
+  # for this example.  This will also gain the default `resource_templates` for
+  # generating configmap and secret resource, but if not desired, those can be
+  # skipped by setting them to an empty string.
+  deploypatchtest:
+    scope: "override"
+    skip: false
+    project_selector: "^deploypatchtest$"
+    context:
+      config_version: "{{ parameters | sort | to_json | sha256 | slice: 0, 7 }}"
+      config_versioned_name: "{{ context.resource_name }}-{{ context.config_version }}"
+      resource_name: "{{ config_versioned_name }}"
+    resource_templates:
+      # no secrets in demo, so disable the template
+      secret: ""
+
+      # We change the default configmap template to name the configmap by a hash
+      # of its contents, and patch the deployment to reference this name.  This
+      # way, when the configmap changes, it triggers a deployment
+      # rollout/restart
+      configmap: |
+        {%- if parameters.size > 0 %}
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: "{{ context.config_versioned_name }}"
+          namespace: "{{ context.resource_namespace }}"
+          labels:
+            version: "{{ context.config_version }}"
+        data:
+          {%- for parameter in parameters %}
+          {{ parameter[0] | key_safe | stringify }}: {{ parameter[1] | stringify }}
+          {%- endfor %}
+        {%- endif %}
+        
+      # This templates patches an existing deployment to reference the versioned
+      # configmap name
+      patch-deployment: |
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: {{ context.resource_name }}
+          namespace: "{{ context.resource_namespace }}"
+        spec:
+          template:
+            spec:
+              containers:
+                - name: {{ context.resource_name }}
+                  envFrom:
+                    - configMapRef:
+                        name: {{ context.config_versioned_name }}

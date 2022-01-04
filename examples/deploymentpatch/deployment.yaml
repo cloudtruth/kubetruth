@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploypatchtest
+  labels:
+    app: deploypatchtest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deploypatchtest
+  template:
+    metadata:
+      labels:
+        app: deploypatchtest
+    spec:
+      containers:
+        - name: deploypatchtest
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: deploypatchtest
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: deploypatchtest
+data:
+  MY_ENV_HELLO: Hello Pre-Existing
+  MY_ENV_GOODBYE: Goodbye Pre-Existing
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: deploypatchtest
+spec:
+  selector:
+    app: deploypatchtest
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
