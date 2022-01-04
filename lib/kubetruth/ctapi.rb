@@ -134,9 +134,9 @@ module Kubetruth
         value = param.values.values.first&.value
         if ! value.nil?
           case param.type
-            when CloudtruthClient::ParameterTypeEnum::BOOL
+            when "boolean"
               value = (value == "true")
-            when CloudtruthClient::ParameterTypeEnum::INTEGER
+            when "integer"
               value = value.to_i
             else
               value = value.to_s

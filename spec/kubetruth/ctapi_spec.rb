@@ -179,8 +179,8 @@ module Kubetruth
       end
 
       it "gets types with parameters" do
-        bool_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "bool_param", type: CloudtruthClient::ParameterTypeEnum::BOOL))
-        int_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "int_param", type: CloudtruthClient::ParameterTypeEnum::INTEGER))
+        bool_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "bool_param", type: "boolean"))
+        int_param = ctapi.apis[:projects].projects_parameters_create(@project_id, CloudtruthClient::ParameterCreate.new(name: "int_param", type: "integer"))
         ctapi.apis[:projects].projects_parameters_values_create(bool_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "true"))
         ctapi.apis[:projects].projects_parameters_values_create(int_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "3"))
 

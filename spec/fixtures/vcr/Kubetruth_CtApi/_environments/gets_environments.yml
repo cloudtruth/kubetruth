@@ -10,7 +10,7 @@ http_interactions:
       Content-Type:
       - application/json
       User-Agent:
-      - kubetruth/1.0.4
+      - kubetruth/1.1.0
       Accept:
       - application/json
       Authorization:
@@ -23,7 +23,7 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Tue, 30 Nov 2021 15:11:44 GMT
+      - Tue, 04 Jan 2022 17:38:07 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -31,17 +31,17 @@ http_interactions:
       Connection:
       - keep-alive
       Set-Cookie:
-      - AWSALB=aBh9AH2dtomCvZak2vuPpFz2EXVSofoOKcm8F+9TTy3fp0e4lX/bhShWDYJFeysKoeO+pcyRhW4Z3RVNYfSgwzuR/XSwnVuyeAYg04XlGL8gilPueBLEwLAra+yi;
-        Expires=Tue, 07 Dec 2021 15:11:44 GMT; Path=/
-      - AWSALBCORS=aBh9AH2dtomCvZak2vuPpFz2EXVSofoOKcm8F+9TTy3fp0e4lX/bhShWDYJFeysKoeO+pcyRhW4Z3RVNYfSgwzuR/XSwnVuyeAYg04XlGL8gilPueBLEwLAra+yi;
-        Expires=Tue, 07 Dec 2021 15:11:44 GMT; Path=/; SameSite=None; Secure
-      - AWSALBTG=RxuyiZdYDTD+pVaz11lh5YHg7jFOMPQMVhnMA0lHovo5M+8AeOJCeMDpE10rLDYZDsN/qcm8zZ40SW7Sohfeo4Ltm1jWPRBJ0H63buDhzncfCGhY3qLt3tu1FJnJXUEYC1sQcfUSFW9Xh8SiptwD/VnbGfgff+nTXV/1/6kh3QHa;
-        Expires=Tue, 07 Dec 2021 15:11:44 GMT; Path=/
-      - AWSALBTGCORS=RxuyiZdYDTD+pVaz11lh5YHg7jFOMPQMVhnMA0lHovo5M+8AeOJCeMDpE10rLDYZDsN/qcm8zZ40SW7Sohfeo4Ltm1jWPRBJ0H63buDhzncfCGhY3qLt3tu1FJnJXUEYC1sQcfUSFW9Xh8SiptwD/VnbGfgff+nTXV/1/6kh3QHa;
-        Expires=Tue, 07 Dec 2021 15:11:44 GMT; Path=/; SameSite=None; Secure
-      - csrftoken=OOmGCq85UcgXHQUiX8sVuMXYKS9iPXm22RvGWNZ0pTL7abMLI6sdhhv0wRQi4d3U;
-        expires=Tue, 29 Nov 2022 15:11:44 GMT; Max-Age=31449600; Path=/; SameSite=Lax
-      - sessionid=kpwv4vc14vindnpr2euzc9vunc3g1nn8; expires=Tue, 14 Dec 2021 15:11:44
+      - AWSALB=Eu//OoaTZ8QY4rY01u78fa89fy/76Cl6bOpQNBn7+8m8m+rIyagTiXObYgJlk4xdLonszvMxurPXs/UiWbdd1kbn7NxsXU5UMX/ytIrdRox2jVB4YvXJzWiClFM9;
+        Expires=Tue, 11 Jan 2022 17:38:06 GMT; Path=/
+      - AWSALBCORS=Eu//OoaTZ8QY4rY01u78fa89fy/76Cl6bOpQNBn7+8m8m+rIyagTiXObYgJlk4xdLonszvMxurPXs/UiWbdd1kbn7NxsXU5UMX/ytIrdRox2jVB4YvXJzWiClFM9;
+        Expires=Tue, 11 Jan 2022 17:38:06 GMT; Path=/; SameSite=None; Secure
+      - AWSALBTG=Mn/fyzmDg9+0dt+a3yfPboFdjolCpxml7IWQ3ISvyBA6PLlcFVgc4QzYrsXia68wKDppyKwIY0j1y8KejG37csQ4ew/s9dbtq3IxTndy4CxB4MtqzH6PjElp3c3uQlAdyIj0NL5RwrYQ9Z5GuTTi137LyhU2Cpu0cHqXprRcQb1V;
+        Expires=Tue, 11 Jan 2022 17:38:06 GMT; Path=/
+      - AWSALBTGCORS=Mn/fyzmDg9+0dt+a3yfPboFdjolCpxml7IWQ3ISvyBA6PLlcFVgc4QzYrsXia68wKDppyKwIY0j1y8KejG37csQ4ew/s9dbtq3IxTndy4CxB4MtqzH6PjElp3c3uQlAdyIj0NL5RwrYQ9Z5GuTTi137LyhU2Cpu0cHqXprRcQb1V;
+        Expires=Tue, 11 Jan 2022 17:38:06 GMT; Path=/; SameSite=None; Secure
+      - csrftoken=ZVqxy05i3Bfw4uQrWvoXjbQ1PdlAhHJaoOVMdtRfAYLu6S2WmdYf5dO4FpKy07Ta;
+        expires=Tue, 03 Jan 2023 17:38:07 GMT; Max-Age=31449600; Path=/; SameSite=Lax
+      - sessionid=m6trowh0wam7frx5q9tyuec8gjdt2wer; expires=Tue, 18 Jan 2022 17:38:07
         GMT; Max-Age=1209600; Path=/; Secure
       Server:
       - gunicorn
@@ -55,13 +55,15 @@ http_interactions:
       - nosniff
       Referrer-Policy:
       - same-origin
+      Cross-Origin-Opener-Policy:
+      - same-origin
     body:
       encoding: UTF-8
       string: '{"count":9,"next":null,"previous":null,"results":[{"url":"https://api.cloudtruth.io/api/v1/environments/e8bc190d-0354-4e66-91c9-64501e501ec5/","id":"e8bc190d-0354-4e66-91c9-64501e501ec5","name":"default","description":"The
-        auto-generated default environment.","parent":null,"children":["https://api.cloudtruth.io/api/v1/environments/c4de304d-5dd4-4a41-80ec-9a469f1aa4f5/","https://api.cloudtruth.io/api/v1/environments/c99d6ab9-4674-4f76-bb43-da0b19124e18/","https://api.cloudtruth.io/api/v1/environments/ef133a2e-3c9c-4229-a509-e56332baff40/","https://api.cloudtruth.io/api/v1/environments/cde7cf9d-8bf2-46cb-9e97-dee9b99e4335/","https://api.cloudtruth.io/api/v1/environments/e4399ff4-a962-451b-adfb-7e504ad6bb6d/"],"created_at":"2021-07-20T18:14:09.023022Z","modified_at":"2021-11-30T15:09:39.971258Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/c4de304d-5dd4-4a41-80ec-9a469f1aa4f5/","id":"c4de304d-5dd4-4a41-80ec-9a469f1aa4f5","name":"development","description":"","parent":"https://api.cloudtruth.io/api/v1/environments/e8bc190d-0354-4e66-91c9-64501e501ec5/","children":["https://api.cloudtruth.io/api/v1/environments/12b9c81b-9002-423b-9ca7-22cece646d07/"],"created_at":"2021-07-20T18:14:09.035255Z","modified_at":"2021-11-30T15:03:29.717807Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/12b9c81b-9002-423b-9ca7-22cece646d07/","id":"12b9c81b-9002-423b-9ca7-22cece646d07","name":"dev-matt","description":"","parent":"https://api.cloudtruth.io/api/v1/environments/c4de304d-5dd4-4a41-80ec-9a469f1aa4f5/","children":[],"created_at":"2021-07-21T19:53:37.534082Z","modified_at":"2021-07-26T22:01:23.472634Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/2281d9da-8376-4f45-baf2-372a71260dfa/","id":"2281d9da-8376-4f45-baf2-372a71260dfa","name":"europe","description":"","parent":"https://api.cloudtruth.io/api/v1/environments/cde7cf9d-8bf2-46cb-9e97-dee9b99e4335/","children":[],"created_at":"2021-07-21T19:53:47.438517Z","modified_at":"2021-07-26T22:01:29.331661Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/c99d6ab9-4674-4f76-bb43-da0b19124e18/","id":"c99d6ab9-4674-4f76-bb43-da0b19124e18","name":"local","description":"for
+        auto-generated default environment.","parent":null,"children":["https://api.cloudtruth.io/api/v1/environments/c4de304d-5dd4-4a41-80ec-9a469f1aa4f5/","https://api.cloudtruth.io/api/v1/environments/c99d6ab9-4674-4f76-bb43-da0b19124e18/","https://api.cloudtruth.io/api/v1/environments/ef133a2e-3c9c-4229-a509-e56332baff40/","https://api.cloudtruth.io/api/v1/environments/cde7cf9d-8bf2-46cb-9e97-dee9b99e4335/","https://api.cloudtruth.io/api/v1/environments/e4399ff4-a962-451b-adfb-7e504ad6bb6d/"],"created_at":"2021-07-20T18:14:09.023022Z","modified_at":"2022-01-04T16:21:07.776080Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/c4de304d-5dd4-4a41-80ec-9a469f1aa4f5/","id":"c4de304d-5dd4-4a41-80ec-9a469f1aa4f5","name":"development","description":"","parent":"https://api.cloudtruth.io/api/v1/environments/e8bc190d-0354-4e66-91c9-64501e501ec5/","children":["https://api.cloudtruth.io/api/v1/environments/12b9c81b-9002-423b-9ca7-22cece646d07/"],"created_at":"2021-07-20T18:14:09.035255Z","modified_at":"2021-12-16T15:31:23.134785Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/12b9c81b-9002-423b-9ca7-22cece646d07/","id":"12b9c81b-9002-423b-9ca7-22cece646d07","name":"dev-matt","description":"","parent":"https://api.cloudtruth.io/api/v1/environments/c4de304d-5dd4-4a41-80ec-9a469f1aa4f5/","children":[],"created_at":"2021-07-21T19:53:37.534082Z","modified_at":"2021-07-26T22:01:23.472634Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/2281d9da-8376-4f45-baf2-372a71260dfa/","id":"2281d9da-8376-4f45-baf2-372a71260dfa","name":"europe","description":"","parent":"https://api.cloudtruth.io/api/v1/environments/cde7cf9d-8bf2-46cb-9e97-dee9b99e4335/","children":[],"created_at":"2021-07-21T19:53:47.438517Z","modified_at":"2021-07-26T22:01:29.331661Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/c99d6ab9-4674-4f76-bb43-da0b19124e18/","id":"c99d6ab9-4674-4f76-bb43-da0b19124e18","name":"local","description":"for
         local development","parent":"https://api.cloudtruth.io/api/v1/environments/e8bc190d-0354-4e66-91c9-64501e501ec5/","children":[],"created_at":"2021-07-21T19:53:50.000541Z","modified_at":"2021-07-26T22:01:32.150839Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/ef133a2e-3c9c-4229-a509-e56332baff40/","id":"ef133a2e-3c9c-4229-a509-e56332baff40","name":"ops","description":"The
         ops environment - infrastructure that acts as the entry point to the other
         environment''s infrastructure","parent":"https://api.cloudtruth.io/api/v1/environments/e8bc190d-0354-4e66-91c9-64501e501ec5/","children":[],"created_at":"2021-07-21T20:05:10.325110Z","modified_at":"2021-07-26T22:01:35.184068Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/cde7cf9d-8bf2-46cb-9e97-dee9b99e4335/","id":"cde7cf9d-8bf2-46cb-9e97-dee9b99e4335","name":"production","description":"for
         real","parent":"https://api.cloudtruth.io/api/v1/environments/e8bc190d-0354-4e66-91c9-64501e501ec5/","children":["https://api.cloudtruth.io/api/v1/environments/2281d9da-8376-4f45-baf2-372a71260dfa/","https://api.cloudtruth.io/api/v1/environments/3afc0523-4722-4fa1-aaea-5d49beaa284d/"],"created_at":"2021-07-20T18:14:09.058957Z","modified_at":"2021-10-26T18:14:38.859067Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/e4399ff4-a962-451b-adfb-7e504ad6bb6d/","id":"e4399ff4-a962-451b-adfb-7e504ad6bb6d","name":"staging","description":"","parent":"https://api.cloudtruth.io/api/v1/environments/e8bc190d-0354-4e66-91c9-64501e501ec5/","children":[],"created_at":"2021-07-20T18:14:09.047049Z","modified_at":"2021-07-26T18:46:21.385162Z"},{"url":"https://api.cloudtruth.io/api/v1/environments/3afc0523-4722-4fa1-aaea-5d49beaa284d/","id":"3afc0523-4722-4fa1-aaea-5d49beaa284d","name":"usa","description":"","parent":"https://api.cloudtruth.io/api/v1/environments/cde7cf9d-8bf2-46cb-9e97-dee9b99e4335/","children":[],"created_at":"2021-07-21T20:05:24.767679Z","modified_at":"2021-07-26T18:44:51.186840Z"}]}'
-  recorded_at: Tue, 30 Nov 2021 15:11:44 GMT
+  recorded_at: Tue, 04 Jan 2022 17:38:07 GMT
 recorded_with: VCR 6.0.0
