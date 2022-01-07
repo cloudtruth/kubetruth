@@ -1,4 +1,4 @@
-# Using kubetruth to deploy
+# Using kubetruth to trigger reload/restart of pre-existing app
 
 This example uses kubetruth to patch a kubernetes deployment whenever dependent parameters change
 
