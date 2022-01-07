@@ -52,6 +52,13 @@ kubectl describe deployment kubetruth
 kubectl logs deployment/kubetruth
 ```
 
+Note that you can ignore the warning:
+
+```
+Skipping 'default:Deployment:deploypatchtest' as it doesn't have a label indicating it is under kubetruth management
+```
+This is expected as kubetruth won't touch any resources that it didn't create unless they are labelled like we do in the next step.
+
 ## Allow kubetruth to patch existing deployment
 
 ```

@@ -27,7 +27,6 @@ projectMappings:
     context:
       config_version: "{{ parameters | sort | to_json | sha256 | slice: 0, 7 }}"
       config_versioned_name: "{{ context.resource_name }}-{{ context.config_version }}"
-      resource_name: "{{ config_versioned_name }}"
     resource_templates:
       # no secrets in demo, so disable the template
       secret: ""
