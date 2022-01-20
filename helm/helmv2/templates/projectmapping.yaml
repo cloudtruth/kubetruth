@@ -49,6 +49,7 @@ spec:
           description: Context variables that can be used by templates.  The values can also be templates
         active_templates:
           type: array
+          nullable: true
           items:
             type: string
           description: Select the templates that should be active, includes all templates when nil, none when empty
