@@ -47,6 +47,7 @@ module Kubetruth
 
       @api_url = api_url || 'https://kubernetes.default.svc'
       @api_clients = {}
+      @namespace_mutex = Mutex.new
     end
 
     def api_url(api)
@@ -79,14 +80,16 @@ module Kubetruth
     end
 
     def ensure_namespace(ns = namespace)
-      begin
-        client.get_namespace(ns)
-      rescue Kubeclient::ResourceNotFoundError
-        newns = Kubeclient::Resource.new
-        newns.metadata = {}
-        newns.metadata.name = ns
-        set_managed(newns)
-        client.create_namespace(newns)
+      @namespace_mutex.synchronize do
+        begin
+          client.get_namespace(ns)
+        rescue Kubeclient::ResourceNotFoundError
+          newns = Kubeclient::Resource.new
+          newns.metadata = {}
+          newns.metadata.name = ns
+          set_managed(newns)
+          client.create_namespace(newns)
+        end
       end
     end
 
