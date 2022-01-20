@@ -402,6 +402,24 @@ module Kubetruth
         end
 
       end
+
+      describe "#re_contains" do
+
+        it "performs match" do
+          expect(re_contains("foobar", "o+")).to eq(true)
+          expect(re_contains("foobar", "x+")).to eq(false)
+          expect(described_class.new('{{ "foobar" | re_contains: "o+" }}').render()).to eq("true")
+        end
+
+        it "handles flags" do
+          expect(re_contains("fOObar", "o+")).to eq(false)
+          expect(re_contains("fOObar", "o+", "i")).to eq(true)
+          expect(re_contains("FOO\nOO", "f.{5}", "i")).to eq(false)
+          expect(re_contains("FOO\nOO", "f.{5}", "mi")).to eq(true)
+        end
+
+      end
+
     end
 
     describe Kubetruth::Template::TemplateHashDrop do

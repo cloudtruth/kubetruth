@@ -207,6 +207,11 @@ module Kubetruth
         string.gsub(Regexp.new(pattern, allflags), replacement)
       end
 
+      def re_contains(string, pattern, flags="")
+        allflags = flags.chars.inject(0) {|sum, n| sum | REGEXP_FLAGS[n] }
+        return (string =~ Regexp.new(pattern, allflags)) != nil
+      end
+      
     end
 
     Liquid::Template.register_filter(CustomLiquidFilters)
