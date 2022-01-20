@@ -33,6 +33,9 @@ spec:
         skip:
           type: boolean
           description: Skips the generation of resources for the selected projects.  Useful for excluding projects that should only be included into others.
+        suppress_namespace_inheritance:
+          type: boolean
+          description: Prevents the CRD from the primary namespace from being inherited by secondary namespaces
         log_level:
           type: string
           description: The level of logging to use

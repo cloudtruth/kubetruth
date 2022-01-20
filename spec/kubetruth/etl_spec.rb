@@ -168,9 +168,9 @@ module Kubetruth
         expect(@kubeapi).to receive(:get_project_mappings).and_return(
           {
             "primary-ns" => {
-              "myroot" => Config::DEFAULT_SPEC.merge(scope: "root", name: "myroot"),
-              "override1" => Config::DEFAULT_SPEC.merge(scope: "override", name: "override1"),
-              "override2" => Config::DEFAULT_SPEC.merge(scope: "override", name: "override2")
+              "myroot" => {scope: "root", name: "myroot"},
+              "override1" => {scope: "override", name: "override1"},
+              "override2" => {scope: "override", name: "override2"}
             }
           })
         configs = etl.load_config
@@ -185,12 +185,36 @@ module Kubetruth
         expect(@kubeapi).to receive(:get_project_mappings).and_return(
           {
             "primary-ns" => {
-              "myroot" => Config::DEFAULT_SPEC.merge(scope: "root", name: "myroot"),
-              "override1" => Config::DEFAULT_SPEC.merge(scope: "override", name: "override1")
+              "myroot" => {scope: "root", name: "myroot", project_selector: "primary"},
+              "override1" => {scope: "override", name: "override1"}
             },
             "other-ns" => {
-              "myroot" => Config::DEFAULT_SPEC.merge(scope: "root", name: "myroot", environment: "otherenv"),
-              "override1" => Config::DEFAULT_SPEC.merge(scope: "override", name: "override1")
+              "myroot" => {scope: "root", name: "myroot", environment: "otherenv"},
+              "override1" => {scope: "override", name: "override1"}
+            }
+          })
+        configs = etl.load_config
+        expect(configs.size).to eq(2)
+        expect(configs.first).to be_an_instance_of(Kubetruth::Config)
+        expect(configs.first.root_spec.name).to eq("myroot")
+        expect(configs.first.override_specs.collect(&:name)).to eq(["override1"])
+        expect(configs.last).to be_an_instance_of(Kubetruth::Config)
+        expect(configs.last.root_spec.name).to eq("myroot")
+        expect(configs.last.root_spec.project_selector.source).to eq("primary")
+        expect(configs.last.root_spec.environment).to eq("otherenv")
+        expect(configs.last.override_specs.collect(&:name)).to eq(["override1"])
+      end
+
+      it "excludes suppressed config for multiple instances" do
+        allow(@kubeapi).to receive(:namespace).and_return("primary-ns")
+        expect(@kubeapi).to receive(:get_project_mappings).and_return(
+          {
+            "primary-ns" => {
+              "myroot" => {scope: "root", name: "myroot", project_selector: "primary", suppress_namespace_inheritance: true},
+              "override1" => {scope: "override", name: "override1", suppress_namespace_inheritance: true}
+            },
+            "other-ns" => {
+              "myroot" => {scope: "root", name: "myroot", environment: "otherenv"},
             }
           })
         configs = etl.load_config
@@ -201,7 +225,8 @@ module Kubetruth
         expect(configs.last).to be_an_instance_of(Kubetruth::Config)
         expect(configs.last.root_spec.name).to eq("myroot")
         expect(configs.last.root_spec.environment).to eq("otherenv")
-        expect(configs.last.override_specs.collect(&:name)).to eq(["override1"])
+        expect(configs.last.root_spec.project_selector).to_not eq("primary")
+        expect(configs.last.override_specs).to eq([])
       end
 
       it "yields config for multiple instances" do
@@ -209,13 +234,13 @@ module Kubetruth
         expect(@kubeapi).to receive(:get_project_mappings).and_return(
           {
             "primary-ns" => {
-              "myroot" => Config::DEFAULT_SPEC.merge(scope: "root", name: "myroot"),
+              "myroot" => {cope: "root", name: "myroot"},
             },
             "other-ns" => {
-              "myroot" => Config::DEFAULT_SPEC.merge(scope: "root", name: "myroot", environment: "otherenv"),
+              "myroot" => {scope: "root", name: "myroot", environment: "otherenv"},
             },
             "yetanother-ns" => {
-              "myroot" => Config::DEFAULT_SPEC.merge(scope: "root", name: "myroot", environment: "env3"),
+              "myroot" => {scope: "root", name: "myroot", environment: "env3"},
             }
           })
 

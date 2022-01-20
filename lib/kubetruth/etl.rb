@@ -109,6 +109,8 @@ module Kubetruth
         yield kubeapi.namespace, primary_config if block_given?
       end
 
+      primary_mappings.delete_if {|k, v| v[:suppress_namespace_inheritance] }
+
       mappings_by_ns.each do |namespace, ns_mappings|
         async(annotation: "Secondary Config: #{namespace}") do
           secondary_mappings = primary_mappings.deep_merge(ns_mappings)

@@ -49,6 +49,7 @@ Parameterize the helm install with `--set *` or `--values yourConfig.yaml` to co
 | projectMappings.root.key_selector | A regexp to limit the keys acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
 | projectMappings.root.tag | The version tag used when querying for parameters | string | `none` | no |
 | projectMappings.root.skip | Skips the generation of resources for the selected projects | flag | false | no |
+| projectMappings.root.suppress_namespace_inheritance | Prevents the CRD from the primary namespace from being [inherited by secondary namespaces](#multi-instance-config) | flag | false | no |
 | projectMappings.root.log_level | Sets the kubetruth logging level while handling the selected projects | enum(debug, info, warn, error, fatal) | `as set by cli` | no |
 | projectMappings.root.included_projects | Include the parameters from other projects into the selected ones.  This can be recursive in a depth first fashion, so if A imports B and B imports C, then A will get B's and C's parameters.  For key conflicts, if A includes B and B includes C, then the precendence is A overrides B overrides C.  If A includes \[B, C], then the precendence is A overrides C overrides B. | list | [] | no |
 | projectMappings.root.context | Additional variables made available to the resource templates.  Can also be templates | map | [default](helm/kubetruth/values.yaml#L93-L129) | no |
