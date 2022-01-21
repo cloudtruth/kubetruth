@@ -1,3 +1,13 @@
+1.1.1 (01/20/2022)
+------------------
+
+* add mutex for namespace creation [87645e7](../../commit/87645e7)
+* option to exclude CRDs from multi-instance/namespace inheritance [217639a](../../commit/217639a)
+* add a re_contains filter for rgex string comparison [464b848](../../commit/464b848)
+* fix spec for active_templates to allow it to be unset [a3a6cab](../../commit/a3a6cab)
+* allow specifying namespace for projectmappings in values.yaml [554a43e](../../commit/554a43e)
+* fix example [af961d1](../../commit/af961d1)
+
 1.1.0 (01/04/2022)
 ------------------
 

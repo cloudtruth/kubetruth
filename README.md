@@ -183,8 +183,10 @@ ones:
 | `indent: count` |  Indents each line in the argument by count spaces | 
 | `nindent: count` |  Adds a leading newline, then indents each line in the argument by count spaces | 
 | `stringify` |  Converts argument to a string safe to use in yaml (escapes quotes and surrounds with the quote character) | 
-| `to_yaml` |  Converts argument to a yaml representation | 
-| `to_json` |  Converts argument to a json representation | 
+| `parse_yaml` |  Parses yaml string into a structured representation | 
+| `to_yaml` |  Converts object to a yaml representation | 
+| `parse_json` |  Parses json string into a structured representation | 
+| `to_json` |  Converts object to a json representation | 
 | `encode64` |  The argument bas64 encoded | 
 | `decode64` |  The argument bas64 decoded |
 | `sha256` |  The sha256 digest of the argument |

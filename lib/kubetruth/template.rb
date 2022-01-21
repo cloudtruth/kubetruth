@@ -103,15 +103,23 @@ module Kubetruth
         str.to_s.to_json
       end
 
-      def to_yaml(str, options = {})
+      def parse_yaml(str)
+        YAML.safe_load(str)
+      end
+
+      def to_yaml(obj, options = {})
         options = {} unless options.is_a?(Hash)
-        result = str.to_yaml
+        result = obj.to_yaml
         result = result[4..-1] if options['no_header']
         result
       end
 
-      def to_json(str)
-        str.to_json
+      def parse_json(str)
+        JSON.parse(str)
+      end
+
+      def to_json(obj)
+        obj.to_json
       end
 
       def sha256(data)
@@ -193,7 +201,7 @@ module Kubetruth
       end
 
       def merge(lhs_map, rhs_map)
-        lhs_map.merge(rhs_map)
+        lhs_map.merge(rhs_map || {})
       end
 
       REGEXP_FLAGS = {

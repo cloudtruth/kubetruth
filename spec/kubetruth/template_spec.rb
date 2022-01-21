@@ -124,6 +124,15 @@ module Kubetruth
 
       end
 
+      describe "#parse_yaml" do
+
+        it "parses a yaml string" do
+          expect(parse_yaml("---\n- 1\n- 2\n")).to eq([1, 2])
+          expect(parse_yaml("foo: bar")).to eq({"foo" => "bar"})
+        end
+
+      end
+
       describe "#to_yaml" do
 
         it "produces a yaml string" do
@@ -142,6 +151,16 @@ module Kubetruth
         end
 
       end
+
+      describe "#parse_json" do
+
+        it "parses a json string" do
+          expect(parse_json("[1, 2]")).to eq([1, 2])
+          expect(parse_json('{"foo": "bar"}')).to eq({"foo" => "bar"})
+        end
+
+      end
+
 
       describe "#to_json" do
 
@@ -385,6 +404,14 @@ module Kubetruth
           expect(described_class.new("{{ m1 | merge: m2 | to_json }}").render(m1: m1, m2: m2)).to eq(m1.merge(m2).to_json)
         end
 
+
+        it "handles nil rhs" do
+          m1 = {"x" => "y", "a" => "z"}
+          m2 = nil
+          expect(merge(m1, m2)).to eq(m1)
+          expect(described_class.new("{{ m1 | merge: m2 | to_json }}").render(m1: m1, m2: m2)).to eq(m1.to_json)
+        end
+
       end
 
       describe "#re_replace" do
@@ -399,6 +426,10 @@ module Kubetruth
           expect(re_replace("fOObar", "o+", "X", "i")).to eq("fXbar")
           expect(re_replace("FOO\nOO", "f.*", "X", "i")).to eq("X\nOO")
           expect(re_replace("FOO\nOO", "f.*", "X", "mi")).to eq("X")
+        end
+
+        it "handles backrefs" do
+          expect(re_replace("foobar", "(o+)b", "XX\\1YY")).to eq("fXXooYYar")
         end
 
       end
