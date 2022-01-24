@@ -100,15 +100,11 @@ projectMappings:
   root:
     scope: "root"
     environment: "default"
-    project_selector: ""
-    key_selector: ""
-    skip: false
-    included_projects: []
+    project_selector: "^(?!kubetruth)"
     context:
       resource_name: "{{ project | dns_safe }}"
       resource_namespace: "{{ mapping_namespace }}"
       skip_secrets: false
-    active_templates:
     resource_templates:
       configmap: |
         {%- if parameters.size > 0 %}
@@ -149,3 +145,39 @@ projectMappings:
           {{ secret[0] | key_safe | stringify }}: {{ secret[1] | encode64 | stringify }}
           {%- endfor %}
         {%- endunless %}
+  webcontrol:
+    scope: "override"
+    project_selector: "^kubetruth$"
+    skip: true
+    suppress_namespace_inheritance: true
+    resource_templates:
+      # Creates kubetruth CRDs from templates in the 'kubetruth' project in CloudTruth
+      # Templates are treated as a yaml hash for the spec section of the CRD and optionally with a namespace in its name like 'myNamespace/myProjectMappingName'
+      # You can fully specify a template (complete k8s yaml) by indicating it is raw with the directive "#~ format: raw" as the first line in the template
+      crds: |
+        {%- for template in templates.names %}
+
+        {%- assign is_raw_template = templates[template] | re_contains: "^\s*#\~\s*format:\s*raw" %}
+        {%- if is_raw_template %}
+
+        {{ templates[template] }}
+
+        {%- else %}
+
+        {%- assign name_parts = template | split: "/" %}
+        {%- assign name = name_parts | last %}
+
+        apiVersion: kubetruth.cloudtruth.com/v1
+        kind: ProjectMapping
+        metadata:
+          name: "{{ name }}"
+          {%- if name_parts.size > 1 %}
+          namespace: "{{ name_parts | first }}"
+          {%- endif %}
+        
+        spec: {{ templates[template] | nindent: 2 }}
+
+        {%- endif %}
+
+        {% unless forloop.last %}---{% endunless %}
+        {%- endfor %}
