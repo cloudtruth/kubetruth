@@ -1,6 +1,8 @@
-1.1.1 (01/20/2022)
+1.1.1 (01/24/2022)
 ------------------
 
+* add built in control of kubetruth from cloudtruth UI (disabled by default) [bdb23eb](../../commit/bdb23eb)
+* add parse yml/json filters [ec53ec2](../../commit/ec53ec2)
 * add mutex for namespace creation [87645e7](../../commit/87645e7)
 * option to exclude CRDs from multi-instance/namespace inheritance [217639a](../../commit/217639a)
 * add a re_contains filter for rgex string comparison [464b848](../../commit/464b848)
