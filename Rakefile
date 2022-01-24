@@ -201,6 +201,8 @@ task :changelog do
   # Strip out maintenance entries
   log = log.delete_if do |l|
     l =~ /^Regenerated? gemspec/ ||
+      l =~ /^fix(ed)? tests?/i ||
+      l =~ /^version bump/i ||
       l =~ /^version bump/i ||
       l =~ /^bump version/i ||
       l =~ /^updated? changelog/i ||
