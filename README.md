@@ -45,7 +45,7 @@ Parameterize the helm install with `--set *` or `--values yourConfig.yaml` to co
 | appSettings.pollingInterval | Interval to poll CloudTruth api for changes | integer | 300 | no |
 | appSettings.debug | Debug logging and behavior | flag | false | no |
 | projectMappings.root.environment | The CloudTruth environment to lookup parameter values for. | string | `default` | yes |
-| projectMappings.root.project_selector | A regexp to limit the projects acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
+| projectMappings.root.project_selector | A regexp, or static CloudTruth project name value, to limit the projects acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
 | projectMappings.root.key_selector | A regexp to limit the keys acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
 | projectMappings.root.tag | The version tag used when querying for parameters | string | `none` | no |
 | projectMappings.root.skip | Skips the generation of resources for the selected projects | flag | false | no |
@@ -142,6 +142,8 @@ the CloudTruth projects to kubernetes resources.  You can edit it in the
 standard ways, e.g. `kubectl edit projectmapping kubetruth-root`.  The
 `override` scope allows you to override the root scope's behavior for those
 CloudTruth projects whose names match its `project_selector` pattern.
+
+For the `project_selector`, which is defined under the *Usage* section, you can either use a regex (i.e - `"^k8s-"`) which matches any CloudTruth project that starts with `k8s-`, or a specific CloudTruth project name. For example, if you have a CloudTruth project called `kubernetes_secrets`, you'll want the `project_selector` value to be `"kubernetes_secrets"`.
 
 Note that Kubetruth watches for changes to ProjectMappings, so touching any of
 them wakes it up from a polling sleep.  This makes it quick and easy to test out
