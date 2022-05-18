@@ -44,6 +44,8 @@ Parameterize the helm install with `--set *` or `--values yourConfig.yaml` to co
 | appSettings.apiKey | The CloudTruth api key.  Read only access is sufficient | string | n/a | yes |
 | appSettings.pollingInterval | Interval to poll CloudTruth api for changes | integer | 300 | no |
 | appSettings.debug | Debug logging and behavior | flag | false | no |
+| secret.create | Create the kubernetes Secret containing the supplied api-key | boolean | true | no |
+| secret.name | The name of the kubernetes Secret to create | string | `<helm fullname>` | no |
 | projectMappings.root.environment | The CloudTruth environment to lookup parameter values for. | string | `default` | yes |
 | projectMappings.root.project_selector | A regexp to limit the projects acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
 | projectMappings.root.key_selector | A regexp to limit the keys acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
