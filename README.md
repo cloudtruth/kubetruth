@@ -194,8 +194,8 @@ ones:
 | `deflate` |  Converts a nested data structure into a single level map using a delimiter to indicate level in the key name, e.g. `{foo: {bar: {baz: 2}}}` => `{foo.baz.bum: 2}`  Inverse of inflate |
 | `typify` |  Converts string values into primitive types (int, float, bool) where applicable for a nested data structure |
 | `merge` |  Combines two hashes into one, a.l.a ruby merge |
-| `re_replace` |  Regexp search and replace, a.l.a ruby gsub, e.g. `"foo" | re_replace: "o+", "X"` |
-| `re_contains` |  Returns a boolean for the regexp compare against the string target, e.g. `"foo" | re_contains: "o+"` => `true` |
+| `re_replace` |  Regexp search and replace, a.l.a ruby gsub, e.g. `"foo" \| re_replace: "o+", "X"` |
+| `re_contains` |  Returns a boolean for the regexp compare against the string target, e.g. `"foo" \| re_contains: "o+"` => `true` |
 
 The default `resource_templates` make use of the `context` attribute to allow
 simpler modification of some common fields.  These include:
