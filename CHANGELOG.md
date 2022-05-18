@@ -1,3 +1,10 @@
+1.2.0 (05/18/2022)
+------------------
+
+* update docs [0230c51](../../commit/0230c51)
+* Allow for the use of external secrets (#15) [241ece3](../../commit/241ece3)
+* doc fix [00912cc](../../commit/00912cc)
+
 1.1.1 (01/24/2022)
 ------------------
 
