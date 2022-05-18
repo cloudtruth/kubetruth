@@ -37,7 +37,7 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           envFrom:
             - secretRef:
-                name: {{ include "kubetruth.fullname" . }}
+                name: {{ include "kubetruth.secretName" . }}
           args:
             - app
             {{- if .Values.appSettings.apiUrl }}
