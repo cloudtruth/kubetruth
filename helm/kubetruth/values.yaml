@@ -86,6 +86,13 @@ appSettings:
   pollingInterval:
   debug: false
 
+# If secret.create == false, secret generation is left to the user
+# outside of the chart, and a name should be specified
+# See templates/secret.yaml for expected values
+secret:
+  create: true
+  name: ""
+
 # Create instances of the ProjectMapping CRD.  A single mapping with scope=root
 # is required (named root below).  You can also add multiple override mappings
 # (scope=override).  Any properties not overriden are inherited from the root
