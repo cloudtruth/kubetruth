@@ -60,3 +60,14 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Get the secret name
+*/}}
+{{- define "kubetruth.secretName" -}}
+{{- if .Values.secret.create }}
+{{- default (include "kubetruth.fullname" .) .Values.secret.name }}
+{{- else }}
+{{- required "A secret name is required in .Values.secret.name when .Values.secret.create is false!" .Values.secret.name }}
+{{- end }}
+{{- end }}
