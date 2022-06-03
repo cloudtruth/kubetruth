@@ -221,8 +221,14 @@ module Kubetruth
                     parsed_ymls = YAML.safe_load_stream(resource_yml, template_id)
                     logger.debug {"Skipping empty template"} if parsed_ymls.empty?
                     parsed_ymls.each do |parsed_yml|
-                      async(annotation: "Apply Template: #{template_id}") do
+                      if parsed_yml.present?
+                        async(annotation: "Apply Template: #{template_id}") do
+                          kube_apply(parsed_yml) 
                         kube_apply(parsed_yml)
+                          kube_apply(parsed_yml) 
+                        end
+                      else
+                        logger.debug {"Skipping empty stream template"}
                       end
                     end
 

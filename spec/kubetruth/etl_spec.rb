@@ -491,6 +491,19 @@ module Kubetruth
         expect(Logging.contents).to match(/Skipping empty template/)
       end
 
+      it "skips empty streams in template" do
+        config.root_spec.resource_templates = {"name1" => Template.new("---\n\n---\n\n")}
+        allow(etl).to receive(:load_config).and_yield(@ns, config)
+
+        expect(collection).to receive(:names).and_return(["proj1"])
+
+        expect(etl).to_not receive(:kube_apply)
+
+        etl.apply()
+        expect(Logging.contents).to_not match(/Skipping empty template/)
+        expect(Logging.contents).to match(/Skipping empty stream template/)
+      end
+
       it "allows dryrun" do
         etl = described_class.new(dry_run: true)
         allow(etl).to receive(:load_config).and_yield(@ns, config)
