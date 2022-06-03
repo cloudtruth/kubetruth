@@ -14,8 +14,9 @@ module Kubetruth
   class ETL
     include GemLogger::LoggerSupport
 
-    def initialize(dry_run: false)
+    def initialize(dry_run: false, async: true)
       @dry_run = dry_run
+      @async = async
       @wrote_crds = false
     end
 
@@ -85,14 +86,47 @@ module Kubetruth
       end
     end
 
-    def async(*args, **kwargs)
-      Async(*args, **kwargs) do |task|
-        begin
-          yield task
-        rescue => e
-          logger.log_exception(e, "Failure in async task: #{task.annotation}")
-          task.stop
+    def async_task_tree(task)
+      msg = ""
+    
+      if task.parent
+        # The root task seems to always be nil, so exclude it from name
+        unless task.parent.parent.nil? && task.parent.annotation.blank?
+          msg << async_task_tree(task.parent) << " -> "
         end
+      end
+    
+      msg << (task.annotation ? task.annotation : "unnamed")
+      msg
+    end
+
+    def wait
+      # no-op so we have something to return from sync tasks that can be waited on
+    end
+
+    def async(*args, **kwargs)
+      if @async
+        Async(*args, **kwargs) do |task|
+          task_name = async_task_tree(task)
+          begin
+            logger.info "Starting async task: #{task_name}"
+            yield task
+            logger.info "Completed async task: #{task_name}"
+          rescue => e
+            logger.log_exception(e, "Failure in async task: #{task_name}")
+            task.stop
+          end
+        end
+      else
+        task_name = kwargs[:annotation] || "unnamed"
+        begin
+          logger.info "Starting sync task: #{task_name}"
+          yield
+          logger.info "Completed sync task: #{task_name}"
+        rescue => e
+          logger.log_exception(e, "Failure in sync task: #{task_name}")
+        end
+        self # return self to get a wait method
       end
     end
 
@@ -223,8 +257,6 @@ module Kubetruth
                     parsed_ymls.each do |parsed_yml|
                       if parsed_yml.present?
                         async(annotation: "Apply Template: #{template_id}") do
-                          kube_apply(parsed_yml) 
-                        kube_apply(parsed_yml)
                           kube_apply(parsed_yml) 
                         end
                       else

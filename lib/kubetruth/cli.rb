@@ -39,6 +39,10 @@ module Kubetruth
            :flag, "Perform a dry run",
            default: false
 
+    option ["-a", "--[no-]async"],
+           :flag, "Run using async I/O (or not)",
+           default: true
+
     # TODO: option to map template to configmap?
 
     def execute
@@ -47,7 +51,7 @@ module Kubetruth
       Kubetruth::CtApi.configure(api_key: api_key, api_url: api_url)
       Kubetruth::KubeApi.configure(namespace: kube_namespace, token: kube_token, api_url: kube_url)
 
-      etl = ETL.new(dry_run: dry_run?)
+      etl = ETL.new(dry_run: dry_run?, async: async?)
 
       Signal.trap("HUP") do
         puts "Handling HUP signal - waking up ETL poller" # logger cant be called from trap

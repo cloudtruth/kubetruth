@@ -26,6 +26,7 @@ module Kubetruth
             --kube-token kt
             --kube-url ku
             --dry-run
+            --no-async
             --polling-interval 27
         ]
 
@@ -41,7 +42,7 @@ module Kubetruth
                                                              })
 
         etl = double(ETL)
-        expect(ETL).to receive(:new).with(dry_run: true).and_return(etl)
+        expect(ETL).to receive(:new).with(dry_run: true, async: false).and_return(etl)
         expect(etl).to receive(:apply)
         expect(etl).to receive(:with_polling).with(27).and_yield
         cli.run(args)

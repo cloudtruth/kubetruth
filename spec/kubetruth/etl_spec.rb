@@ -724,9 +724,45 @@ module Kubetruth
       end
 
       it "yields task" do
+        n = nil
         etl.async(annotation: "mytask") do |task|
-          expect(task.annotation).to eq("mytask")
+          n = task.annotation
         end
+        expect(n).to eq("mytask")
+      end
+
+      it "can switch to sync mode" do
+        etl = described_class.new(async: false)
+        etl.async(annotation: "mytask") do |task|
+          nil
+        end
+        expect(Logging.contents).to match(/Starting sync task: mytask.*Completed sync task: mytask/m)
+
+        task = etl.async(annotation: "badtask") do
+          raise "task fail"
+        end
+        expect(Logging.contents).to match(/Failure in sync task: badtask/)
+
+        t = etl.async(annotation: "mytask") do |task|
+          nil
+        end
+        t.wait # make sure wait is allowed (no-op) in sync mode
+      end
+
+      it "formats task name" do
+        n1, n2, n3 = nil, nil, nil
+        etl.async(annotation: "parenttask") do |t1|
+          n1 = etl.async_task_tree(t1)
+          etl.async do |t2|
+            n2 = etl.async_task_tree(t2)
+            etl.async(annotation: "childtask") do |t3|
+              n3 = etl.async_task_tree(t3)
+            end
+          end
+        end
+        expect(n1).to eq("parenttask")
+        expect(n2).to eq("parenttask -> unnamed")
+        expect(n3).to eq("parenttask -> unnamed -> childtask")
       end
 
     end

@@ -85,6 +85,7 @@ appSettings:
   apiUrl:
   pollingInterval:
   debug: false
+  async: true
 
 # If secret.create == false, secret generation is left to the user
 # outside of the chart, and a name should be specified
