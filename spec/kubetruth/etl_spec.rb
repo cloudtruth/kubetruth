@@ -18,6 +18,9 @@ module Kubetruth
       allow(@kubeapi).to receive(:namespace).and_return("default")
       allow(@kubeapi).to receive(:get_project_mappings).and_return([])
       allow_any_instance_of(described_class).to receive(:kubeapi).and_return(@kubeapi)
+
+      @ctapi = double()
+      allow(Kubetruth::CtApi).to receive(:new).and_return(@ctapi)
     end
 
     describe "#interruptible_sleep" do
@@ -421,14 +424,13 @@ module Kubetruth
 
     describe "#apply" do
 
-      let(:collection) { ProjectCollection.new }
       let(:root_spec_crd) { default_root_spec }
       let(:config) {
         Kubetruth::Config.new([root_spec_crd])
       }
+      let(:collection) { ProjectCollection.new(config) }
 
       before(:each) do
-        allow(CtApi).to receive(:reset)
 
         @ns = "primary-ns"
         allow(@kubeapi).to receive(:namespace).and_return(@ns)
@@ -551,7 +553,7 @@ module Kubetruth
         expect(config.root_spec.resource_templates.values.first).to receive(:render) do |*args, **kwargs|
           expect(kwargs[:project]).to eq("proj1")
           expect(kwargs[:project_heirarchy]).to eq({"proj1"=>{"proj2"=>{}}})
-          expect(kwargs[:parameter_origins]).to eq({"param1"=>"proj1 (proj2)"})
+          expect(kwargs[:parameter_origins]&.call).to eq({"param1"=>"proj1 (proj2)"})
           ""
         end
 
@@ -582,10 +584,10 @@ module Kubetruth
           expect(kwargs[:project]).to eq("proj1")
           expect(kwargs[:project_heirarchy]).to eq(collection.projects["proj1"].heirarchy)
           expect(kwargs[:debug]).to eq(etl.logger.debug?)
-          expect(kwargs[:parameters]).to eq({"param1"=>"value1"})
-          expect(kwargs[:parameter_origins]).to eq({"param1"=>"proj1"})
-          expect(kwargs[:secrets]).to eq({"param2"=>"value2"})
-          expect(kwargs[:secret_origins]).to eq({"param2"=>"proj1"})
+          expect(kwargs[:parameters]&.call).to eq({"param1"=>"value1"})
+          expect(kwargs[:parameter_origins]&.call).to eq({"param1"=>"proj1"})
+          expect(kwargs[:secrets]&.call).to eq({"param2"=>"value2"})
+          expect(kwargs[:secret_origins]&.call).to eq({"param2"=>"proj1"})
           expect(kwargs[:templates]).to be_an_instance_of(Template::TemplatesDrop)
           expect(kwargs[:context]).to match(hash_including(:resource_name, :resource_namespace))
           ""
@@ -610,10 +612,10 @@ module Kubetruth
 
         allow(etl).to receive(:kube_apply)
         expect(config.root_spec.resource_templates.values.first).to receive(:render) do |*args, **kwargs|
-          expect(kwargs[:parameters]).to eq({"param1"=>"value1"})
-          expect(kwargs[:parameter_origins]).to eq({"param1"=>"proj1", "param3"=>"proj1"})
-          expect(kwargs[:secrets]).to eq({"param2"=>"value2"})
-          expect(kwargs[:secret_origins]).to eq({"param2"=>"proj1", "param4"=>"proj1"})
+          expect(kwargs[:parameters]&.call).to eq({"param1"=>"value1"})
+          expect(kwargs[:parameter_origins]&.call).to eq({"param1"=>"proj1", "param3"=>"proj1"})
+          expect(kwargs[:secrets]&.call).to eq({"param2"=>"value2"})
+          expect(kwargs[:secret_origins]&.call).to eq({"param2"=>"proj1", "param4"=>"proj1"})
           ""
         end
 
@@ -623,14 +625,13 @@ module Kubetruth
 
     describe "default templates" do
 
-      let(:collection) { ProjectCollection.new }
       let(:root_spec_crd) { default_root_spec }
       let(:config) {
         Kubetruth::Config.new([root_spec_crd])
       }
+      let(:collection) { ProjectCollection.new(config) }
 
       before(:each) do
-        allow(CtApi).to receive(:reset)
 
         @ns = "primary-ns"
         allow(@kubeapi).to receive(:namespace).and_return(@ns)

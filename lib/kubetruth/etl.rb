@@ -168,16 +168,57 @@ module Kubetruth
       end
     end
 
+    class DelayedParameters
+
+      def initialize(project)
+        @project = project
+      end
+
+      def params_to_hash(param_list)
+        Hash[param_list.collect {|param| [param.key, param.value]}]
+      end
+  
+      def params
+        @param_data ||= begin
+          # constructing the hash will cause any overrides to happen in the right
+          # order (includer wins over last included over first included)
+          params = @project.all_parameters
+          parts = params.group_by(&:secret)
+          config_params, secret_params = (parts[false] || []), (parts[true] || [])
+          config_param_hash = params_to_hash(config_params)
+          secret_param_hash = params_to_hash(secret_params)
+
+          parameter_origins = @project.parameter_origins
+          param_origins_parts = parameter_origins.group_by {|k, v| config_param_hash.has_key?(k) }
+          config_origins = Hash[param_origins_parts[true] || []]
+          secret_origins = Hash[param_origins_parts[false] || []]
+
+          config_param_hash = config_param_hash.reject do |k, v|
+            logger.debug { "Excluding parameter with nil value: #{k}" } if v.nil?
+            v.nil?
+          end
+          secret_param_hash = secret_param_hash.reject do |k, v|
+            logger.debug { "Excluding secret parameter with nil value: #{k}" } if v.nil?
+            v.nil?
+          end
+
+          {
+            parameters: config_param_hash,
+            parameter_origins: config_origins,
+            secrets: secret_param_hash,
+            secret_origins: secret_origins
+          }
+        end
+      end
+    end
+
     def apply
       async(annotation: "ETL Event Loop") do
         logger.warn("Performing dry-run") if @dry_run
 
-        # Clear out the cache at the start of each polling cycle
-        CtApi.reset
-
         load_config do |namespace, config|
           with_log_level(config.root_spec.log_level) do
-            project_collection = ProjectCollection.new
+            project_collection = ProjectCollection.new(config.root_spec)
 
             # Load all projects that are used
             all_specs = [config.root_spec] + config.override_specs
@@ -210,27 +251,7 @@ module Kubetruth
 
                 async(annotation: "Project: #{project.name}") do
 
-                  # constructing the hash will cause any overrides to happen in the right
-                  # order (includer wins over last included over first included)
-                  params = project.all_parameters
-                  parts = params.group_by(&:secret)
-                  config_params, secret_params = (parts[false] || []), (parts[true] || [])
-                  config_param_hash = params_to_hash(config_params)
-                  secret_param_hash = params_to_hash(secret_params)
-
-                  parameter_origins = project.parameter_origins
-                  param_origins_parts = parameter_origins.group_by {|k, v| config_param_hash.has_key?(k) }
-                  config_origins = Hash[param_origins_parts[true] || []]
-                  secret_origins = Hash[param_origins_parts[false] || []]
-
-                  config_param_hash = config_param_hash.reject do |k, v|
-                    logger.debug { "Excluding parameter with nil value: #{k}" } if v.nil?
-                    v.nil?
-                  end
-                  secret_param_hash = secret_param_hash.reject do |k, v|
-                    logger.debug { "Excluding secret parameter with nil value: #{k}" } if v.nil?
-                    v.nil?
-                  end
+                  param_data = DelayedParameters.new(project)
 
                   resource_templates = project.spec.templates
                   resource_templates.each_with_index do |pair, i|
@@ -243,11 +264,11 @@ module Kubetruth
                       project: project.name,
                       project_heirarchy: project.heirarchy,
                       debug: logger.debug?,
-                      parameters: config_param_hash,
-                      parameter_origins: config_origins,
-                      secrets: secret_param_hash,
-                      secret_origins: secret_origins,
-                      templates: Template::TemplatesDrop.new(project: project.name, environment: project.spec.environment),
+                      parameters: proc { param_data.params[:parameters] },
+                      parameter_origins: proc { param_data.params[:parameter_origins] },
+                      secrets: proc { param_data.params[:secrets] },
+                      secret_origins: proc { param_data.params[:secret_origins] },
+                      templates: Template::TemplatesDrop.new(project: project.name, ctapi: project.ctapi),
                       context: project.spec.context
                     )
 
@@ -271,10 +292,6 @@ module Kubetruth
           end
         end
       end.wait
-    end
-
-    def params_to_hash(param_list)
-      Hash[param_list.collect {|param| [param.key, param.value]}]
     end
 
     def kube_apply(parsed_yml)

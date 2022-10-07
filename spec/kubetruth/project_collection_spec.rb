@@ -5,11 +5,11 @@ require 'kubetruth/config'
 module Kubetruth
   describe ProjectCollection do
 
-    let(:collection) { described_class.new }
+    let(:collection) { described_class.new(Kubetruth::Config::ProjectSpec.new) }
 
     before(:each) do
       @ctapi = double(Kubetruth::CtApi)
-      allow(Kubetruth::CtApi).to receive(:instance).and_return(@ctapi)
+      allow(Kubetruth::CtApi).to receive(:new).and_return(@ctapi)
     end
 
     describe "#names" do

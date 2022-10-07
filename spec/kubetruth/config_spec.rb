@@ -35,6 +35,16 @@ module Kubetruth
         expect(spec.skip).to equal(true)
       end
 
+      describe "#to_s" do
+
+        it "shows as the hash contents only" do
+          spec = described_class::ProjectSpec.new(scope: "root", name: "myroot")
+          expect("#{spec.to_s}").to match(/{"scope":"root","name":"myroot"/)
+          expect("#{spec}").to match(/{"scope":"root","name":"myroot"/)
+        end
+  
+      end  
+
     end
 
     describe "initialization" do

@@ -7,12 +7,13 @@ module Kubetruth
 
     attr_accessor :projects
 
-    def initialize()
+    def initialize(project_spec)
       @projects = {}
+      @project_spec = project_spec
     end
 
     def ctapi
-      Kubetruth::CtApi.instance
+      @ctapi ||= Kubetruth::CtApi.new(environment: @project_spec.environment, tag: @project_spec.tag)
     end
 
     def names

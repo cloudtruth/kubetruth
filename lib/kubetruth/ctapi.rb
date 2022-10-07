@@ -5,24 +5,17 @@ require_relative 'parameter'
 module Kubetruth
   class CtApi
 
-    @@instance = nil
+    @@api_key = nil
+    @@api_url = nil
 
     def self.configure(api_key:, api_url:)
-      @@instance = self.new(api_key: api_key, api_url: api_url)
-    end
-
-    def self.reset
-      self.configure(api_key: instance.instance_variable_get(:@api_key), api_url: instance.api_url)
-    end
-
-    def self.instance
-      raise ArgumentError.new("CtApi has not been configured") if @@instance.nil?
-      return @@instance
+      @@api_key = api_key
+      @@api_url = api_url
     end
 
     include GemLogger::LoggerSupport
 
-    attr_reader :api_url, :client, :apis
+    attr_reader :client, :apis
 
     class ApiConfiguration < CloudtruthClient::Configuration
 
@@ -43,12 +36,17 @@ module Kubetruth
 
     end
 
-    def initialize(api_key:, api_url:)
+    def initialize(environment: "default", tag: nil)
       @environments_mutex = Mutex.new
       @projects_mutex = Mutex.new
       @templates_mutex = Mutex.new
-      @api_key = api_key
-      @api_url = api_url
+ 
+      raise ArgumentError.new("CtApi has not been configured") if @@api_key.nil? || @@api_url.nil?
+      @api_key = @@api_key
+      @api_url = @@api_url
+
+      @environment = environment
+      @tag = tag
       uri = URI(@api_url)
       config = ApiConfiguration.new
       config.server_index = nil
@@ -57,7 +55,7 @@ module Kubetruth
       host_port << ":#{uri.port}" unless [80, 443].include?(uri.port)
       config.host = host_port
       config.base_path = uri.path
-      config.api_key = {'ApiKeyAuth' => api_key}
+      config.api_key = {'ApiKeyAuth' => @api_key}
       config.api_key_prefix = {'ApiKeyAuth' => "Api-Key"}
       config.logger = logger
       # config.debugging = logger.debug?
@@ -110,11 +108,10 @@ module Kubetruth
       project_id.to_s
     end
 
-    def parameters(project:, environment: "default", tag: nil)
-      env_id = environment_id(environment)
+    def parameters(project:)
       proj_id = project_id(project)
-      opts = {environment: env_id}
-      opts[:tag] = tag if tag.present?
+      opts = {environment: environment_id(@environment)}
+      opts[:tag] = @tag if @tag.present?
       result = apis[:projects].projects_parameters_list(proj_id, **opts)
       logger.debug do
         cleaned = result&.to_hash&.deep_dup
@@ -151,7 +148,9 @@ module Kubetruth
         @templates ||= {}
         @templates[project] ||= begin
           proj_id = projects[project]
-          result = apis[:projects].projects_templates_list(proj_id)
+          opts = {environment: environment_id(@environment)}
+          opts[:tag] = @tag if @tag.present?
+          result = apis[:projects].projects_templates_list(proj_id, **opts)
           logger.debug { "Templates query result: #{result.inspect}" }
           Hash[result&.results&.collect do |tmpl|
             # values is keyed by url, but we forced it to only have a single entry
@@ -172,11 +171,12 @@ module Kubetruth
       template_id.to_s
     end
 
-    def template(name, project:, environment: "default")
-      env_id = environment_id(environment)
+    def template(name, project:)
       proj_id = project_id(project)
       tmpl_id = template_id(name, project: project)
-      result = apis[:projects].projects_templates_retrieve(tmpl_id, proj_id, environment: env_id)
+      opts = {environment: environment_id(@environment)}
+      opts[:tag] = @tag if @tag.present?
+      result = apis[:projects].projects_templates_retrieve(tmpl_id, proj_id, **opts)
       body = result&.body
       logger.debug { result.body = "<masked>" if result.has_secret; "Template Retrieve query result: #{result.inspect}" }
       body

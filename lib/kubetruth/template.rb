@@ -38,21 +38,28 @@ module Kubetruth
         coder.represent_map(nil, @source)
       end
 
+      def to_s
+        Hash[@source.collect {|k, v| [k.to_s, v.to_s]}].to_json
+      end
+      
+      def inspect
+        to_s
+      end
     end
 
     class TemplatesDrop < Liquid::Drop
 
-      def initialize(project:, environment:)
+      def initialize(project:, ctapi:)
         @project = project
-        @environment = environment
+        @ctapi = ctapi
       end
 
       def names
-        CtApi.instance.template_names(project: @project)
+        @ctapi.template_names(project: @project)
       end
 
       def liquid_method_missing(key)
-        CtApi.instance.template(key, project: @project, environment: @environment)
+        @ctapi.template(key, project: @project)
       end
 
     end
@@ -241,11 +248,12 @@ module Kubetruth
       begin
 
         # TODO: fix secrets hardcoding here
-        secrets = kwargs[:secrets] || {}
+        secrets = nil
         debug_kwargs = nil
 
         logger.debug do
           # TODO: fix secrets hardcoding here
+          secrets ||= kwargs[:secrets]&.call || {}
           debug_kwargs ||= kwargs.merge(secrets: Hash[secrets.collect {|k, v| [k, "<masked:#{k}>"] }])
           msg = "Evaluating template:\n"
           @source.to_s.lines.collect {|l| msg << (INDENT * 2) << l }
@@ -257,6 +265,7 @@ module Kubetruth
         result = @liquid.render!(*args, kwargs.stringify_keys, strict_variables: true, strict_filters: true)
 
         logger.debug do
+          secrets ||= kwargs[:secrets]&.call || {}
           debug_kwargs ||= kwargs.merge(secrets: Hash[secrets.collect {|k, v| [k, "<masked:#{k}>"] }])
           # we only ever have to sub base64 encoded in this debug block
           both_secrets = secrets.merge(Hash[secrets.collect {|k, v| ["#{k}_base64", Base64.strict_encode64(v)]}])
@@ -284,6 +293,7 @@ module Kubetruth
         msg << (INDENT * 2) << e.message << "\n"
         if e.is_a?(Liquid::UndefinedVariable)
           msg << INDENT << "and variable context:\n"
+          secrets ||= kwargs[:secrets]&.call || {}
           debug_kwargs ||= kwargs.merge(secrets: Hash[secrets.collect {|k, v| [k, "<masked:#{k}>"] }])
           debug_kwargs.deep_stringify_keys.to_yaml.lines.collect {|l| msg << (INDENT * 2) << l }
         end
@@ -295,6 +305,10 @@ module Kubetruth
 
     def to_s
       @source
+    end
+
+    def inspect
+      to_s
     end
 
     def encode_with(coder)

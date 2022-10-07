@@ -13,8 +13,9 @@ module Kubetruth
       # Spin up a local dev server and create a user with an api key to use
       # here, or use cloudtruth actual
       key = ENV['CLOUDTRUTH_API_KEY']
-      url = ENV['CLOUDTRUTH_API_URL'] || "https://api.cloudtruth.io" # "https://localhost:8000"
-      instance = ::Kubetruth::CtApi.new(api_key: key, api_url: url)
+      url = ENV['CLOUDTRUTH_API_URL'] || "https://api.staging.cloudtruth.io" # "https://localhost:8000"
+      ::Kubetruth::CtApi.configure(api_key: key, api_url: url)
+      instance = ::Kubetruth::CtApi.new
       instance.client.config.debugging = false # ssl debug logging is messy, so only turn this on as desired
       instance.client.config.ssl_verify = false
       instance
@@ -37,23 +38,13 @@ module Kubetruth
 
     describe "instance" do
 
-      it "fails if not configured" do
-        expect { described_class.instance }.to raise_error(ArgumentError, /has not been configured/)
-      end
-
-      it "succeeds when configured" do
-        described_class.configure(api_key: "sekret", api_url: "http://localhost")
-        expect(described_class.instance).to be_an_instance_of(described_class)
-        expect(described_class.instance).to equal(described_class.instance)
-        expect(described_class.instance.instance_variable_get(:@api_key)).to eq("sekret")
-        expect(described_class.instance.instance_variable_get(:@api_url)).to eq("http://localhost")
-      end
-
-      it "re-instantiates when reset" do
-        described_class.configure(api_key: "sekret", api_url: "http://localhost")
-        old = described_class.instance
-        described_class.reset
-        expect(old).to_not equal(described_class.instance)
+      it "only fails if not configured" do
+        ctapi.class.configure(api_key: nil, api_url: "http://localhost")
+        expect { ::Kubetruth::CtApi.new }.to raise_error(ArgumentError, /has not been configured/)
+        ctapi.class.configure(api_key: "xyz", api_url: nil)
+        expect { ::Kubetruth::CtApi.new }.to raise_error(ArgumentError, /has not been configured/)
+        ctapi.class.configure(api_key: "xyz", api_url: "http://localhost")
+        expect { ::Kubetruth::CtApi.new }.to_not raise_error(ArgumentError, /has not been configured/)
       end
 
     end
@@ -140,6 +131,8 @@ module Kubetruth
         params = ctapi.parameters(project: @project_name)
         expect(params.collect(&:value).sort).to eq(["defaultone", "defaulttwo"])
 
+        sleep 2
+
         tag = ctapi.apis[:environments].environments_tags_list(ctapi.environment_id("default"), name: "test_tag").results.first
         if tag
           ctapi.apis[:environments].environments_tags_partial_update(ctapi.environment_id("default"), tag.id, patched_tag: CloudtruthClient::PatchedTagUpdate.new(timestamp: Time.now))
@@ -147,12 +140,14 @@ module Kubetruth
           tag = ctapi.apis[:environments].environments_tags_create(ctapi.environment_id("default"), CloudtruthClient::TagCreate.new(name: "test_tag"))
         end
 
+        sleep 2
+
         ctapi.apis[:projects].projects_parameters_values_partial_update(one_param_value.id, @one_param.id, @project_id, patched_value: CloudtruthClient::PatchedValue.new(internal_value: "newdefaultone"))
 
         params = ctapi.parameters(project: @project_name)
         expect(params.collect(&:value).sort).to eq(["defaulttwo", "newdefaultone"])
 
-        params = ctapi.parameters(project: @project_name, tag: "test_tag")
+        params = described_class.new(tag: "test_tag").parameters(project: @project_name)
         expect(params.collect(&:value).sort).to eq(["defaultone", "defaulttwo"])
       end
 
@@ -172,9 +167,9 @@ module Kubetruth
         ctapi.apis[:projects].projects_parameters_values_create(@two_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "defaulttwo"))
         ctapi.apis[:projects].projects_parameters_values_create(@two_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("development"), external: false, internal_value: "developmenttwo"))
 
-        params = ctapi.parameters(project: @project_name, environment: "default")
+        params = described_class.new(environment: "default").parameters(project: @project_name)
         expect(params.collect(&:value)).to eq(["defaultone", "defaulttwo"])
-        params = ctapi.parameters(project: @project_name, environment: "development")
+        params = described_class.new(environment: "development").parameters(project: @project_name)
         expect(params.collect(&:value)).to eq(["developmentone", "developmenttwo"])
       end
 
@@ -227,7 +222,7 @@ module Kubetruth
 
         it "gets template" do
           ctapi.apis[:projects].projects_parameters_values_create(@one_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "defaultone"))
-          expect(ctapi.template("tone", project: @project_name, environment: "default")).to eq("tmpl1 defaultone")
+          expect(ctapi.template("tone", project: @project_name)).to eq("tmpl1 defaultone")
           expect(Logging.contents).to match(/Template Retrieve query result.*tmpl1 defaultone/)
         end
 
@@ -236,11 +231,41 @@ module Kubetruth
           ctapi.apis[:projects].projects_parameters_values_create(@three_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "defaultthree"))
           @three_tmpl = ctapi.apis[:projects].projects_templates_create(@project_id, CloudtruthClient::TemplateCreate.new(name: "tthree", body: "tmpl3 {{three}}"))
 
-          expect(ctapi.template("tthree", project: @project_name, environment: "default")).to eq("tmpl3 defaultthree")
+          expect(ctapi.template("tthree", project: @project_name)).to eq("tmpl3 defaultthree")
           expect(Logging.contents).to_not match(/Template Retrieve query result.*tmpl3 defaultthree/)
           expect(Logging.contents).to match(/Template Retrieve query result.*<masked>/)
         end
 
+        it "gets template by tag" do
+          one_param_value = ctapi.apis[:projects].projects_parameters_values_create(@one_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "defaultone"))
+          two_param_value = ctapi.apis[:projects].projects_parameters_values_create(@two_param.id, @project_id, CloudtruthClient::ValueCreate.new(environment: ctapi.environment_id("default"), external: false, internal_value: "defaulttwo"))
+          params = ctapi.parameters(project: @project_name)
+          expect(params.collect(&:value).sort).to eq(["defaultone", "defaulttwo"])
+          expect(ctapi.template("tone", project: @project_name)).to eq("tmpl1 defaultone")
+
+          sleep 2
+  
+          tag = ctapi.apis[:environments].environments_tags_list(ctapi.environment_id("default"), name: "test_tag").results.first
+          if tag
+            ctapi.apis[:environments].environments_tags_partial_update(ctapi.environment_id("default"), tag.id, patched_tag: CloudtruthClient::PatchedTagUpdate.new(timestamp: Time.now))
+          else
+            tag = ctapi.apis[:environments].environments_tags_create(ctapi.environment_id("default"), CloudtruthClient::TagCreate.new(name: "test_tag"))
+          end
+
+          sleep 2
+  
+          ctapi.apis[:projects].projects_parameters_values_partial_update(one_param_value.id, @one_param.id, @project_id, patched_value: CloudtruthClient::PatchedValue.new(internal_value: "newdefaultone"))
+  
+          params = ctapi.parameters(project: @project_name)
+          expect(params.collect(&:value).sort).to eq(["defaulttwo", "newdefaultone"])
+          expect(ctapi.template("tone", project: @project_name)).to eq("tmpl1 newdefaultone")
+  
+          ctapi_tagged = described_class.new(tag: "test_tag")
+          params = ctapi_tagged.parameters(project: @project_name)
+          expect(params.collect(&:value).sort).to eq(["defaultone", "defaulttwo"])
+          expect(ctapi_tagged.template("tone", project: @project_name)).to eq("tmpl1 defaultone")
+        end
+  
       end
 
     end

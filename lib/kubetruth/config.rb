@@ -49,6 +49,13 @@ module Kubetruth
         resource_templates.select {|k, v| active_templates.include?(k) }
       end
   
+      def to_s
+        to_h.to_json
+      end
+
+      def inspect
+        to_s
+      end
     end
 
     DEFAULT_SPEC = {
@@ -82,10 +89,10 @@ module Kubetruth
 
         config = DEFAULT_SPEC.merge(root_mapping)
         @root_spec = ProjectSpec.new(**config)
-        logger.debug { "ProjectSpec for root mapping: #{@root_spec.inspect}"}
+        logger.debug { "ProjectSpec for root mapping: #{@root_spec}"}
         @override_specs = overrides.collect do |o|
           spec = ProjectSpec.new(**config.deep_merge(o))
-          logger.debug { "ProjectSpec for override mapping: #{spec.inspect}"}
+          logger.debug { "ProjectSpec for override mapping: #{spec}"}
           spec
         end
         config

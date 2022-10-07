@@ -512,6 +512,15 @@ module Kubetruth
         expect(top.render(ctx: drop)).to eq("foo-bar")
       end
 
+      describe "#to_s" do
+
+        it "shows the template source" do
+          drop = described_class.new({"foo" => Template.new("bar")})
+          expect("#{drop.to_s}").to eq('{"foo":"bar"}')
+          expect("#{drop}").to eq('{"foo":"bar"}')
+        end
+  
+      end  
 
     end
 
@@ -519,24 +528,23 @@ module Kubetruth
 
       before(:each) do
         @ctapi = double(CtApi)
-        allow(CtApi).to receive(:instance).and_return(@ctapi)
       end
 
       it "produces all template names" do
-        drop = described_class.new(project: "proj1", environment: "env1")
+        drop = described_class.new(project: "proj1", ctapi: @ctapi)
         expect(@ctapi).to receive(:template_names).with(project: "proj1").and_return(["name1"])
         expect(drop.names).to eq(["name1"])
       end
 
       it "returns a template body for given name" do
-        drop = described_class.new(project: "proj1", environment: "env1")
-        expect(@ctapi).to receive(:template).with("foo", project: "proj1", environment: "env1").and_return("body1")
+        drop = described_class.new(project: "proj1", ctapi: @ctapi)
+        expect(@ctapi).to receive(:template).with("foo", project: "proj1").and_return("body1")
         top = Template.new("{{drop.foo}}")
         expect(top.render(drop: drop)).to eq("body1")
       end
 
       it "fails for missing template" do
-        drop = described_class.new(project: "proj1", environment: "env1")
+        drop = described_class.new(project: "proj1", ctapi: @ctapi)
         expect(@ctapi).to receive(:template).and_raise(Kubetruth::Error.new("Unknown template: nothere"))
         top = Template.new("{{drop.nothere}}")
         expect { top.render(drop: drop) }.to raise_error(Kubetruth::Error, /Unknown template: nothere/)
@@ -592,9 +600,10 @@ module Kubetruth
       end
 
       it "masks secrets in logs" do
+        # Note: secrets/parameters are now loaded dynamically, so are a proc when passed to template render
         secrets = {"foo" => "sekret"}
         tmpl = described_class.new("secret: {{secrets.foo}} encoded: {{secrets.foo | encode64}}")
-        expect(tmpl.render(secrets: secrets)).to eq("secret: sekret encoded: #{Base64.strict_encode64("sekret")}")
+        expect(tmpl.render(secrets: proc { secrets })).to eq("secret: sekret encoded: #{Base64.strict_encode64("sekret")}")
         expect(Logging.contents).to_not include("sekret")
         expect(Logging.contents).to include("<masked:foo>")
         expect(Logging.contents).to_not include(Base64.strict_encode64("sekret"))
@@ -602,9 +611,10 @@ module Kubetruth
       end
 
       it "masks secrets in exception" do
+        # Note: secrets/parameters are now loaded dynamically, so are a proc when passed to template render
         secrets = {"foo" => "sekret"}
         tmpl = described_class.new("{{fail}}")
-        expect { tmpl.render(secrets: secrets) }.to raise_error(Template::Error) do |error|
+        expect { tmpl.render(secrets: proc { secrets }) }.to raise_error(Template::Error) do |error|
           expect(error.message).to_not include("sekret")
           expect(error.message).to include("<masked:foo>")
           expect(error.message).to_not include(Base64.strict_encode64("sekret"))
@@ -613,9 +623,10 @@ module Kubetruth
       end
 
       it "masks multiline secrets in logs" do
+        # Note: secrets/parameters are now loaded dynamically, so are a proc when passed to template render
         secrets = {"foo" => "sekret\nsosekret"}
         tmpl = described_class.new("secret: {{secrets.foo}} encoded: {{secrets.foo | encode64}}")
-        expect(tmpl.render(secrets: secrets)).to eq("secret: sekret\nsosekret encoded: #{Base64.strict_encode64("sekret\nsosekret")}")
+        expect(tmpl.render(secrets: proc { secrets })).to eq("secret: sekret\nsosekret encoded: #{Base64.strict_encode64("sekret\nsosekret")}")
         expect(Logging.contents).to_not include("sekret")
         expect(Logging.contents).to include("<masked:foo>")
         expect(Logging.contents).to_not include(Base64.strict_encode64("sekret\nsosekret"))
@@ -623,14 +634,14 @@ module Kubetruth
 
         Logging.clear
         tmpl = described_class.new("secret:{{ secrets.foo | nindent: 2}}\nencoded:{{secrets.foo | encode64 | nindent:2}}")
-        expect(tmpl.render(secrets: secrets)).to eq("secret:  \n  sekret\n  sosekret\nencoded:  \n  #{Base64.strict_encode64("sekret\nsosekret")}")
+        expect(tmpl.render(secrets: proc { secrets })).to eq("secret:  \n  sekret\n  sosekret\nencoded:  \n  #{Base64.strict_encode64("sekret\nsosekret")}")
         expect(Logging.contents).to_not include("sekret")
         expect(Logging.contents).to include("<masked:foo>")
         expect(Logging.contents).to_not include(Base64.strict_encode64("sekret\nsosekret"))
         expect(Logging.contents).to include("<masked:foo_base64>")
 
         tmpl = described_class.new("{{fail}}")
-        expect { tmpl.render(secrets: secrets) }.to raise_error(Template::Error) do |error|
+        expect { tmpl.render(secrets: proc { secrets }) }.to raise_error(Template::Error) do |error|
           expect(error.message).to_not include("sekret")
           expect(error.message).to include("<masked:foo>")
           expect(error.message).to_not include(Base64.strict_encode64("sekret\nsosekret"))

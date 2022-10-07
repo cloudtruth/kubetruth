@@ -7,11 +7,13 @@ require 'kubetruth/config'
 module Kubetruth
   describe Project do
 
-    let(:collection) { ProjectCollection.new }
+    let(:collection) { ProjectCollection.new(Kubetruth::Config::ProjectSpec.new) }
 
     before(:each) do
       @ctapi = double()
-      allow(collection).to receive(:ctapi).and_return(@ctapi)
+      @collection_ctapi = double()
+      allow_any_instance_of(described_class).to receive(:ctapi).and_return(@ctapi)
+      allow(collection).to receive(:ctapi).and_return(@collection_ctapi)
     end
 
     describe "#initialize" do
@@ -31,20 +33,20 @@ module Kubetruth
                                              collection: collection) }
 
       it "handles empty" do
-        expect(@ctapi).to receive(:parameters).with(project: project.name, environment: "default", tag: nil).and_return([])
+        expect(@ctapi).to receive(:parameters).with(project: project.name).and_return([])
         params = project.parameters
         expect(params).to eq([])
       end
 
       it "uses spec versions se" do
-        expect(@ctapi).to receive(:parameters).with(project: project.name, environment: "default", tag: nil).and_return([])
+        expect(@ctapi).to receive(:parameters).with(project: project.name).and_return([])
         params = project.parameters
         expect(params).to eq([])
       end
 
       it "uses simple key_selector" do
         project.spec.key_selector = /svc/
-        expect(@ctapi).to receive(:parameters).with(project: project.name, environment: "default", tag: nil).and_return([
+        expect(@ctapi).to receive(:parameters).with(project: project.name).and_return([
           Parameter.new(key: "svc.param1", value: "value1", secret: false),
           Parameter.new(key: "svc.param2", value: "value2", secret: false),
         ])
@@ -55,7 +57,7 @@ module Kubetruth
 
       it "uses complex key_selector" do
         project.spec.key_selector = /foo$/
-        expect(@ctapi).to receive(:parameters).with(project: project.name, environment: "default", tag: nil).and_return([
+        expect(@ctapi).to receive(:parameters).with(project: project.name).and_return([
           Parameter.new(key: "svc.param1", value: "value1", secret: false),
           Parameter.new(key: "svc.param2.foo", value: "value2", secret: false),
         ])
@@ -68,7 +70,7 @@ module Kubetruth
       it "doesn't expose secret in debug log" do
         Logging.setup_logging(level: :debug, color: false)
 
-        expect(@ctapi).to receive(:parameters).with(project: project.name, environment: "default", tag: nil).and_return([
+        expect(@ctapi).to receive(:parameters).with(project: project.name).and_return([
                                                               Parameter.new(key: "param1", value: "value1", secret: false),
                                                               Parameter.new(key: "param2", value: "sekret", secret: true),
                                                               Parameter.new(key: "param3", value: "alsosekret", secret: true),
