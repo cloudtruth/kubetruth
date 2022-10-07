@@ -1,3 +1,10 @@
+1.2.1 (10/07/2022)
+------------------
+
+* Honor tags when referencing an upstream cloudtruth template Only fetch parameters if the local template uses them [981d371](../../commit/981d371)
+* add ability to run without async for easier debugging [cfe52f3](../../commit/cfe52f3)
+* ignore empty stream templates [9791457](../../commit/9791457)
+
 1.2.0 (05/18/2022)
 ------------------
 
