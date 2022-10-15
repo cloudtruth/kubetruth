@@ -170,6 +170,8 @@ module Kubetruth
 
     class DelayedParameters
 
+      include GemLogger::LoggerSupport
+
       def initialize(project)
         @project = project
       end
