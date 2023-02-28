@@ -1,10 +1,13 @@
 FROM ruby:3.0-alpine AS base
 
+ARG APP_USER_UID=65532
+ARG APP_USER_GID=65532
+
 ENV APP_DIR="/srv/app" \
     BUNDLE_PATH="/srv/bundler" \
     BUILD_PACKAGES="build-base ruby-dev" \
     APP_PACKAGES="bash curl tzdata git less" \
-    RELEASE_PACKAGES="bash" \
+    RELEASE_PACKAGES="bash shadow" \
     APP_USER="app"
 
 # Thes env var definitions reference values from the previous definitions, so
@@ -55,8 +58,17 @@ RUN apk add --no-cache \
     --virtual app \
     $RELEASE_PACKAGES
 
+# Create a non-root user for running the container
+RUN groupadd -g $APP_USER_GID $APP_USER
+RUN useradd --no-log-init --create-home --shell /bin/false --gid $APP_USER_GID --uid $APP_USER_UID $APP_USER
+
 COPY --from=build $BUNDLE_PATH $BUNDLE_PATH
 COPY --from=build $APP_DIR $APP_DIR
+
+# make sure Gemfile.lock has correct platform so running doesn't require touching it
+RUN ruby -r 'bundler/setup' -e ''
+
+USER ${APP_USER}
 
 # Specify the script to use when running the container
 ENTRYPOINT ["entrypoint.sh"]
