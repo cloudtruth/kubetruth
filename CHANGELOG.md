@@ -1,3 +1,9 @@
+1.2.3 (02/28/2023)
+------------------
+
+* Use non-root user and prevent writing to Gemfile.lock at runtime [e54c66a](../../commit/e54c66a)
+* [sc-9270]cloudtruth-kubetruth-workflow-updates-part1 (#16) [430e3e0](../../commit/430e3e0)
+
 1.2.2 (10/15/2022)
 ------------------
 
