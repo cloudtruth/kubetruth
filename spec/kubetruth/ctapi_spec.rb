@@ -135,14 +135,14 @@ module Kubetruth
 
         tag = ctapi.apis[:environments].environments_tags_list(ctapi.environment_id("default"), name: "test_tag").results.first
         if tag
-          ctapi.apis[:environments].environments_tags_partial_update(ctapi.environment_id("default"), tag.id, patched_tag: CloudtruthClient::PatchedTagUpdate.new(timestamp: Time.now))
+          ctapi.apis[:environments].environments_tags_update(ctapi.environment_id("default"), tag.id, CloudtruthClient::TagUpdate.new(name: "test_tag", timestamp: Time.now))
         else
           tag = ctapi.apis[:environments].environments_tags_create(ctapi.environment_id("default"), CloudtruthClient::TagCreate.new(name: "test_tag"))
         end
 
         sleep 2
 
-        ctapi.apis[:projects].projects_parameters_values_partial_update(one_param_value.id, @one_param.id, @project_id, patched_value: CloudtruthClient::PatchedValue.new(internal_value: "newdefaultone"))
+        ctapi.apis[:projects].projects_parameters_values_update(one_param_value.id, @one_param.id, @project_id, value_update: CloudtruthClient::ValueUpdate.new(internal_value: "newdefaultone"))
 
         params = ctapi.parameters(project: @project_name)
         expect(params.collect(&:value).sort).to eq(["defaulttwo", "newdefaultone"])
@@ -158,6 +158,7 @@ module Kubetruth
         secrets = params.find {|p| p.secret }
         expect(secrets.size).to_not eq(0)
         expect(Logging.contents).to include("<masked>")
+        puts Logging.contents
         expect(Logging.contents).to_not include("defaultthree")
       end
 
@@ -247,14 +248,14 @@ module Kubetruth
   
           tag = ctapi.apis[:environments].environments_tags_list(ctapi.environment_id("default"), name: "test_tag").results.first
           if tag
-            ctapi.apis[:environments].environments_tags_partial_update(ctapi.environment_id("default"), tag.id, patched_tag: CloudtruthClient::PatchedTagUpdate.new(timestamp: Time.now))
+            ctapi.apis[:environments].environments_tags_update(ctapi.environment_id("default"), tag.id, CloudtruthClient::TagUpdate.new(name: "test_tag", timestamp: Time.now))
           else
             tag = ctapi.apis[:environments].environments_tags_create(ctapi.environment_id("default"), CloudtruthClient::TagCreate.new(name: "test_tag"))
           end
 
           sleep 2
-  
-          ctapi.apis[:projects].projects_parameters_values_partial_update(one_param_value.id, @one_param.id, @project_id, patched_value: CloudtruthClient::PatchedValue.new(internal_value: "newdefaultone"))
+
+          ctapi.apis[:projects].projects_parameters_values_update(one_param_value.id, @one_param.id, @project_id, value_update: CloudtruthClient::ValueUpdate.new(internal_value: "newdefaultone"))
   
           params = ctapi.parameters(project: @project_name)
           expect(params.collect(&:value).sort).to eq(["defaulttwo", "newdefaultone"])

@@ -120,6 +120,9 @@ module Kubetruth
             param[:values].each do |k, v|
               v[:value] = "<masked>" unless v.nil?
             end
+            param[:values_flat].each do |v|
+              v[:value] = "<masked>" unless v.nil?
+            end
           end
         end
         "Parameters query result: #{cleaned.inspect}"
