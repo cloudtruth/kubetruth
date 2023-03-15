@@ -1,6 +1,7 @@
-1.2.3 (02/28/2023)
+1.2.3 (03/15/2023)
 ------------------
 
+* test fixes for latest api spec [1e9b850](../../commit/1e9b850)
 * Use non-root user and prevent writing to Gemfile.lock at runtime [e54c66a](../../commit/e54c66a)
 * [sc-9270]cloudtruth-kubetruth-workflow-updates-part1 (#16) [430e3e0](../../commit/430e3e0)
 
