@@ -1,6 +1,7 @@
-1.2.3 (03/15/2023)
+1.2.3 (03/16/2023)
 ------------------
 
+* fix gid/user for multistage on github actions [535b8cf](../../commit/535b8cf)
 * update bundle [ebe13f2](../../commit/ebe13f2)
 * test fixes for latest api spec [1e9b850](../../commit/1e9b850)
 * Use non-root user and prevent writing to Gemfile.lock at runtime [e54c66a](../../commit/e54c66a)
