@@ -1,14 +1,13 @@
 FROM ruby:3.0-alpine AS base
 
-ARG APP_USER_UID=65532
-ARG APP_USER_GID=65532
-
-ENV APP_DIR="/srv/app" \
+ENV APP_USER_UID=65532 \
+    APP_USER_GID=65532 \
+    APP_USER="app" \
+    APP_DIR="/srv/app" \
     BUNDLE_PATH="/srv/bundler" \
     BUILD_PACKAGES="build-base ruby-dev" \
     APP_PACKAGES="bash curl tzdata git less" \
-    RELEASE_PACKAGES="bash shadow" \
-    APP_USER="app"
+    RELEASE_PACKAGES="bash shadow"
 
 # Thes env var definitions reference values from the previous definitions, so
 # they need to be split off on their own. Otherwise, they'll receive stale
