@@ -158,7 +158,6 @@ module Kubetruth
         secrets = params.find {|p| p.secret }
         expect(secrets.size).to_not eq(0)
         expect(Logging.contents).to include("<masked>")
-        puts Logging.contents
         expect(Logging.contents).to_not include("defaultthree")
       end
 
