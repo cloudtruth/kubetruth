@@ -1,11 +1,7 @@
 module Kubetruth
-  Project = Struct.new(:name, :spec, :collection, keyword_init: true) do
+  Project = Struct.new(:name, :spec, :collection, :ctapi, keyword_init: true) do
 
     include GemLogger::LoggerSupport
-
-    def ctapi
-      @ctapi ||= Kubetruth::CtApi.new(environment: spec.environment, tag: spec.tag)
-    end
 
     def parameters
       @parameters ||= begin

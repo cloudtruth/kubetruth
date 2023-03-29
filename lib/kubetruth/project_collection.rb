@@ -21,7 +21,7 @@ module Kubetruth
     end
 
     def create_project(*args, **kwargs)
-      project = Project.new(*args, **kwargs, collection: self)
+      project = Project.new(*args, **kwargs, collection: self, ctapi: ctapi)
       projects[project.name] = project
       project
     end

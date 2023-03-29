@@ -19,7 +19,7 @@ module Kubetruth
     describe "#initialize" do
 
       it "creates from kwargs" do
-        data = {name: "name1", spec: Kubetruth::Config::ProjectSpec.new, collection: collection}
+        data = {name: "name1", spec: Kubetruth::Config::ProjectSpec.new, collection: collection, ctapi: double()}
         proj = described_class.new(**data)
         expect(proj.to_h).to eq(data)
       end
