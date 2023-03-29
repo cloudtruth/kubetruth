@@ -47,8 +47,8 @@ Parameterize the helm install with `--set *` or `--values yourConfig.yaml` to co
 | secret.create | Create the kubernetes Secret containing the supplied api-key | boolean | true | no |
 | secret.name | The name of the kubernetes Secret to create | string | `<helm fullname>` | no |
 | projectMappings.root.environment | The CloudTruth environment to lookup parameter values for. | string | `default` | yes |
-| projectMappings.root.project_selector | A regexp, or static CloudTruth project name value, to limit the projects acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
-| projectMappings.root.key_selector | A regexp to limit the keys acted against (client-side).  Supplies any named matches for template evaluation | string | "" | no |
+| projectMappings.root.project_selector | A regexp to limit the projects acted against (client-side).  This performs a substring match, so use regexp anchors to match the entire string, e.g. `"^myProject$"`.  Supplies any named matches for template evaluation | string | "" | no |
+| projectMappings.root.key_selector | A regexp to limit the keys acted against (client-side).  This performs a substring match, so use regexp anchors to match the entire string, e.g. `"^myKey$"`. Supplies any named matches for template evaluation | string | "" | no |
 | projectMappings.root.tag | The version tag used when querying for parameters | string | `none` | no |
 | projectMappings.root.skip | Skips the generation of resources for the selected projects | flag | false | no |
 | projectMappings.root.suppress_namespace_inheritance | Prevents the CRD from the primary namespace from being [inherited by secondary namespaces](#multi-instance-config) | flag | false | no |
@@ -145,7 +145,7 @@ standard ways, e.g. `kubectl edit projectmapping kubetruth-root`.  The
 `override` scope allows you to override the root scope's behavior for those
 CloudTruth projects whose names match its `project_selector` pattern.
 
-For the `project_selector`, which is defined under the *Usage* section, you can either use a regex (i.e - `"^k8s-"`) which matches any CloudTruth project that starts with `k8s-`, or a specific CloudTruth project name. For example, if you have a CloudTruth project called `kubernetes_secrets`, you'll want the `project_selector` value to be `"kubernetes_secrets"`.
+For the `project_selector`, which is defined under the *Usage* section, you use a regex to match against CloudTruth project names, e.g. `"^service"` will match any project that starts with `service`.  Since this does substring matching, if you want to match a specific CloudTruth project name you should use regex anchors to ensure you don't match more than expected.  For example, if you have a CloudTruth project called `kubernetes_secrets`, you'll want the `project_selector` value to be `"^kubernetes_secrets$"` so you don't accidentally match another project named `not_kubernetes_secrets`.
 
 Note that Kubetruth watches for changes to ProjectMappings, so touching any of
 them wakes it up from a polling sleep.  This makes it quick and easy to test out
