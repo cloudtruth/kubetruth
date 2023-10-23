@@ -16,7 +16,7 @@ def get_var(name, env_name: name.to_s.upcase, yml_name: name.to_s.downcase.to_sy
   value ||= APP[yml_name]
   value ||= default
 
-  if value.nil? && $stdin.tty? && prompt
+  if (prompt || value.nil?) && $stdin.tty?
     print "Enter '#{name}': "
     value = $stdin.gets
   end
@@ -108,7 +108,7 @@ task :build_release => [:client] do
 end
 
 task :docker_push do
-  tags = get_var(:tags)
+  tags = get_var(:tags, default: "latest #{APP[:version]}")
   tags = tags.split
   tags.each do |tag|
     puts "Pushing version '#{tag}' to docker hub"
