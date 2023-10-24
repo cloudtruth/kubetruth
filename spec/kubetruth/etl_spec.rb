@@ -428,7 +428,7 @@ module Kubetruth
       let(:config) {
         Kubetruth::Config.new([root_spec_crd])
       }
-      let(:collection) { ProjectCollection.new(config) }
+      let(:collection) { ProjectCollection.new(config.root_spec) }
 
       before(:each) do
 
@@ -447,7 +447,7 @@ module Kubetruth
 
       it "renders multiple templates" do
         allow(etl).to receive(:load_config).and_yield(@ns, config)
-        
+
         expect(collection).to receive(:names).and_return(["proj1"])
 
         expect(etl).to receive(:kube_apply).with(hash_including("kind" => "ConfigMap"))
@@ -629,7 +629,7 @@ module Kubetruth
       let(:config) {
         Kubetruth::Config.new([root_spec_crd])
       }
-      let(:collection) { ProjectCollection.new(config) }
+      let(:collection) { ProjectCollection.new(config.root_spec) }
 
       before(:each) do
 
@@ -683,6 +683,7 @@ module Kubetruth
       it "sets log level when supplied by root pm in config" do
         Kubetruth::Logging.root_log_level = "error" # undo debug logging set by test harness
         config.root_spec.log_level = "error"
+        Logging.clear
 
         allow(etl).to receive(:load_config).and_yield(@ns, config)
         allow(config.root_spec.resource_templates["configmap"]).to receive(:render).and_return("")
@@ -698,6 +699,7 @@ module Kubetruth
 
       it "sets log level when supplied by override pm in config" do
         Kubetruth::Logging.root_log_level = "error" # undo debug logging set by test harness
+        Logging.clear
 
         override_crd = {scope: "override", project_selector: "proj1", log_level: "debug"}
         config = Kubetruth::Config.new([root_spec_crd, override_crd])

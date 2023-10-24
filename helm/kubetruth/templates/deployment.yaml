@@ -54,6 +54,10 @@ spec:
             {{- if not .Values.appSettings.async }}
             - --no-async
             {{- end }}
+            {{- if .Values.appSettings.concurrency }}
+            - --concurrency
+            - "{{ .Values.appSettings.concurrency }}"
+            {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

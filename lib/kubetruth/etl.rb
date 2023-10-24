@@ -1,6 +1,7 @@
 require 'benchmark'
 require 'yaml'
 require 'async'
+require 'async/semaphore'
 require 'yaml/safe_load_stream'
 using YAMLSafeLoadStream
 
@@ -14,9 +15,11 @@ module Kubetruth
   class ETL
     include GemLogger::LoggerSupport
 
-    def initialize(dry_run: false, async: true)
+    def initialize(dry_run: false, async: true, async_concurrency: 3)
       @dry_run = dry_run
       @async = async
+      @async_concurrency = async_concurrency
+      @async_semaphore = nil
       @wrote_crds = false
     end
 
@@ -88,14 +91,14 @@ module Kubetruth
 
     def async_task_tree(task)
       msg = ""
-    
+
       if task.parent
         # The root task seems to always be nil, so exclude it from name
         unless task.parent.parent.nil? && task.parent.annotation.blank?
           msg << async_task_tree(task.parent) << " -> "
         end
       end
-    
+
       msg << (task.annotation ? task.annotation : "unnamed")
       msg
     end
@@ -106,7 +109,7 @@ module Kubetruth
 
     def async(*args, **kwargs)
       if @async
-        Async(*args, **kwargs) do |task|
+        blk = ->(task) {
           task_name = async_task_tree(task)
           begin
             logger.info "Starting async task: #{task_name}"
@@ -116,7 +119,8 @@ module Kubetruth
             logger.log_exception(e, "Failure in async task: #{task_name}")
             task.stop
           end
-        end
+        }
+        @async_semaphore.nil? ? Async(*args, **kwargs, &blk) : @async_semaphore.async(*args, **kwargs, &blk)
       else
         task_name = kwargs[:annotation] || "unnamed"
         begin
@@ -179,7 +183,7 @@ module Kubetruth
       def params_to_hash(param_list)
         Hash[param_list.collect {|param| [param.key, param.value]}]
       end
-  
+
       def params
         @param_data ||= begin
           # constructing the hash will cause any overrides to happen in the right
@@ -216,6 +220,7 @@ module Kubetruth
 
     def apply
       async(annotation: "ETL Event Loop") do
+        @async_semaphore = Async::Semaphore.new(@async_concurrency) if @async
         logger.warn("Performing dry-run") if @dry_run
 
         load_config do |namespace, config|
@@ -280,7 +285,7 @@ module Kubetruth
                     parsed_ymls.each do |parsed_yml|
                       if parsed_yml.present?
                         async(annotation: "Apply Template: #{template_id}") do
-                          kube_apply(parsed_yml) 
+                          kube_apply(parsed_yml)
                         end
                       else
                         logger.debug {"Skipping empty stream template"}
@@ -293,7 +298,9 @@ module Kubetruth
             end
           end
         end
-      end.wait
+    ensure
+      @async_semaphore = nil
+    end.wait
     end
 
     def kube_apply(parsed_yml)

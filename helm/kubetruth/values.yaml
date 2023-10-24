@@ -86,6 +86,7 @@ appSettings:
   pollingInterval:
   debug: false
   async: true
+  concurrency:
 
 # If secret.create == false, secret generation is left to the user
 # outside of the chart, and a name should be specified
@@ -182,7 +183,7 @@ projectMappings:
           {%- if name_parts.size > 1 %}
           namespace: "{{ name_parts | first }}"
           {%- endif %}
-        
+
         spec: {{ templates[template] | nindent: 2 }}
 
         {%- endif %}

@@ -43,6 +43,10 @@ module Kubetruth
            :flag, "Run using async I/O (or not)",
            default: true
 
+    option ["-c", "--concurrency"], "CONCURRENCY", "Concurrency limit for async I/O", default: 3 do |a|
+      Integer(a)
+    end
+
     # TODO: option to map template to configmap?
 
     def execute
@@ -51,7 +55,7 @@ module Kubetruth
       Kubetruth::CtApi.configure(api_key: api_key, api_url: api_url)
       Kubetruth::KubeApi.configure(namespace: kube_namespace, token: kube_token, api_url: kube_url)
 
-      etl = ETL.new(dry_run: dry_run?, async: async?)
+      etl = ETL.new(dry_run: dry_run?, async: async?, async_concurrency: concurrency)
 
       Signal.trap("HUP") do
         puts "Handling HUP signal - waking up ETL poller" # logger cant be called from trap

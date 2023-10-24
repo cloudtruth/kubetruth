@@ -14,3 +14,4 @@ old-index.yaml
 client
 .vscode/settings.json
 .env
+.vscode/launch.json
