@@ -16,7 +16,7 @@ def get_var(name, env_name: name.to_s.upcase, yml_name: name.to_s.downcase.to_sy
   value ||= APP[yml_name]
   value ||= default
 
-  if (prompt || value.nil?) && $stdin.tty?
+  if (prompt || (value.nil? && required)) && $stdin.tty?
     print "Enter '#{name}': "
     value = $stdin.gets
   end

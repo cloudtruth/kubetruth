@@ -1,3 +1,15 @@
+1.2.4 (10/24/2023)
+------------------
+
+* preserve cookies from api server [1914a47](../../commit/1914a47)
+* allow async concurrency tuning [82b01f8](../../commit/82b01f8)
+* maintenance [f78ca9f](../../commit/f78ca9f)
+* fix rakefile var fetching [cad3e11](../../commit/cad3e11)
+* reuse ctapi from collection to project [410d1a7](../../commit/410d1a7)
+* mention substring matching for project mapping selectors [00155db](../../commit/00155db)
+* remove debug statement [0ac48ce](../../commit/0ac48ce)
+* project_selector doc updates (#13) [b644a1c](../../commit/b644a1c)
+
 1.2.3 (03/16/2023)
 ------------------
 
