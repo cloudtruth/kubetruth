@@ -621,6 +621,38 @@ module Kubetruth
 
         etl.apply()
       end
+
+      it "honors concurrency limit" do
+        sleep_val = 1
+        allow(etl).to receive(:load_config).and_yield(@ns, config)
+
+        # causes 4 executions of kube_apply
+        allow(collection).to receive(:names).and_return(["foo", "bar"])
+
+        run_count = 0
+        allow(etl).to receive(:kube_apply) do
+          run_count += 1
+          sleep sleep_val
+          nil
+        end
+
+        etl.instance_variable_set(:@async_concurrency, 2)
+        duration1 = Benchmark.measure do
+          etl.apply()
+        end
+        expect(run_count).to eq(4)
+        expect(duration1.real).to be > (sleep_val + 0.1)
+        expect(duration1.real).to be > (run_count / 2 * sleep_val)
+
+        run_count = 0
+        etl.instance_variable_set(:@async_concurrency, 10)
+        duration2 = Benchmark.measure do
+          etl.apply()
+        end
+        expect(run_count).to eq(4)
+        expect(duration2.real).to be < (sleep_val + 0.1)
+      end
+
     end
 
     describe "default templates" do

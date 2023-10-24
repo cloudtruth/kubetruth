@@ -35,7 +35,7 @@ COPY Gemfile* $APP_DIR/
 RUN bundle config --local without 'development test' && \
     bundle install --jobs=4
 
-RUN apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing kubectl
+RUN apk add --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community kubectl
 
 COPY . $APP_DIR/
 
