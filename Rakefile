@@ -11,7 +11,7 @@ CLIENT_DIR = "client"
 require 'rake/clean'
 CLEAN << TMP_DIR << CLIENT_DIR
 
-def get_var(name, env_name: name.to_s.upcase, yml_name: name.to_s.downcase.to_sym, default: nil, prompt: true, required: true)
+def get_var(name, env_name: name.to_s.upcase, yml_name: name.to_s.downcase.to_sym, default: nil, prompt: false, required: true)
   value = ENV[env_name]
   value ||= APP[yml_name]
   value ||= default
@@ -84,7 +84,7 @@ end
 task :helm_package => [:helm_index]
 
 task :build_development => [:client] do
-  image_name = get_var(:image_name, default: "#{APP[:name]}", prompt: false, required: false)
+  image_name = get_var(:image_name, default: "#{APP[:name]}", required: false)
   sh "docker build --target development -t #{image_name}:latest -t #{image_name}:development ."
 end
 
@@ -103,7 +103,7 @@ task :rspec do
 end
 
 task :build_release => [:client] do
-  image_name = get_var(:image_name, default: "#{APP[:name]}", prompt: false, required: false)
+  image_name = get_var(:image_name, default: "#{APP[:name]}", required: false)
   sh "docker build --target release -t #{image_name}:latest -t #{image_name}:release ."
 end
 
@@ -144,12 +144,12 @@ task :changelog do
   entries = ""
   sha_url_format = "../../commit/%h"
 
-  current_version = get_var('CURRENT_VERSION', prompt: false, yml_name: :version)
+  current_version = get_var('CURRENT_VERSION', yml_name: :version)
 
   starting_version = nil
   ending_version = nil, ending_version_name = nil
 
-  version_range = get_var('VERSION_RANGE', prompt: false, required: false)
+  version_range = get_var('VERSION_RANGE', required: false)
   if version_range
     first_ver, second_ver = version_range.split("..")
     starting_version = "v#{first_ver.gsub(/^[^\d]*/, '')}" if ! first_ver.nil? && first_ver.size > 0
@@ -222,8 +222,8 @@ task :changelog do
 end
 
 task :console do
-  local = get_var(:local, prompt: false, required: false, default: false)
-  image_name = get_var(:image_name, default: "#{APP[:name]}", prompt: false, required: false)
+  local = get_var(:local, required: false, default: false)
+  image_name = get_var(:image_name, default: "#{APP[:name]}", required: false)
 
   if local
     $LOAD_PATH.unshift File.expand_path("lib", __dir__)
@@ -266,10 +266,10 @@ end
 task :client => "#{CLIENT_DIR}/Gemfile"
 
 task :install do
-  build_type = get_var(:build_type, prompt: false, required: false, default: "development")
-  namespace = get_var(:namespace, prompt: false, required: false)
-  values_file = get_var(:values_file, prompt: false, required: false)
-  helm_args = get_var(:helm_args, prompt: false, required: false)
+  build_type = get_var(:build_type, required: false, default: "development")
+  namespace = get_var(:namespace, required: false)
+  values_file = get_var(:values_file, required: false)
+  helm_args = get_var(:helm_args, required: false)
 
   system("minikube version", [:out, :err] => "/dev/null") || fail("dev dependency not installed - minikube")
   system("minikube status", [:out, :err] => "/dev/null") || fail("dev dependency not running - minikube")
@@ -296,7 +296,7 @@ task :install do
 end
 
 task :clean_install do
-  namespace = get_var(:namespace, prompt: false, required: false)
+  namespace = get_var(:namespace, required: false)
   cmd = "helm delete"
   cmd << " --namespace #{namespace}" if namespace
   cmd << " kubetruth"
