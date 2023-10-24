@@ -47,6 +47,7 @@ GEM
     docile (1.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
+    dotenv (2.7.6)
     e2mmap (0.1.0)
     faraday (1.5.1)
       faraday-em_http (~> 1.0)
@@ -58,6 +59,9 @@ GEM
       faraday-patron (~> 1.0)
       multipart-post (>= 1.2, < 3)
       ruby2_keywords (>= 0.0.4)
+    faraday-cookie_jar (0.0.7)
+      faraday (>= 0.8.0)
+      http-cookie (~> 1.0.0)
     faraday-em_http (1.0.0)
     faraday-em_synchrony (1.0.0)
     faraday-excon (1.1.0)
@@ -222,6 +226,8 @@ DEPENDENCIES
   cloudtruth-client!
   codecov
   debase
+  dotenv
+  faraday-cookie_jar
   gem_logger
   kubeclient
   liquid

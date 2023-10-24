@@ -17,6 +17,7 @@ group :development, :test do
   gem "webmock"
   gem "codecov", require: false, group: "test"
   gem "simplecov"
+  gem "dotenv"
 end
 
 # application runtime dependencies
@@ -31,3 +32,4 @@ gem "yaml-safe_load_stream",
     git: "https://github.com/wr0ngway/yaml-safe_load_stream.git",
     branch: "ruby_3"
 gem "async"
+gem "faraday-cookie_jar"

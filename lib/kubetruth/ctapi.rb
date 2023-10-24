@@ -1,6 +1,7 @@
 require 'uri'
 require "cloudtruth-client"
 require_relative 'parameter'
+require 'faraday-cookie_jar'
 
 module Kubetruth
   class CtApi
@@ -40,7 +41,7 @@ module Kubetruth
       @environments_mutex = Mutex.new
       @projects_mutex = Mutex.new
       @templates_mutex = Mutex.new
- 
+
       raise ArgumentError.new("CtApi has not been configured") if @@api_key.nil? || @@api_url.nil?
       @api_key = @@api_key
       @api_url = @@api_url
@@ -58,6 +59,7 @@ module Kubetruth
       config.api_key = {'ApiKeyAuth' => @api_key}
       config.api_key_prefix = {'ApiKeyAuth' => "Api-Key"}
       config.logger = logger
+      config.use(:cookie_jar)
       # config.debugging = logger.debug?
       @client = CloudtruthClient::ApiClient.new(config)
       @client.user_agent = "kubetruth/#{Kubetruth::VERSION}"

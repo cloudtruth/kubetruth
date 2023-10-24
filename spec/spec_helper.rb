@@ -1,4 +1,5 @@
 require "bundler/setup"
+require 'dotenv/load'
 ENV['CLOUDTRUTH_API_KEY'] ||= 'fake_api_key'
 require "kubetruth"
 

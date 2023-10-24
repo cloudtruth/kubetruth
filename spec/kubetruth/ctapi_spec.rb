@@ -49,6 +49,20 @@ module Kubetruth
 
     end
 
+    describe "#cookies" do
+
+      it "uses session cookie" do
+        data, status_code, headers = ctapi.apis[:environments].environments_list_with_http_info
+        cookies = headers["set-cookie"]
+        session_cookie1 = cookies.match(/sessionid=([^;]+)/)[1]
+        data, status_code, headers = ctapi.apis[:environments].environments_list_with_http_info
+        cookies = headers["set-cookie"]
+        session_cookie2 = cookies.match(/sessionid=([^;]+)/)[1]
+        expect(session_cookie1).to eq(session_cookie2)
+      end
+
+    end
+
     describe "#environments" do
 
       it "gets environments" do
@@ -244,7 +258,7 @@ module Kubetruth
           expect(ctapi.template("tone", project: @project_name)).to eq("tmpl1 defaultone")
 
           sleep 2
-  
+
           tag = ctapi.apis[:environments].environments_tags_list(ctapi.environment_id("default"), name: "test_tag").results.first
           if tag
             ctapi.apis[:environments].environments_tags_update(ctapi.environment_id("default"), tag.id, CloudtruthClient::TagUpdate.new(name: "test_tag", timestamp: Time.now))
@@ -255,17 +269,17 @@ module Kubetruth
           sleep 2
 
           ctapi.apis[:projects].projects_parameters_values_update(one_param_value.id, @one_param.id, @project_id, value_update: CloudtruthClient::ValueUpdate.new(internal_value: "newdefaultone"))
-  
+
           params = ctapi.parameters(project: @project_name)
           expect(params.collect(&:value).sort).to eq(["defaulttwo", "newdefaultone"])
           expect(ctapi.template("tone", project: @project_name)).to eq("tmpl1 newdefaultone")
-  
+
           ctapi_tagged = described_class.new(tag: "test_tag")
           params = ctapi_tagged.parameters(project: @project_name)
           expect(params.collect(&:value).sort).to eq(["defaultone", "defaulttwo"])
           expect(ctapi_tagged.template("tone", project: @project_name)).to eq("tmpl1 defaultone")
         end
-  
+
       end
 
     end
