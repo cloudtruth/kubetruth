@@ -12,6 +12,6 @@ old-index.yaml
 # rspec failure tracking
 .rspec_status
 client
-.vscode/settings.json
 .env
-.vscode/launch.json
+.vscode/
+.idea/

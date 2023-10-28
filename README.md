@@ -28,6 +28,13 @@ names of the resources created at install time.  Thus in the examples below, a
 name like `kubetruth-root` for the default installed CRD would be different in
 your system if you gave `helm install` a different release name.
 
+## Update
+
+```shell
+helm repo update
+helm upgrade kubetruth cloudtruth/kubetruth
+```
+
 ## Uninstall
 
 ```shell
@@ -181,17 +188,17 @@ ones:
 
 | Custom Filters  | Description |
 |-----------------|-------------|
-| `dns_safe` |  Ensures the string is safe for use as a kubernetes resource name (i.e. Namespace/ConfigMap/Secret names) | 
-| `env_safe` |  Ensures the string is safe for setting as a shell environment variable | 
-| `key_safe` |  Ensures the string is safe for use as a key inside a ConfigMap/Secret data hash | 
-| `indent: count` |  Indents each line in the argument by count spaces | 
-| `nindent: count` |  Adds a leading newline, then indents each line in the argument by count spaces | 
-| `stringify` |  Converts argument to a string safe to use in yaml (escapes quotes and surrounds with the quote character) | 
-| `parse_yaml` |  Parses yaml string into a structured representation | 
-| `to_yaml` |  Converts object to a yaml representation | 
-| `parse_json` |  Parses json string into a structured representation | 
-| `to_json` |  Converts object to a json representation | 
-| `encode64` |  The argument bas64 encoded | 
+| `dns_safe` |  Ensures the string is safe for use as a kubernetes resource name (i.e. Namespace/ConfigMap/Secret names) |
+| `env_safe` |  Ensures the string is safe for setting as a shell environment variable |
+| `key_safe` |  Ensures the string is safe for use as a key inside a ConfigMap/Secret data hash |
+| `indent: count` |  Indents each line in the argument by count spaces |
+| `nindent: count` |  Adds a leading newline, then indents each line in the argument by count spaces |
+| `stringify` |  Converts argument to a string safe to use in yaml (escapes quotes and surrounds with the quote character) |
+| `parse_yaml` |  Parses yaml string into a structured representation |
+| `to_yaml` |  Converts object to a yaml representation |
+| `parse_json` |  Parses json string into a structured representation |
+| `to_json` |  Converts object to a json representation |
+| `encode64` |  The argument bas64 encoded |
 | `decode64` |  The argument bas64 decoded |
 | `sha256` |  The sha256 digest of the argument |
 | `inflate` |  Converts a map of key/values into a nested data structure based on a delimiter in the key name, e.g. `{foo.baz.bum: 2}` => `{foo: {bar: {baz: 2}}}` Inverse of deflate|
@@ -381,7 +388,7 @@ After checking out the repo, run `bundle` to install dependencies. Then, run
 interactive prompt that will allow you to experiment.
 
 To install and run via helm in a local cluster:
-``` 
+```
 mkdir local
 cat > local/values.yml <<-EOF
 image:
