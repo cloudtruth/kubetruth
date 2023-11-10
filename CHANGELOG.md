@@ -1,3 +1,14 @@
+1.2.5 (11/10/2023)
+------------------
+
+* only display living async tasks when sigdumping [78b94cd](../../commit/78b94cd)
+* add facility to get a live stacktrace of kubetruth process [9757f94](../../commit/9757f94)
+* remove dependence on defunct gem yaml-safe_load_stream [e0e00cc](../../commit/e0e00cc)
+* only honor async concurrency limits for ctapi operations across projects [a5e4456](../../commit/a5e4456)
+* reuse cloudtruth api cookies across all requests [e5f2d9f](../../commit/e5f2d9f)
+* fix optional prompting in rakefile [816d5a8](../../commit/816d5a8)
+* Update README (#17) [6e0e9fb](../../commit/6e0e9fb)
+
 1.2.4 (10/24/2023)
 ------------------
 
