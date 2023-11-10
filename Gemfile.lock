@@ -165,6 +165,7 @@ DEPENDENCIES
   liquid
   logging
   pry
+  psych
   rake
   rspec
   sigdump

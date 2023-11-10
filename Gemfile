@@ -20,6 +20,7 @@ end
 # application runtime dependencies
 gem "gem_logger"
 gem "logging"
+gem 'psych'
 gem 'sigdump'
 gem "activesupport", '~> 7.0', '<= 7.0.8'
 gem "clamp"
