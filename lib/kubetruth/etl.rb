@@ -2,14 +2,13 @@ require 'benchmark'
 require 'yaml'
 require 'async'
 require 'async/semaphore'
-require 'yaml/safe_load_stream'
-using YAMLSafeLoadStream
 
 require_relative 'config'
 require_relative 'kubeapi'
 require_relative 'project_collection'
 require_relative 'ctapi'
 require_relative 'template'
+require_relative 'yaml_safe_load_stream'
 
 module Kubetruth
   class ETL
@@ -296,7 +295,7 @@ module Kubetruth
                     )
 
                     template_id = "mapping: #{project.spec.name}, mapping_namespace: #{namespace}, project: #{project.name}, template: #{template_name}"
-                    parsed_ymls = YAML.safe_load_stream(resource_yml, template_id)
+                    parsed_ymls = YAML.safe_load_stream(resource_yml, filename: template_id)
                     logger.debug {"Skipping empty template"} if parsed_ymls.empty?
                     parsed_ymls.each do |parsed_yml|
                       if parsed_yml.present?
