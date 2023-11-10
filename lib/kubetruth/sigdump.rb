@@ -20,6 +20,7 @@ module Sigdump
       original_dump_backtrace(thread, io)
 
       ObjectSpace.each_object(Async::Task) do |task|
+        next unless task.alive?
         dump_async(task, io) if task
       end
 
