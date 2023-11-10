@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -e
+kubetruth_pid=$(ps ax | grep '[k]ubetruth' | awk '{print $1}')
+kill -CONT "${kubetruth_pid}"
+cat /tmp/sigdump-${kubetruth_pid}.log

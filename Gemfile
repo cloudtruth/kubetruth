@@ -4,10 +4,7 @@ source "https://rubygems.org"
 group :development do
   gem "rake"
   gem "pry"
-  gem "pry-byebug"
-  gem "ruby-debug-ide"
-  gem "debase"
-  gem "solargraph"
+  gem "debug"
 end
 
 # test dependencies
@@ -23,7 +20,8 @@ end
 # application runtime dependencies
 gem "gem_logger"
 gem "logging"
-gem "activesupport"
+gem 'sigdump'
+gem "activesupport", '~> 7.0', '<= 7.0.8'
 gem "clamp"
 gem "cloudtruth-client", path: "client"
 gem "kubeclient"
