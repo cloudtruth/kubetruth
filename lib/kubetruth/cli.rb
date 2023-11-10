@@ -52,6 +52,7 @@ module Kubetruth
     def execute
       super
 
+      logger.info "Starting Kubetruth v#{VERSION}"
       Kubetruth::CtApi.configure(api_key: api_key, api_url: api_url)
       Kubetruth::KubeApi.configure(namespace: kube_namespace, token: kube_token, api_url: kube_url)
 
