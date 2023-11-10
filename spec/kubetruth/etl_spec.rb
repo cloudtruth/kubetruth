@@ -237,7 +237,7 @@ module Kubetruth
         expect(@kubeapi).to receive(:get_project_mappings).and_return(
           {
             "primary-ns" => {
-              "myroot" => {cope: "root", name: "myroot"},
+              "myroot" => {scope: "root", name: "myroot"},
             },
             "other-ns" => {
               "myroot" => {scope: "root", name: "myroot", environment: "otherenv"},
@@ -435,8 +435,8 @@ module Kubetruth
         @ns = "primary-ns"
         allow(@kubeapi).to receive(:namespace).and_return(@ns)
         allow(ProjectCollection).to receive(:new).and_return(collection)
-        allow(collection).to receive(:create_project).and_wrap_original do |m, *args|
-          project = m.call(*args)
+        allow(collection).to receive(:create_project).and_wrap_original do |m, *args, **kwargs|
+          project = m.call(*args, **kwargs)
           allow(project).to receive(:parameters).and_return([
                                                               Parameter.new(key: "param1", value: "value1", secret: false),
                                                               Parameter.new(key: "param2", value: "value2", secret: true)
@@ -479,6 +479,18 @@ module Kubetruth
         expect(etl).to receive(:kube_apply).with(hash_including("stream_item" => "two"))
 
         etl.apply()
+      end
+
+      it "fails to render unsafe template" do
+        config.root_spec.resource_templates = {"name1" => Template.new("stream_item: !ruby/object {}\n")}
+        allow(etl).to receive(:load_config).and_yield(@ns, config)
+
+        expect(collection).to receive(:names).and_return(["proj1"])
+
+        expect(etl).to_not receive(:kube_apply)
+
+        etl.apply()
+        expect(Logging.contents).to match(/ERROR ETL \[exception=Psych::DisallowedClass/)
       end
 
       it "skips empty templates" do
@@ -599,8 +611,8 @@ module Kubetruth
       it "skips params with nil values" do
         allow(etl).to receive(:load_config).and_yield(@ns, config)
         expect(collection).to receive(:names).and_return(["proj1"])
-        allow(collection).to receive(:create_project).and_wrap_original do |m, *args|
-          project = m.call(*args)
+        allow(collection).to receive(:create_project).and_wrap_original do |m, *args, **kwargs|
+          project = m.call(*args, **kwargs)
           allow(project).to receive(:parameters).and_return([
                                                               Parameter.new(key: "param1", value: "value1", secret: false),
                                                               Parameter.new(key: "param2", value: "value2", secret: true),
@@ -623,20 +635,26 @@ module Kubetruth
       end
 
       it "honors concurrency limit" do
+        run_count = 0
         sleep_val = 1
-        allow(etl).to receive(:load_config).and_yield(@ns, config)
 
         # causes 4 executions of kube_apply
-        allow(collection).to receive(:names).and_return(["foo", "bar"])
+        config.root_spec.active_templates = ["configmap"]
+        allow(collection).to receive(:names).and_return(["proj1", "proj2", "proj3", "proj4"])
+        allow(etl).to receive(:load_config).and_yield(@ns, config)
 
-        run_count = 0
-        allow(etl).to receive(:kube_apply) do
+        # sleep at a point in async call for project, but not in kube apply
+        # since it has its own async that isn't gated with concurrency limit
+        allow(described_class::DelayedParameters).to receive(:new).and_wrap_original do |m, *args, **kwargs|
           run_count += 1
           sleep sleep_val
-          nil
+          m.call(*args, **kwargs)
         end
+        allow(etl).to receive(:kube_apply)
 
-        etl.instance_variable_set(:@async_concurrency, 2)
+
+        run_count = 0
+        etl.instance_variable_set(:@async_concurrency, 1)
         duration1 = Benchmark.measure do
           etl.apply()
         end
@@ -668,8 +686,8 @@ module Kubetruth
         @ns = "primary-ns"
         allow(@kubeapi).to receive(:namespace).and_return(@ns)
         allow(ProjectCollection).to receive(:new).and_return(collection)
-        allow(collection).to receive(:create_project).and_wrap_original do |m, *args|
-          project = m.call(*args)
+        allow(collection).to receive(:create_project).and_wrap_original do |m, *args, **kwargs|
+          project = m.call(*args, **kwargs)
           allow(project).to receive(:parameters).and_return([
                                                               Parameter.new(key: "param1", value: "value1", secret: false),
                                                               Parameter.new(key: "param2", value: "value2", secret: true)

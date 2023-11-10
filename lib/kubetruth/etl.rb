@@ -19,7 +19,6 @@ module Kubetruth
       @dry_run = dry_run
       @async = async
       @async_concurrency = async_concurrency
-      @async_semaphore = nil
       @wrote_crds = false
     end
 
@@ -120,7 +119,8 @@ module Kubetruth
             task.stop
           end
         }
-        @async_semaphore.nil? ? Async(*args, **kwargs, &blk) : @async_semaphore.async(*args, **kwargs, &blk)
+        sem = kwargs.delete(:semaphore)
+        sem.nil? ? Async(*args, **kwargs, &blk) : sem.async(*args, **kwargs, &blk)
       else
         task_name = kwargs[:annotation] || "unnamed"
         begin
@@ -145,7 +145,7 @@ module Kubetruth
         logger.info {"Processing primary mappings for namespace '#{kubeapi.namespace}'"}
         configs << primary_config
         yield kubeapi.namespace, primary_config if block_given?
-      end
+      end.wait
 
       primary_mappings.delete_if {|k, v| v[:suppress_namespace_inheritance] }
 
@@ -220,7 +220,16 @@ module Kubetruth
 
     def apply
       async(annotation: "ETL Event Loop") do
-        @async_semaphore = Async::Semaphore.new(@async_concurrency) if @async
+
+        # Only do the concurrency limit across ctapi calls for project listing
+        # and querying the data within the project - using a global semaphore
+        # ends up deadlocking when one has a tree of async tasks as once the
+        # Semaphore's limit is exceeded, the parent ends up waiting for the
+        # child to finish, and the child can't start due to the limit being
+        # exceeded
+        #
+        semaphore = Async::Semaphore.new(@async_concurrency) if @async
+
         logger.warn("Performing dry-run") if @dry_run
 
         load_config do |namespace, config|
@@ -232,14 +241,20 @@ module Kubetruth
             project_selectors = all_specs.collect(&:project_selector)
             included_projects = all_specs.collect(&:included_projects).flatten.uniq
 
-            project_collection.names.each do |project_name|
-              active = included_projects.any? {|p| p == project_name }
-              active ||= project_selectors.any? {|s| s =~ project_name }
-              if active
-                project_spec = config.spec_for_project(project_name)
-                project_collection.create_project(name: project_name, spec: project_spec)
+            async(annotation: "Listing Projects", semaphore: semaphore) do
+              project_collection.names.each do |project_name|
+                active = included_projects.any? {|p| p == project_name }
+                active ||= project_selectors.any? {|s| s =~ project_name }
+                if active
+                  project_spec = config.spec_for_project(project_name)
+                  project_collection.create_project(name: project_name, spec: project_spec)
+                end
               end
-            end
+            end.wait
+            #
+            # do in async task so the ctapi project list call is async across
+            # project mappings, but also under concurrency limit, but wait till
+            # we finish before walking the projects fetched
 
             project_collection.projects.values.each do |project|
               with_log_level(project.spec.log_level) do
@@ -256,7 +271,8 @@ module Kubetruth
                   next
                 end
 
-                async(annotation: "Project: #{project.name}") do
+                # All ctapi calls against each project are async, but gated by concurrency limit
+                async(annotation: "Project: #{project.name}", semaphore: semaphore) do
 
                   param_data = DelayedParameters.new(project)
 
@@ -298,9 +314,7 @@ module Kubetruth
             end
           end
         end
-    ensure
-      @async_semaphore = nil
-    end.wait
+      end.wait
     end
 
     def kube_apply(parsed_yml)
