@@ -5,16 +5,29 @@ require 'faraday-cookie_jar'
 
 module Kubetruth
   class CtApi
+    include GemLogger::LoggerSupport
 
-    @@api_key = nil
-    @@api_url = nil
+    @@config = nil
 
     def self.configure(api_key:, api_url:)
-      @@api_key = api_key
-      @@api_url = api_url
+      if api_key.nil? || api_url.nil?
+        @@config = nil
+        return
+      end
+      uri = URI(api_url)
+      config = ApiConfiguration.new
+      config.server_index = nil
+      config.scheme = uri.scheme
+      host_port = uri.host
+      host_port << ":#{uri.port}" unless [80, 443].include?(uri.port)
+      config.host = host_port
+      config.base_path = uri.path
+      config.api_key = {'ApiKeyAuth' => api_key}
+      config.api_key_prefix = {'ApiKeyAuth' => "Api-Key"}
+      config.logger = self.logger
+      config.use(:cookie_jar, jar: HTTP::CookieJar.new) # supply the cookie jar so that the same one is used across all connections
+      @@config = config
     end
-
-    include GemLogger::LoggerSupport
 
     attr_reader :client, :apis
 
@@ -42,26 +55,12 @@ module Kubetruth
       @projects_mutex = Mutex.new
       @templates_mutex = Mutex.new
 
-      raise ArgumentError.new("CtApi has not been configured") if @@api_key.nil? || @@api_url.nil?
-      @api_key = @@api_key
-      @api_url = @@api_url
+      raise ArgumentError.new("CtApi has not been configured") if @@config.nil?
 
       @environment = environment
       @tag = tag
-      uri = URI(@api_url)
-      config = ApiConfiguration.new
-      config.server_index = nil
-      config.scheme = uri.scheme
-      host_port = uri.host
-      host_port << ":#{uri.port}" unless [80, 443].include?(uri.port)
-      config.host = host_port
-      config.base_path = uri.path
-      config.api_key = {'ApiKeyAuth' => @api_key}
-      config.api_key_prefix = {'ApiKeyAuth' => "Api-Key"}
-      config.logger = logger
-      config.use(:cookie_jar)
       # config.debugging = logger.debug?
-      @client = CloudtruthClient::ApiClient.new(config)
+      @client = CloudtruthClient::ApiClient.new(@@config)
       @client.user_agent = "kubetruth/#{Kubetruth::VERSION}"
       @apis = {
         api: CloudtruthClient::ApiApi.new(@client),

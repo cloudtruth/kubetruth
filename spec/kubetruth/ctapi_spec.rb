@@ -9,12 +9,13 @@ module Kubetruth
       # :record => :all
   } do
 
+    # Spin up a local dev server and create a user with an api key to use
+    # here, or use cloudtruth actual
+    let(:api_key) { ENV['CLOUDTRUTH_API_KEY'] }
+    let(:api_url) { ENV['CLOUDTRUTH_API_URL'] || "https://api.staging.cloudtruth.io" } # "https://localhost:8000"
+
     let(:ctapi) {
-      # Spin up a local dev server and create a user with an api key to use
-      # here, or use cloudtruth actual
-      key = ENV['CLOUDTRUTH_API_KEY']
-      url = ENV['CLOUDTRUTH_API_URL'] || "https://api.staging.cloudtruth.io" # "https://localhost:8000"
-      ::Kubetruth::CtApi.configure(api_key: key, api_url: url)
+      ::Kubetruth::CtApi.configure(api_key: api_key, api_url: api_url)
       instance = ::Kubetruth::CtApi.new
       instance.client.config.debugging = false # ssl debug logging is messy, so only turn this on as desired
       instance.client.config.ssl_verify = false
@@ -58,6 +59,36 @@ module Kubetruth
         data, status_code, headers = ctapi.apis[:environments].environments_list_with_http_info
         cookies = headers["set-cookie"]
         session_cookie2 = cookies.match(/sessionid=([^;]+)/)[1]
+        expect(session_cookie1).to eq(session_cookie2)
+      end
+
+      it "different urls same domain use same session cookie" do
+        data, status_code, headers = ctapi.apis[:environments].environments_list_with_http_info
+        cookies = headers["set-cookie"]
+        session_cookie1 = cookies.match(/sessionid=([^;]+)/)[1]
+        data, status_code, headers = ctapi.apis[:projects].projects_list_with_http_info
+        cookies = headers["set-cookie"]
+        session_cookie2 = cookies.match(/sessionid=([^;]+)/)[1]
+        expect(session_cookie1).to eq(session_cookie2)
+      end
+
+      it "different instances use same session cookie" do
+        ::Kubetruth::CtApi.configure(api_key: api_key, api_url: api_url)
+        ctapi1 = ::Kubetruth::CtApi.new
+        ctapi1.client.config.debugging = false # ssl debug logging is messy, so only turn this on as desired
+        ctapi1.client.config.ssl_verify = false
+        ctapi2 = ::Kubetruth::CtApi.new
+        ctapi2.client.config.debugging = false # ssl debug logging is messy, so only turn this on as desired
+        ctapi2.client.config.ssl_verify = false
+
+        data, status_code, headers = ctapi1.apis[:environments].environments_list_with_http_info
+        cookies = headers["set-cookie"]
+        session_cookie1 = cookies.match(/sessionid=([^;]+)/)[1]
+
+        data, status_code, headers = ctapi2.apis[:environments].environments_list_with_http_info
+        cookies = headers["set-cookie"]
+        session_cookie2 = cookies.match(/sessionid=([^;]+)/)[1]
+
         expect(session_cookie1).to eq(session_cookie2)
       end
 
