@@ -124,11 +124,6 @@ projectMappings:
           namespace: "{{ context.resource_namespace }}"
           labels:
             version: "{{ parameters | sort | to_json | sha256 | slice: 0, 7 }}"
-          annotations:
-            kubetruth/project_heirarchy: |
-              {{ project_heirarchy | to_yaml | indent: 6 | lstrip }}
-            kubetruth/parameter_origins: |
-              {{ parameter_origins | to_yaml | indent: 6 | lstrip }}
         data:
           {%- for parameter in parameters %}
           {{ parameter[0] | key_safe | stringify }}: {{ parameter[1] | stringify }}
@@ -144,11 +139,6 @@ projectMappings:
           namespace: "{{ context.resource_namespace }}"
           labels:
             version: "{{ secrets | sort | to_json | sha256 | slice: 0, 7 }}"
-          annotations:
-            kubetruth/project_heirarchy: |
-              {{ project_heirarchy | to_yaml | indent: 6 | lstrip }}
-            kubetruth/parameter_origins: |
-              {{ secret_origins | to_yaml | indent: 6 | lstrip }}
         data:
           {%- for secret in secrets %}
           {{ secret[0] | key_safe | stringify }}: {{ secret[1] | encode64 | stringify }}

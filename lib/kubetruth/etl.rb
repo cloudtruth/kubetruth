@@ -218,6 +218,9 @@ module Kubetruth
     end
 
     def apply
+      # clear the ctapi cache before we start
+      Kubetruth::CtApi.reset
+
       async(annotation: "ETL Event Loop") do
 
         # Only do the concurrency limit across ctapi calls for project listing
@@ -233,7 +236,7 @@ module Kubetruth
 
         load_config do |namespace, config|
           with_log_level(config.root_spec.log_level) do
-            project_collection = ProjectCollection.new(config.root_spec)
+            project_collection = ProjectCollection.new(config)
 
             # Load all projects that are used
             all_specs = [config.root_spec] + config.override_specs
@@ -291,7 +294,8 @@ module Kubetruth
                       secrets: proc { param_data.params[:secrets] },
                       secret_origins: proc { param_data.params[:secret_origins] },
                       templates: Template::TemplatesDrop.new(project: project.name, ctapi: project.ctapi),
-                      context: project.spec.context
+                      context: project.spec.context,
+                      environment: project.spec.environment
                     )
 
                     template_id = "mapping: #{project.spec.name}, mapping_namespace: #{namespace}, project: #{project.name}, template: #{template_name}"

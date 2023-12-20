@@ -763,6 +763,22 @@ module Kubetruth
         expect(Logging.contents).to match(/DEBUG.*Template Evaluating template/)
       end
 
+      it "overrides environment from override pm in config" do
+        # ensure just a single template to make render check on any_instance easy and valid
+        root_spec_crd[:resource_templates].delete_if {|k, v| k.to_s != "configmap"}
+        override_crd = {scope: "override", project_selector: "proj1", environment: "production", skip: false}
+        allow(etl.kubeapi).to receive(:get_project_mappings).and_return({"primary-ns" => {"root" => root_spec_crd.merge(skip: true)}, "secondary-ns" => {"proj1" => override_crd}})
+
+        # Once for root spec to get project listing
+        expect(Kubetruth::CtApi).to receive(:new).with(environment: "default", tag: nil).and_return(@ctapi).once
+        # Once for rendering for a project
+        expect(Kubetruth::CtApi).to receive(:new).with(environment: "production", tag: nil).and_return(@ctapi).once
+        # render the template using the right environment
+        expect_any_instance_of(Kubetruth::Template).to receive(:render).with(hash_including(environment: "production")).once
+
+        etl.apply()
+      end
+
 
     end
 

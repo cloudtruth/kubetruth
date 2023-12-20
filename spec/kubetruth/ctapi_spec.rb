@@ -50,6 +50,21 @@ module Kubetruth
 
     end
 
+    describe "#create/reset" do
+
+      it "caches instance" do
+        described_class.configure(api_key: api_key, api_url: api_url)
+        expect(described_class.create).to eq(described_class.create)
+        expect(described_class.create).to_not eq(described_class.create(environment: "foo"))
+        expect(described_class.create).to_not eq(described_class.create(tag: "foo"))
+
+        orig = described_class.create
+        described_class.reset
+        expect(described_class.create).to_not eq(orig)
+      end
+
+    end
+
     describe "#cookies" do
 
       it "uses session cookie" do

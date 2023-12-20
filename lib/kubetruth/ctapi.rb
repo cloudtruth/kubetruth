@@ -8,6 +8,7 @@ module Kubetruth
     include GemLogger::LoggerSupport
 
     @@config = nil
+    @@ctapis = {}
 
     def self.configure(api_key:, api_url:)
       if api_key.nil? || api_url.nil?
@@ -29,7 +30,7 @@ module Kubetruth
       @@config = config
     end
 
-    attr_reader :client, :apis
+    attr_reader :client, :apis, :environment, :tag
 
     class ApiConfiguration < CloudtruthClient::Configuration
 
@@ -48,6 +49,17 @@ module Kubetruth
         }
       end
 
+    end
+
+    # Factory methods to allow caching of CtApi instances through a single
+    # polling cycle to mitigate costs of fetching all projects/environments for
+    # ID lookup
+    def self.create(environment: "default", tag: nil)
+      @@ctapis[[environment, tag]] ||= CtApi.new(environment: environment, tag: tag)
+    end
+
+    def self.reset
+      @@ctapis = {}
     end
 
     def initialize(environment: "default", tag: nil)
