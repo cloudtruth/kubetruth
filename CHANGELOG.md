@@ -1,3 +1,8 @@
+1.2.6 (12/20/2023)
+------------------
+
+* allow project specific PMs to override environment and tag [ddd233f](../../commit/ddd233f)
+
 1.2.5 (11/10/2023)
 ------------------
 
