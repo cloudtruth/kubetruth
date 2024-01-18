@@ -45,7 +45,7 @@ module Kubetruth
         ctapi.class.configure(api_key: "xyz", api_url: nil)
         expect { ::Kubetruth::CtApi.new }.to raise_error(ArgumentError, /has not been configured/)
         ctapi.class.configure(api_key: "xyz", api_url: "http://localhost")
-        expect { ::Kubetruth::CtApi.new }.to_not raise_error(ArgumentError, /has not been configured/)
+        expect { ::Kubetruth::CtApi.new }.to_not raise_error
       end
 
     end

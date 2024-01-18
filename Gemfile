@@ -17,6 +17,11 @@ group :development, :test do
   gem "dotenv"
 end
 
+# add requires to eliminate deprecation warnings
+gem 'bigdecimal'
+gem 'syslog'
+gem 'base64'
+
 # application runtime dependencies
 gem "gem_logger"
 gem "logging"
