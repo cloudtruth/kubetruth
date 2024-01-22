@@ -254,7 +254,7 @@ file "#{CLIENT_DIR}/Gemfile" => "#{CLIENT_DIR}/openapi.yml" do
   sh *%W[
     docker run --rm
       -v #{Dir.pwd}:/data
-      openapitools/openapi-generator-cli generate
+      openapitools/openapi-generator-cli:v7.2.0 generate
         -i /data/client/openapi.yml
         -g ruby
         -o /data/client
