@@ -1,3 +1,9 @@
+1.3.0 (01/22/2024)
+------------------
+
+* use Semaphore instead of Mutex [799f02a](../../commit/799f02a)
+* update ruby runtime to 3.3.0 [176e897](../../commit/176e897)
+
 1.2.6 (12/20/2023)
 ------------------
 
