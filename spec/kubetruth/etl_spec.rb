@@ -834,6 +834,32 @@ module Kubetruth
         expect(n3).to eq("parenttask -> unnamed -> childtask")
       end
 
+      it "allows semaphore as mutex"  do
+        val = nil
+        order = []
+        mutex = Async::Semaphore.new(1)
+        etl.async(annotation: "parenttask") do |t|
+          etl.async(annotation: "task1") do |t1|
+            order << 1
+            mutex.acquire do
+              order << 2
+              sleep(0.1)
+              order << 4
+              val ||= "task1"
+            end
+          end
+          etl.async(annotation: "task2") do |t1|
+            order << 3
+            mutex.acquire do
+              order << 5
+              val ||= "task2"
+            end
+          end
+        end
+        expect(val).to eq("task1")
+        expect(order).to eq([1, 2, 3, 4, 5])
+      end
+
     end
 
   end

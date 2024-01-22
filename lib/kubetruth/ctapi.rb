@@ -2,6 +2,7 @@ require 'uri'
 require "cloudtruth-client"
 require_relative 'parameter'
 require 'faraday-cookie_jar'
+require 'async/semaphore'
 
 module Kubetruth
   class CtApi
@@ -9,6 +10,7 @@ module Kubetruth
 
     @@config = nil
     @@ctapis = {}
+    @@ctapis_mutex = Async::Semaphore.new(1)
 
     def self.configure(api_key:, api_url:)
       if api_key.nil? || api_url.nil?
@@ -55,17 +57,21 @@ module Kubetruth
     # polling cycle to mitigate costs of fetching all projects/environments for
     # ID lookup
     def self.create(environment: "default", tag: nil)
-      @@ctapis[[environment, tag]] ||= CtApi.new(environment: environment, tag: tag)
+      @@ctapis_mutex.acquire do
+        @@ctapis[[environment, tag]] ||= CtApi.new(environment: environment, tag: tag)
+      end
     end
 
     def self.reset
-      @@ctapis = {}
+      @@ctapis_mutex.acquire do
+        @@ctapis = {}
+      end
     end
 
     def initialize(environment: "default", tag: nil)
-      @environments_mutex = Mutex.new
-      @projects_mutex = Mutex.new
-      @templates_mutex = Mutex.new
+      @environments_mutex = Async::Semaphore.new(1)
+      @projects_mutex = Async::Semaphore.new(1)
+      @templates_mutex = Async::Semaphore.new(1)
 
       raise ArgumentError.new("CtApi has not been configured") if @@config.nil?
 
@@ -82,7 +88,7 @@ module Kubetruth
     end
 
     def environments
-      @environments_mutex.synchronize do
+      @environments_mutex.acquire do
         @environments ||= begin
           result = apis[:environments].environments_list
           logger.debug{"Environments query result: #{result.inspect}"}
@@ -102,7 +108,7 @@ module Kubetruth
     end
 
     def projects
-      @projects_mutex.synchronize do
+      @projects_mutex.acquire do
         @projects ||= begin
           result = apis[:projects].projects_list
           logger.debug{"Projects query result: #{result.inspect}"}
@@ -160,7 +166,7 @@ module Kubetruth
     end
 
     def templates(project:)
-      @templates_mutex.synchronize do
+      @templates_mutex.acquire do
         @templates ||= {}
         @templates[project] ||= begin
           proj_id = projects[project]

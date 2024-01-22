@@ -15,10 +15,9 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
-    async (2.8.0)
+    async (1.31.0)
       console (~> 1.10)
-      fiber-annotation
-      io-event (~> 1.1)
+      nio4r (~> 2.3)
       timers (~> 4.1)
     base64 (0.2.0)
     bigdecimal (3.1.6)
@@ -70,7 +69,6 @@ GEM
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     io-console (0.7.2)
-    io-event (1.4.2)
     irb (1.11.1)
       rdoc
       reline (>= 0.4.2)
@@ -100,6 +98,7 @@ GEM
     net-http (0.4.1)
       uri
     netrc (0.11.0)
+    nio4r (2.7.0)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)

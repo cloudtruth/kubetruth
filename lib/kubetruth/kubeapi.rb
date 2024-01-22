@@ -1,4 +1,5 @@
 require 'kubeclient'
+require 'async/semaphore'
 
 module Kubetruth
   class KubeApi
@@ -47,7 +48,7 @@ module Kubetruth
 
       @api_url = api_url || 'https://kubernetes.default.svc'
       @api_clients = {}
-      @namespace_mutex = Mutex.new
+      @namespace_mutex = Async::Semaphore.new(1)
     end
 
     def api_url(api)
@@ -80,7 +81,7 @@ module Kubetruth
     end
 
     def ensure_namespace(ns = namespace)
-      @namespace_mutex.synchronize do
+      @namespace_mutex.acquire do
         begin
           client.get_namespace(ns)
         rescue Kubeclient::ResourceNotFoundError
