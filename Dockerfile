@@ -1,4 +1,4 @@
-FROM ruby:3.0-alpine AS base
+FROM ruby:3.3-alpine AS base
 
 ENV APP_USER_UID=65532 \
     APP_USER_GID=65532 \
