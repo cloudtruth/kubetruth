@@ -11,7 +11,7 @@ end
 group :development, :test do
   gem "rspec"
   gem "vcr"
-  gem "webmock"
+  gem "webmock", ">= 3.20.0"
   gem "codecov", require: false, group: "test"
   gem "simplecov"
   gem "dotenv"
@@ -30,7 +30,7 @@ gem 'sigdump'
 gem "activesupport", '~> 7.0', '<= 7.0.8'
 gem "clamp"
 gem "cloudtruth-client", path: "client"
-gem "kubeclient"
+gem "kubeclient", ">= 4.12.0"
 gem "liquid"
 gem "async"
 gem "faraday-cookie_jar"
