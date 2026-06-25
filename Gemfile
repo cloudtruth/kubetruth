@@ -27,10 +27,10 @@ gem "gem_logger"
 gem "logging"
 gem 'psych'
 gem 'sigdump'
-gem "activesupport", '~> 7.0', '<= 7.0.8'
+gem "activesupport", "~> 7.0", ">= 7.0.8.1"
 gem "clamp"
 gem "cloudtruth-client", path: "client"
 gem "kubeclient"
 gem "liquid"
 gem "async"
-gem "faraday-cookie_jar"
+gem "faraday-cookie_jar", ">= 0.0.8"
