@@ -27,7 +27,7 @@ gem "gem_logger"
 gem "logging"
 gem 'psych'
 gem 'sigdump'
-gem "activesupport", '~> 7.0', '<= 7.0.8'
+gem "activesupport", "~> 8.0", ">= 8.0.5.2"
 gem "clamp"
 gem "cloudtruth-client", path: "client"
 gem "kubeclient"
